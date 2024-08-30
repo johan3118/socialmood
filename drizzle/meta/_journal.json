@@ -3,17 +3,24 @@
   "dialect": "sqlite",
   "entries": [
     {
-      "idx": 0,
+      "idx": 2,
       "version": "5",
-      "when": 1709946119943,
-      "tag": "0000_bright_sir_ram",
+      "when": 1725021520314,
+      "tag": "0002_daily_banshee",
       "breakpoints": true
     },
     {
-      "idx": 1,
+      "idx": 3,
       "version": "5",
-      "when": 1709991979168,
-      "tag": "0001_slow_inertia",
+      "when": 1725022937481,
+      "tag": "0003_lowly_texas_twister",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1725023019737,
+      "tag": "0004_flawless_misty_knight",
       "breakpoints": true
     }
   ]

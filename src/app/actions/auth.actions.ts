@@ -2,15 +2,19 @@
 import { SignInSchema, SignUpSchema } from "@/types";
 import { generateId } from "lucia";
 import db from "@/db";
-import { userTable } from "@/db/schema/user";
+import { usuariosTable } from "@/db/schema/socialMood";
 import { lucia, validateRequest } from "@/lib/lucia/lucia";
 import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
 import * as argon2 from "argon2";
 
 export const signUp = async (values: {
-  username: string;
-  password: string;
+  nombre: string;
+  apellido: string;
+  direccion: string,
+  correo_electronico: string,
+  password: string,
+  confirmPassword: string,
 }) => {
   // Check with Zod if the values are valid
   try {
@@ -23,21 +27,26 @@ export const signUp = async (values: {
   // Hash the password
   const hashedPassword = await argon2.hash(values.password);
   // Generate a random ID for the user
-  const userId = generateId(15);
-
+  let userId: number;
   // Insert the user into the database
   try {
-    await db
-      .insert(userTable)
+    const newUser = await db
+      .insert(usuariosTable)
       .values({
-        id: userId,
-        username: values.username,
-        hashedPassword,
+        nombre: values.nombre,
+        apellido: values.apellido,
+        direccion: values.direccion,
+        correo_electronico: values.correo_electronico,
+        llave_acceso: hashedPassword,
+        id_proveedor_autenticacion: 1,
+        id_tipo_usuario: 1
       })
       .returning({
-        id: userTable.id,
-        username: userTable.username,
+        id: usuariosTable.id,
+        username: usuariosTable.nombre,
       });
+
+      userId = newUser[0].id;
 
     // Create a session for the user
     const session = await lucia.createSession(userId, {
@@ -68,7 +77,7 @@ export const signUp = async (values: {
 };
 
 export const signIn = async (values: {
-  username: string;
+  nombre: string;
   password: string;
 }) => {
   // Check with Zod if the values are valid
@@ -80,12 +89,12 @@ export const signIn = async (values: {
     };
   }
   // Find the user in the database
-  const existingUser = await db.query.userTable.findFirst({
-    where: (table) => eq(table.username, values.username),
+  const existingUser = await db.query.usuariosTable.findFirst({
+    where: (table) => eq(table.nombre, values.nombre),
   });
 
   // If the user is not found, return an error
-  if (!existingUser || !existingUser.hashedPassword) {
+  if (!existingUser || !existingUser.llave_acceso) {
     return {
       error: "User not found",
     };
@@ -93,7 +102,7 @@ export const signIn = async (values: {
 
   // Verify the password
   const isValidPassword = await argon2.verify(
-    existingUser.hashedPassword,
+    existingUser.llave_acceso,
     values.password
   );
 

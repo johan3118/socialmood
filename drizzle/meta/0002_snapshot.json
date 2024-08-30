@@ -1,0 +1,1651 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "id": "4c171ad5-315a-4f5b-ab26-ab2971d0092c",
+  "prevId": "4071379c-651d-4321-9f52-c97f176cdedf",
+  "tables": {
+    "categorias": {
+      "name": "categorias",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "categorias_nombre_unique": {
+          "name": "categorias_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "colores": {
+      "name": "colores",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "codigo_hex": {
+          "name": "codigo_hex",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "colores_nombre_unique": {
+          "name": "colores_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        },
+        "colores_codigo_hex_unique": {
+          "name": "colores_codigo_hex_unique",
+          "columns": [
+            "codigo_hex"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "cuentas_redes_sociales": {
+      "name": "cuentas_redes_sociales",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "llave_acceso": {
+          "name": "llave_acceso",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "usuario_cuenta": {
+          "name": "usuario_cuenta",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "codigo_cuenta": {
+          "name": "codigo_cuenta",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_vencimiento_acceso": {
+          "name": "fecha_vencimiento_acceso",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_subscripcion": {
+          "name": "id_subscripcion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_red_social": {
+          "name": "id_red_social",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_color": {
+          "name": "id_color",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "cuentas_redes_sociales_codigo_cuenta_unique": {
+          "name": "cuentas_redes_sociales_codigo_cuenta_unique",
+          "columns": [
+            "codigo_cuenta"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "cuentas_redes_sociales_id_subscripcion_subscripciones_id_fk": {
+          "name": "cuentas_redes_sociales_id_subscripcion_subscripciones_id_fk",
+          "tableFrom": "cuentas_redes_sociales",
+          "tableTo": "subscripciones",
+          "columnsFrom": [
+            "id_subscripcion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "cuentas_redes_sociales_id_red_social_redes_sociales_id_fk": {
+          "name": "cuentas_redes_sociales_id_red_social_redes_sociales_id_fk",
+          "tableFrom": "cuentas_redes_sociales",
+          "tableTo": "redes_sociales",
+          "columnsFrom": [
+            "id_red_social"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "cuentas_redes_sociales_id_color_colores_id_fk": {
+          "name": "cuentas_redes_sociales_id_color_colores_id_fk",
+          "tableFrom": "cuentas_redes_sociales",
+          "tableTo": "colores",
+          "columnsFrom": [
+            "id_color"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "estados_factura": {
+      "name": "estados_factura",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "estados_factura_nombre_unique": {
+          "name": "estados_factura_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "estados_invitacion": {
+      "name": "estados_invitacion",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "estados_invitacion_nombre_unique": {
+          "name": "estados_invitacion_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "estados_plan": {
+      "name": "estados_plan",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "estados_plan_nombre_unique": {
+          "name": "estados_plan_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "estados_red_social": {
+      "name": "estados_red_social",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "estados_red_social_nombre_unique": {
+          "name": "estados_red_social_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "estados_subscripcion": {
+      "name": "estados_subscripcion",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "estados_subscripcion_nombre_unique": {
+          "name": "estados_subscripcion_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "facturas": {
+      "name": "facturas",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "codigo_transaccion": {
+          "name": "codigo_transaccion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "referencia_pago": {
+          "name": "referencia_pago",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "monto_total": {
+          "name": "monto_total",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_facturacion": {
+          "name": "fecha_facturacion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notas": {
+          "name": "notas",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "nombre_plan": {
+          "name": "nombre_plan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_metodo_pago": {
+          "name": "id_metodo_pago",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_estado_factura": {
+          "name": "id_estado_factura",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_usuario": {
+          "name": "id_usuario",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_plan_subscripcion": {
+          "name": "id_plan_subscripcion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_subscripcion": {
+          "name": "id_subscripcion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "facturas_codigo_transaccion_unique": {
+          "name": "facturas_codigo_transaccion_unique",
+          "columns": [
+            "codigo_transaccion"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "facturas_id_metodo_pago_metodos_pago_id_fk": {
+          "name": "facturas_id_metodo_pago_metodos_pago_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "metodos_pago",
+          "columnsFrom": [
+            "id_metodo_pago"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "facturas_id_estado_factura_estados_factura_id_fk": {
+          "name": "facturas_id_estado_factura_estados_factura_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "estados_factura",
+          "columnsFrom": [
+            "id_estado_factura"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "facturas_id_usuario_usuarios_id_fk": {
+          "name": "facturas_id_usuario_usuarios_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "id_usuario"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "facturas_id_plan_subscripcion_planes_id_fk": {
+          "name": "facturas_id_plan_subscripcion_planes_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "planes",
+          "columnsFrom": [
+            "id_plan_subscripcion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "facturas_id_subscripcion_subscripciones_id_fk": {
+          "name": "facturas_id_subscripcion_subscripciones_id_fk",
+          "tableFrom": "facturas",
+          "tableTo": "subscripciones",
+          "columnsFrom": [
+            "id_subscripcion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "invitaciones_subscripcion": {
+      "name": "invitaciones_subscripcion",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre_invitado": {
+          "name": "nombre_invitado",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "apellido_invitado": {
+          "name": "apellido_invitado",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "correo_electronico_invitado": {
+          "name": "correo_electronico_invitado",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "codigo": {
+          "name": "codigo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_emision": {
+          "name": "fecha_emision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_vencimiento": {
+          "name": "fecha_vencimiento",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_subscripcion": {
+          "name": "id_subscripcion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_estado_invitaciones": {
+          "name": "id_estado_invitaciones",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "invitaciones_subscripcion_codigo_unique": {
+          "name": "invitaciones_subscripcion_codigo_unique",
+          "columns": [
+            "codigo"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "invitaciones_subscripcion_id_subscripcion_subscripciones_id_fk": {
+          "name": "invitaciones_subscripcion_id_subscripcion_subscripciones_id_fk",
+          "tableFrom": "invitaciones_subscripcion",
+          "tableTo": "subscripciones",
+          "columnsFrom": [
+            "id_subscripcion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "invitaciones_subscripcion_id_estado_invitaciones_estados_invitacion_id_fk": {
+          "name": "invitaciones_subscripcion_id_estado_invitaciones_estados_invitacion_id_fk",
+          "tableFrom": "invitaciones_subscripcion",
+          "tableTo": "estados_invitacion",
+          "columnsFrom": [
+            "id_estado_invitaciones"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "metodos_pago": {
+      "name": "metodos_pago",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "enlace_plataforma": {
+          "name": "enlace_plataforma",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "metodos_pago_nombre_unique": {
+          "name": "metodos_pago_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        },
+        "metodos_pago_enlace_plataforma_unique": {
+          "name": "metodos_pago_enlace_plataforma_unique",
+          "columns": [
+            "enlace_plataforma"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "planes": {
+      "name": "planes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "costo": {
+          "name": "costo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cantidad_interacciones_mes": {
+          "name": "cantidad_interacciones_mes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cantidad_usuarios_permitidos": {
+          "name": "cantidad_usuarios_permitidos",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cantidad_cuentas_permitidas": {
+          "name": "cantidad_cuentas_permitidas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id_estado_plan": {
+          "name": "id_estado_plan",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_tipo_facturacion": {
+          "name": "id_tipo_facturacion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "planes_nombre_unique": {
+          "name": "planes_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "planes_id_estado_plan_estados_plan_id_fk": {
+          "name": "planes_id_estado_plan_estados_plan_id_fk",
+          "tableFrom": "planes",
+          "tableTo": "estados_plan",
+          "columnsFrom": [
+            "id_estado_plan"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "planes_id_tipo_facturacion_tipos_facturacion_id_fk": {
+          "name": "planes_id_tipo_facturacion_tipos_facturacion_id_fk",
+          "tableFrom": "planes",
+          "tableTo": "tipos_facturacion",
+          "columnsFrom": [
+            "id_tipo_facturacion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "proveedores_autenticacion": {
+      "name": "proveedores_autenticacion",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "enlace": {
+          "name": "enlace",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        }
+      },
+      "indexes": {
+        "proveedores_autenticacion_nombre_unique": {
+          "name": "proveedores_autenticacion_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        },
+        "proveedores_autenticacion_enlace_unique": {
+          "name": "proveedores_autenticacion_enlace_unique",
+          "columns": [
+            "enlace"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "redes_sociales": {
+      "name": "redes_sociales",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "enlace_logo": {
+          "name": "enlace_logo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "enlace_plataforma": {
+          "name": "enlace_plataforma",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id_estado_red_social": {
+          "name": "id_estado_red_social",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "redes_sociales_nombre_unique": {
+          "name": "redes_sociales_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        },
+        "redes_sociales_enlace_plataforma_unique": {
+          "name": "redes_sociales_enlace_plataforma_unique",
+          "columns": [
+            "enlace_plataforma"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "redes_sociales_id_estado_red_social_estados_red_social_id_fk": {
+          "name": "redes_sociales_id_estado_red_social_estados_red_social_id_fk",
+          "tableFrom": "redes_sociales",
+          "tableTo": "estados_red_social",
+          "columnsFrom": [
+            "id_estado_red_social"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "reglas": {
+      "name": "reglas",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "alias": {
+          "name": "alias",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "prompt": {
+          "name": "prompt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_regla_padre": {
+          "name": "id_regla_padre",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id_tipo_regla": {
+          "name": "id_tipo_regla",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_cuenta": {
+          "name": "id_cuenta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "reglas_alias_unique": {
+          "name": "reglas_alias_unique",
+          "columns": [
+            "alias"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "reglas_id_tipo_regla_tipos_regla_id_fk": {
+          "name": "reglas_id_tipo_regla_tipos_regla_id_fk",
+          "tableFrom": "reglas",
+          "tableTo": "tipos_regla",
+          "columnsFrom": [
+            "id_tipo_regla"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reglas_id_cuenta_cuentas_redes_sociales_id_fk": {
+          "name": "reglas_id_cuenta_cuentas_redes_sociales_id_fk",
+          "tableFrom": "reglas",
+          "tableTo": "cuentas_redes_sociales",
+          "columnsFrom": [
+            "id_cuenta"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reglas_id_regla_padre_reglas_id_fk": {
+          "name": "reglas_id_regla_padre_reglas_id_fk",
+          "tableFrom": "reglas",
+          "tableTo": "reglas",
+          "columnsFrom": [
+            "id_regla_padre"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "session": {
+      "name": "session",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_user_id_usuarios_id_fk": {
+          "name": "session_user_id_usuarios_id_fk",
+          "tableFrom": "session",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "subcategorias_reglas": {
+      "name": "subcategorias_reglas",
+      "columns": {
+        "id_subcategoria": {
+          "name": "id_subcategoria",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_regla": {
+          "name": "id_regla",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "subcategorias_reglas_id_subcategoria_subcategorias_id_fk": {
+          "name": "subcategorias_reglas_id_subcategoria_subcategorias_id_fk",
+          "tableFrom": "subcategorias_reglas",
+          "tableTo": "subcategorias",
+          "columnsFrom": [
+            "id_subcategoria"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subcategorias_reglas_id_regla_reglas_id_fk": {
+          "name": "subcategorias_reglas_id_regla_reglas_id_fk",
+          "tableFrom": "subcategorias_reglas",
+          "tableTo": "reglas",
+          "columnsFrom": [
+            "id_regla"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "subcategorias_reglas_id_subcategoria_id_regla_pk": {
+          "columns": [
+            "id_regla",
+            "id_subcategoria"
+          ],
+          "name": "subcategorias_reglas_id_subcategoria_id_regla_pk"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "subcategorias": {
+      "name": "subcategorias",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id_categoria": {
+          "name": "id_categoria",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "subcategorias_nombre_unique": {
+          "name": "subcategorias_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "subcategorias_id_categoria_categorias_id_fk": {
+          "name": "subcategorias_id_categoria_categorias_id_fk",
+          "tableFrom": "subcategorias",
+          "tableTo": "categorias",
+          "columnsFrom": [
+            "id_categoria"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "subscripciones": {
+      "name": "subscripciones",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "referencia_pago": {
+          "name": "referencia_pago",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_adquisicion": {
+          "name": "fecha_adquisicion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "costo": {
+          "name": "costo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nombre_plan": {
+          "name": "nombre_plan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_proximo_pago": {
+          "name": "fecha_proximo_pago",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_ultimo_pago": {
+          "name": "fecha_ultimo_pago",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tipo_facturacion": {
+          "name": "tipo_facturacion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_propietario": {
+          "name": "id_propietario",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_metodo_pago": {
+          "name": "id_metodo_pago",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_estado_subscripcion": {
+          "name": "id_estado_subscripcion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_plan_subscripcion": {
+          "name": "id_plan_subscripcion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "subscripciones_id_propietario_usuarios_id_fk": {
+          "name": "subscripciones_id_propietario_usuarios_id_fk",
+          "tableFrom": "subscripciones",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "id_propietario"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subscripciones_id_metodo_pago_metodos_pago_id_fk": {
+          "name": "subscripciones_id_metodo_pago_metodos_pago_id_fk",
+          "tableFrom": "subscripciones",
+          "tableTo": "metodos_pago",
+          "columnsFrom": [
+            "id_metodo_pago"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subscripciones_id_estado_subscripcion_estados_subscripcion_id_fk": {
+          "name": "subscripciones_id_estado_subscripcion_estados_subscripcion_id_fk",
+          "tableFrom": "subscripciones",
+          "tableTo": "estados_subscripcion",
+          "columnsFrom": [
+            "id_estado_subscripcion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subscripciones_id_plan_subscripcion_planes_id_fk": {
+          "name": "subscripciones_id_plan_subscripcion_planes_id_fk",
+          "tableFrom": "subscripciones",
+          "tableTo": "planes",
+          "columnsFrom": [
+            "id_plan_subscripcion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "tipos_facturacion": {
+      "name": "tipos_facturacion",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "tipos_facturacion_nombre_unique": {
+          "name": "tipos_facturacion_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "tipos_regla": {
+      "name": "tipos_regla",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "tipos_regla_nombre_unique": {
+          "name": "tipos_regla_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "tipos_usuario": {
+      "name": "tipos_usuario",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "tipos_usuario_nombre_unique": {
+          "name": "tipos_usuario_nombre_unique",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "usuarios_subscripciones": {
+      "name": "usuarios_subscripciones",
+      "columns": {
+        "id_usuario": {
+          "name": "id_usuario",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_subscripcion": {
+          "name": "id_subscripcion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "usuarios_subscripciones_id_usuario_usuarios_id_fk": {
+          "name": "usuarios_subscripciones_id_usuario_usuarios_id_fk",
+          "tableFrom": "usuarios_subscripciones",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "id_usuario"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "usuarios_subscripciones_id_subscripcion_subscripciones_id_fk": {
+          "name": "usuarios_subscripciones_id_subscripcion_subscripciones_id_fk",
+          "tableFrom": "usuarios_subscripciones",
+          "tableTo": "subscripciones",
+          "columnsFrom": [
+            "id_subscripcion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "usuarios_subscripciones_id_usuario_id_subscripcion_pk": {
+          "columns": [
+            "id_subscripcion",
+            "id_usuario"
+          ],
+          "name": "usuarios_subscripciones_id_usuario_id_subscripcion_pk"
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "usuarios": {
+      "name": "usuarios",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "apellido": {
+          "name": "apellido",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "direccion": {
+          "name": "direccion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "correo_electronico": {
+          "name": "correo_electronico",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "llave_acceso": {
+          "name": "llave_acceso",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_proveedor_autenticacion": {
+          "name": "id_proveedor_autenticacion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_tipo_usuario": {
+          "name": "id_tipo_usuario",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "usuarios_correo_electronico_unique": {
+          "name": "usuarios_correo_electronico_unique",
+          "columns": [
+            "correo_electronico"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "usuarios_id_proveedor_autenticacion_proveedores_autenticacion_id_fk": {
+          "name": "usuarios_id_proveedor_autenticacion_proveedores_autenticacion_id_fk",
+          "tableFrom": "usuarios",
+          "tableTo": "proveedores_autenticacion",
+          "columnsFrom": [
+            "id_proveedor_autenticacion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "usuarios_id_tipo_usuario_tipos_usuario_id_fk": {
+          "name": "usuarios_id_tipo_usuario_tipos_usuario_id_fk",
+          "tableFrom": "usuarios",
+          "tableTo": "tipos_usuario",
+          "columnsFrom": [
+            "id_tipo_usuario"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

@@ -21,9 +21,6 @@ export default async function ProfilePage() {
         <h1 className="text-4xl font-bold text-white">
           Welcome {user.username}
         </h1>
-        <p className="text-white text-center">
-          You can now access protected routes
-        </p>
       </div>
       <form action={signOut}>
         <FormButton

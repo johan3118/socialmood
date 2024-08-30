@@ -28,13 +28,17 @@ export function SignUpForm() {
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
-      username: "",
+      nombre: "",
+      apellido: "",
+      direccion: "",
+      correo_electronico: "",
       password: "",
       confirmPassword: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof SignUpSchema>) {
+    console.log(values);
     setIsPending(true);
     const res = await signUp(values);
     if (res.error) {
@@ -59,13 +63,60 @@ export function SignUpForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
           control={form.control}
-          name="username"
+          name="nombre"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Nombre</FormLabel>
+              <FormControl>
+                <Input autoComplete="nombre" placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />{" "}
+        <FormField
+          control={form.control}
+          name="apellido"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Apellido</FormLabel>
               <FormControl>
                 <Input
-                  autoComplete="username"
+                  autoComplete="apellido"
+                  placeholder="shadcn"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />{" "}
+        <FormField
+          control={form.control}
+          name="direccion"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Direccion</FormLabel>
+              <FormControl>
+                <Input
+                  autoComplete="direccion"
+                  placeholder="shadcn"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />{" "}
+        <FormField
+          control={form.control}
+          name="correo_electronico"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Correo electronico</FormLabel>
+              <FormControl>
+                <Input
+                  autoComplete="correo_electronico"
                   placeholder="shadcn"
                   {...field}
                 />

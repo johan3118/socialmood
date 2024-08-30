@@ -11,8 +11,9 @@ export const lucia = new Lucia(adapter, {
     },
   },
   getUserAttributes: (attributes) => {
+    console.log(attributes)
     return {
-      username: attributes.username,
+      username: attributes.nombre,
     };
   },
 });
@@ -58,10 +59,11 @@ export const validateRequest = cache(
 declare module "lucia" {
   interface Register {
     Lucia: typeof lucia;
+    UserId: number;
     DatabaseUserAttributes: DatabaseUserAttributes;
   }
 }
 
 interface DatabaseUserAttributes {
-  username: string;
+  nombre: string;
 }

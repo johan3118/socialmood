@@ -27,7 +27,7 @@ export function SignInForm() {
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
-      username: "",
+      nombre: "",
       password: "",
     },
   });
@@ -58,16 +58,12 @@ export function SignInForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
         <FormField
           control={form.control}
-          name="username"
+          name="nombre"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="shadcn"
-                  autoComplete="username"
-                  {...field}
-                />
+                <Input placeholder="shadcn" autoComplete="nombre" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
