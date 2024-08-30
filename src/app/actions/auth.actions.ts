@@ -6,7 +6,7 @@ import { usuariosTable } from "@/db/schema/socialMood";
 import { lucia, validateRequest } from "@/lib/lucia/lucia";
 import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
-import * as argon2 from "argon2";
+import * as bcrypt from "bcryptjs"; // Import bcrypt
 
 export const signUp = async (values: {
   nombre: string;
@@ -24,8 +24,8 @@ export const signUp = async (values: {
       error: error.message,
     };
   }
-  // Hash the password
-  const hashedPassword = await argon2.hash(values.password);
+  // Hash the password with bcrypt
+  const hashedPassword = await bcrypt.hash(values.password, 10);
   // Generate a random ID for the user
   let userId: number;
   // Insert the user into the database
@@ -100,10 +100,10 @@ export const signIn = async (values: {
     };
   }
 
-  // Verify the password
-  const isValidPassword = await argon2.verify(
-    existingUser.llave_acceso,
-    values.password
+  // Verify the password with bcrypt
+  const isValidPassword = await bcrypt.compare(
+    values.password,
+    existingUser.llave_acceso
   );
 
   if (!isValidPassword) {
