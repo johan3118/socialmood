@@ -14,11 +14,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignInSchema } from "../types";
-import { signIn } from "@/app/actions/auth.actions";
+import { SignInSchema } from "../../types";
+import { signIn } from "@/app/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import FormButton from "@/components/FormButton";
+import FormButton from "@/components/(socialmood)/FormButton";
 import { useState } from "react";
 
 export function SignInForm() {

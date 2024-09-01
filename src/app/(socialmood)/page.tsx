@@ -2,14 +2,9 @@ import { Button } from "@/components/ui/button";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Spotlight } from "@/components/Spotlight";
-import { CopyToClipboard } from "@/components/CopyToClipboard";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { Spotlight } from "@/components/(socialmood)/Spotlight";
 
 export default async function Home() {
-  const githubUrl =
-    "https://github.com/webdiego/next.js-drizzle-turso-lucia.git";
-
   const { user } = await validateRequest();
   if (user) {
     return redirect("/profile");

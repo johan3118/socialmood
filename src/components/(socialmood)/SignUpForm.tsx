@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,12 +13,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignUpSchema } from "../types";
-import { signUp } from "@/app/actions/auth.actions";
+import { SignUpSchema } from "../../types";
+import { signUp } from "@/app/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import FormButton from "@/components/FormButton";
+import FormButton from "@/components/(socialmood)/FormButton";
 
 export function SignUpForm() {
   const [isPending, setIsPending] = useState(false);
