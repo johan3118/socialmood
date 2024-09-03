@@ -13,8 +13,7 @@ export const signUp = async (values: {
   apellido: string;
   direccion: string,
   correo_electronico: string,
-  password: string,
-  confirmPassword: string,
+  password: string
 }) => {
   // Check with Zod if the values are valid
   try {
@@ -77,7 +76,7 @@ export const signUp = async (values: {
 };
 
 export const signIn = async (values: {
-  nombre: string;
+  correo_electronico: string;
   password: string;
 }) => {
   // Check with Zod if the values are valid
@@ -90,7 +89,7 @@ export const signIn = async (values: {
   }
   // Find the user in the database
   const existingUser = await db.query.usuariosTable.findFirst({
-    where: (table) => eq(table.nombre, values.nombre),
+    where: (table) => eq(table.correo_electronico, values.correo_electronico),
   });
 
   // If the user is not found, return an error
