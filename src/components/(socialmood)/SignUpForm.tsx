@@ -19,6 +19,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FormButton from "@/components/(socialmood)/FormButton";
+import Link from 'next/link'
 
 export function SignUpForm() {
   const [isPending, setIsPending] = useState(false);
@@ -32,7 +33,7 @@ export function SignUpForm() {
       direccion: "",
       correo_electronico: "",
       password: "",
-      confirmPassword: "",
+      confirmPassword: ""
     },
   });
 
@@ -59,15 +60,18 @@ export function SignUpForm() {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+      <h1 className="text-3xl font-bold text-white">Sign Up</h1>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="nombre"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nombre</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">Nombre</FormLabel>
               <FormControl>
-                <Input autoComplete="nombre" placeholder="shadcn" {...field} />
+                <Input
+                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  autoComplete="nombre" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,11 +82,11 @@ export function SignUpForm() {
           name="apellido"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Apellido</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">Apellido</FormLabel>
               <FormControl>
                 <Input
+                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   autoComplete="apellido"
-                  placeholder="shadcn"
                   {...field}
                 />
               </FormControl>
@@ -95,11 +99,11 @@ export function SignUpForm() {
           name="direccion"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Direccion</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">Dirección</FormLabel>
               <FormControl>
                 <Input
+                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   autoComplete="direccion"
-                  placeholder="shadcn"
                   {...field}
                 />
               </FormControl>
@@ -112,11 +116,11 @@ export function SignUpForm() {
           name="correo_electronico"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Correo electronico</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">Correo electrónico</FormLabel>
               <FormControl>
                 <Input
+                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   autoComplete="correo_electronico"
-                  placeholder="shadcn"
                   {...field}
                 />
               </FormControl>
@@ -129,11 +133,11 @@ export function SignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">Contraseña</FormLabel>
               <FormControl>
                 <Input
+                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   autoComplete="current-password"
-                  placeholder="****"
                   type="password"
                   {...field}
                 />
@@ -147,9 +151,14 @@ export function SignUpForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm password</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">Confirmar contraseña</FormLabel>
               <FormControl>
-                <Input placeholder="****" type="password" {...field} />
+                <Input
+                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  autoComplete="current-password"
+                  type="password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -161,6 +170,13 @@ export function SignUpForm() {
           defaultText="Sign up"
           pendingText="Signing up..."
         />
+        <br />
+        <p className="text-sm text-white">
+          Tienes una cuenta?{" "}
+          <Link href="/sign-in" className="font-medium text-white hover:underline">
+            Log In
+          </Link>
+        </p>
       </form>
     </Form>
   );
