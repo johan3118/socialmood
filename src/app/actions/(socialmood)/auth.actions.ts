@@ -6,6 +6,7 @@ import { usuariosTable } from "@/db/schema/socialMood";
 import { lucia, validateRequest } from "@/lib/lucia/lucia";
 import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
+import { and } from "drizzle-orm";
 import * as bcrypt from "bcryptjs"; // Import bcrypt
 
 export const signUp = async (values: {
@@ -38,7 +39,7 @@ export const signUp = async (values: {
         correo_electronico: values.correo_electronico,
         llave_acceso: hashedPassword,
         id_proveedor_autenticacion: 1,
-        id_tipo_usuario: 1
+        id_tipo_usuario: 1 // Usuario Gestor de Comunidad
       })
       .returning({
         id: usuariosTable.id,
@@ -89,7 +90,7 @@ export const signIn = async (values: {
   }
   // Find the user in the database
   const existingUser = await db.query.usuariosTable.findFirst({
-    where: (table) => eq(table.correo_electronico, values.correo_electronico),
+    where: (table) => and(eq(table.correo_electronico, values.correo_electronico), eq(table.id_tipo_usuario, 1)),
   });
 
   // If the user is not found, return an error
