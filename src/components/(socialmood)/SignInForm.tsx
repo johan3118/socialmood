@@ -20,6 +20,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import FormButton from "@/components/(socialmood)/FormButton";
 import { useState } from "react";
+import Link from 'next/link'
 
 export function SignInForm() {
   const [isPending, setIsPending] = useState(false);
@@ -27,7 +28,7 @@ export function SignInForm() {
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
-      nombre: "",
+      correo_electronico: "",
       password: "",
     },
   });
@@ -55,15 +56,20 @@ export function SignInForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
+      <h1 className="text-3xl font-bold text-white">Log In</h1>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FormField
           control={form.control}
-          name="nombre"
+          name="correo_electronico"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nombre</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">Correo electrónico</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" autoComplete="nombre" {...field} />
+                <Input
+                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Correo electrónico"
+                  autoComplete="correo_electronico" {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,11 +80,12 @@ export function SignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">Contraseña</FormLabel>
               <FormControl>
                 <Input
+                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   autoComplete="current-password"
-                  placeholder="****"
+                  placeholder="Contraseña"
                   type="password"
                   {...field}
                 />
@@ -87,12 +94,25 @@ export function SignInForm() {
             </FormItem>
           )}
         />
-        <FormButton
-          isPending={isPending}
-          variant="default"
-          defaultText="Sign in"
-          pendingText="Signing in..."
-        />
+        <div className="flex justify-end">
+          <Link href="#" className="text-sm text-white hover:underline">
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
+        <div>
+          <FormButton
+            isPending={isPending}
+            variant="default"
+            defaultText="Log in"
+            pendingText="Loging in..."
+          />
+        </div>
+        <p className="text-sm text-white">
+          No tienes una cuenta?{" "}
+          <Link href="/sign-up" className="font-medium text-white hover:underline">
+            Regístrate
+          </Link>
+        </p>
       </form>
     </Form>
   );
