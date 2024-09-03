@@ -61,7 +61,7 @@ export function SignUpForm() {
   return (
     <Form {...form}>
       <h1 className="text-3xl font-bold text-white">Sign Up</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
           control={form.control}
           name="nombre"
