@@ -10,10 +10,7 @@ export default async function SignInPage() {
   }
 
   return (
-    <div className="w-full max-w-xl space-y-8 rounded-lg bg-white p-6 shadow dark:bg-gray-800 sm:p-8 mx-2">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-        Sign in to your account
-      </h2>
+    <div className="flex flex-col items-center justify-center space-y-10 rounded-lg bg-[#1c1b2a] p-6">
       <SignInForm />
     </div>
   );
