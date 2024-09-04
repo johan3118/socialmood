@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation";
 import FormButton from "@/components/(socialmood)/FormButton";
 import { useState } from "react";
 import Link from 'next/link'
+import Image from "next/image";
+
 
 export function SignInForm() {
   const [isPending, setIsPending] = useState(false);
@@ -56,8 +58,9 @@ export function SignInForm() {
 
   return (
     <Form {...form}>
+      <Image className="" src={"/socialmood-logo.svg"} width={163} height={70} alt={""} />
       <h1 className="text-3xl font-bold text-white">Log In</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full">
         <FormField
           control={form.control}
           name="correo_electronico"
@@ -95,7 +98,7 @@ export function SignInForm() {
           )}
         />
         <div className="flex justify-end">
-          <Link href="#" className="text-sm text-white hover:underline">
+          <Link href="#" className="text-sm text-white hover:underline text-[#FFAAE3]">
             ¿Olvidaste tu contraseña?
           </Link>
         </div>
@@ -107,7 +110,7 @@ export function SignInForm() {
             pendingText="Loging in..."
           />
         </div>
-        <p className="text-sm text-white">
+        <p className="text-sm text-white ">
           No tienes una cuenta?{" "}
           <Link href="/sign-up" className="font-medium text-white hover:underline">
             Regístrate
