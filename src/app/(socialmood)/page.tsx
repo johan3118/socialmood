@@ -33,11 +33,11 @@ export default async function Home() {
           </p>
           <div className="flex items-center space-x-2 mt-5">
             <Link href={"/sign-up"}>
-              <Button variant={"outline"}>Sign up</Button>
+              <Button variant={"default"}>Sign up</Button>
             </Link>
             <p className="text-white text-xs">or</p>
             <Link href={"/sign-in"}>
-              <Button variant={"outline"}>Sign in</Button>
+              <Button variant={"default"}>Sign in</Button>
             </Link>
           </div>
         </div>

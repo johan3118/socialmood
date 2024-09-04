@@ -5,26 +5,28 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-slate-300",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 border border-[rgba(255,255,255,0.20)] shadow-[0px_4px_26px_0px_#00000017] hover:scale-[102%]",
   {
     variants: {
       variant: {
         default:
-          "bg-slate-900 text-slate-50 shadow hover:bg-slate-900/90 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90",
-        destructive:
-          "bg-red-500 text-slate-50 shadow-sm hover:bg-red-500/90 dark:bg-red-900 dark:text-slate-50 dark:hover:bg-red-900/90",
-        outline:
-          "border border-slate-200 bg-white shadow-sm hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50",
-        secondary:
-          "bg-slate-100 text-slate-900 shadow-sm hover:bg-slate-100/80 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-800/80",
-        ghost:
-          "hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50",
+          "bg-[linear-gradient(106.25deg,_#FFFFFF_-272.33%,_#D24EA6_92.58%)] text-slate-50 shadow transition-transform hover:shadow-lg",
+        blue: "bg-[linear-gradient(106.25deg,_#FFFFFF_-272.33%,_#2046E1_92.58%)] text-slate-50 shadow transition-transform hover:shadow-lg",
+        green:
+          "bg-[linear-gradient(106.25deg,_#FFFFFF_-272.33%,_#30BD92_92.58%)] text-slate-50 shadow transition-transform hover:shadow-lg",
+        yellow:
+          "bg-[linear-gradient(106.25deg,_#FFFFFF_-272.33%,_#FCC327_92.58%)] text-slate-50 shadow transition-transform hover:shadow-lg",
+        orange:
+          "bg-[linear-gradient(106.25deg,_#FFFFFF_-272.33%,_#F86A3A_92.58%)] text-slate-50 shadow transition-transform hover:shadow-lg",
         link: "text-slate-900 underline-offset-4 hover:underline dark:text-slate-50",
       },
       size: {
-        default: "h-9 px-4 py-2",
+        default: "h-9 px-14 py-4",
+        defaultBold: "h-9 px-12 py-4 font-bold",
         sm: "h-8 rounded-md px-3 text-xs",
+        smBold: "h-8 rounded-md px-3 text-xs font-bold",
         lg: "h-10 rounded-md px-8",
+        lgBold: "h-10 rounded-md px-8 font-bold",
         icon: "h-9 w-9",
       },
     },
