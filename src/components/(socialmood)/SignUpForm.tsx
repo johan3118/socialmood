@@ -64,7 +64,7 @@ export function SignUpForm() {
     <Form {...form}>
       <Image className="" src={"/socialmood-logo.svg"} width={163} height={70} alt={""} />
       <h1 className="text-3xl font-bold text-white">Sign Up</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full px-20 py-5">
         <FormField
           control={form.control}
           name="nombre"
@@ -185,12 +185,15 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
+
         <FormButton
           isPending={isPending}
           variant="default"
           defaultText="Sign up"
           pendingText="Signing up..."
         />
+
+
         <br />
         <p className="text-sm text-white text-center">
           Tienes una cuenta?{" "}
