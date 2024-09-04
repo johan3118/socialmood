@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FormButton from "@/components/(socialmood)/FormButton";
 import Link from 'next/link'
+import Image from "next/image";
+
 
 export function SignUpForm() {
   const [isPending, setIsPending] = useState(false);
@@ -60,8 +62,9 @@ export function SignUpForm() {
   }
   return (
     <Form {...form}>
+      <Image className="" src={"/socialmood-logo.svg"} width={163} height={70} alt={""} />
       <h1 className="text-3xl font-bold text-white">Sign Up</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
         <FormField
           control={form.control}
           name="nombre"
@@ -70,7 +73,10 @@ export function SignUpForm() {
               <FormLabel className="block text-sm font-medium text-white">Nombre</FormLabel>
               <FormControl>
                 <Input
-                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 
+                  rounded-[15px] 
+                  focus:outline-none focus:ring-2 focus:ring-primary 
+                  bg-white/40 text-white"
                   autoComplete="nombre" {...field} />
               </FormControl>
               <FormMessage />
@@ -85,7 +91,10 @@ export function SignUpForm() {
               <FormLabel className="block text-sm font-medium text-white">Apellido</FormLabel>
               <FormControl>
                 <Input
-                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 
+                  rounded-[15px] 
+                  focus:outline-none focus:ring-2 focus:ring-primary 
+                  bg-white/40 text-white"
                   autoComplete="apellido"
                   {...field}
                 />
@@ -102,7 +111,10 @@ export function SignUpForm() {
               <FormLabel className="block text-sm font-medium text-white">Dirección</FormLabel>
               <FormControl>
                 <Input
-                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 
+                  rounded-[15px] 
+                  focus:outline-none focus:ring-2 focus:ring-primary 
+                  bg-white/40 text-white"
                   autoComplete="direccion"
                   {...field}
                 />
@@ -119,7 +131,10 @@ export function SignUpForm() {
               <FormLabel className="block text-sm font-medium text-white">Correo electrónico</FormLabel>
               <FormControl>
                 <Input
-                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 
+                  rounded-[15px] 
+                  focus:outline-none focus:ring-2 focus:ring-primary 
+                  bg-white/40 text-white"
                   autoComplete="correo_electronico"
                   {...field}
                 />
@@ -136,7 +151,10 @@ export function SignUpForm() {
               <FormLabel className="block text-sm font-medium text-white">Contraseña</FormLabel>
               <FormControl>
                 <Input
-                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 
+                  rounded-[15px] 
+                  focus:outline-none focus:ring-2 focus:ring-primary 
+                  bg-white/40 text-white"
                   autoComplete="current-password"
                   type="password"
                   {...field}
@@ -154,7 +172,10 @@ export function SignUpForm() {
               <FormLabel className="block text-sm font-medium text-white">Confirmar contraseña</FormLabel>
               <FormControl>
                 <Input
-                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 
+                  rounded-[15px] 
+                  focus:outline-none focus:ring-2 focus:ring-primary 
+                  bg-white/40 text-white"
                   autoComplete="current-password"
                   type="password"
                   {...field}
@@ -171,7 +192,7 @@ export function SignUpForm() {
           pendingText="Signing up..."
         />
         <br />
-        <p className="text-sm text-white">
+        <p className="text-sm text-white text-center">
           Tienes una cuenta?{" "}
           <Link href="/sign-in" className="font-medium text-white hover:underline">
             Log In

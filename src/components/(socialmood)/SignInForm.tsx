@@ -69,8 +69,10 @@ export function SignInForm() {
               <FormLabel className="block text-sm font-medium text-white">Correo electrónico</FormLabel>
               <FormControl>
                 <Input
-                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Correo electrónico"
+                  className="w-full px-3 py-2 
+                            rounded-[15px] 
+                            focus:outline-none focus:ring-2 focus:ring-primary 
+                            bg-white/40 text-white"
                   autoComplete="correo_electronico" {...field}
                 />
               </FormControl>
@@ -86,9 +88,11 @@ export function SignInForm() {
               <FormLabel className="block text-sm font-medium text-white">Contraseña</FormLabel>
               <FormControl>
                 <Input
-                  className="w-full px-3 py-2 text-gray-900 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 
+                            rounded-[15px] 
+                            focus:outline-none focus:ring-2 focus:ring-primary 
+                            bg-white/40 text-white"
                   autoComplete="current-password"
-                  placeholder="Contraseña"
                   type="password"
                   {...field}
                 />
@@ -110,7 +114,7 @@ export function SignInForm() {
             pendingText="Loging in..."
           />
         </div>
-        <p className="text-sm text-white ">
+        <p className="text-sm text-white text-center">
           No tienes una cuenta?{" "}
           <Link href="/sign-up" className="font-medium text-white hover:underline">
             Regístrate
