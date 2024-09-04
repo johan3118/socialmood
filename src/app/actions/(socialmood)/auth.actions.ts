@@ -30,6 +30,18 @@ export const signUp = async (values: {
   let userId: number;
   // Insert the user into the database
   try {
+    // Find the user in the database
+    const existingUser = await db.query.usuariosTable.findFirst({
+      where: (table) => and(eq(table.correo_electronico, values.correo_electronico)),
+    });
+
+    // If the user is not found, return an error
+    if (existingUser) {
+      return {
+        error: "Email already taken",
+      };
+    }
+    
     const newUser = await db
       .insert(usuariosTable)
       .values({
@@ -46,7 +58,7 @@ export const signUp = async (values: {
         username: usuariosTable.nombre,
       });
 
-      userId = newUser[0].id;
+    userId = newUser[0].id;
 
     // Create a session for the user
     const session = await lucia.createSession(userId, {
