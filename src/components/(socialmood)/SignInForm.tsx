@@ -101,11 +101,6 @@ export function SignInForm() {
             </FormItem>
           )}
         />
-        <div className="flex justify-end">
-          <Link href="#" className="text-sm text-white hover:underline text-[#FFAAE3]">
-            ¿Olvidaste tu contraseña?
-          </Link>
-        </div>
         <div>
           <FormButton
             isPending={isPending}
