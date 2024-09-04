@@ -60,7 +60,7 @@ export function SignInForm() {
     <Form {...form}>
       <Image className="" src={"/socialmood-logo.svg"} width={163} height={70} alt={""} />
       <h1 className="text-3xl font-bold text-white">Log In</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full px-20 py-5">
         <FormField
           control={form.control}
           name="correo_electronico"
@@ -72,7 +72,7 @@ export function SignInForm() {
                   className="w-full px-3 py-2 
                             rounded-[15px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
-                            bg-white/40 text-white"
+                            bg-white/40 text-white "
                   autoComplete="correo_electronico" {...field}
                 />
               </FormControl>
