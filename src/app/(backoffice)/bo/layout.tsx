@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en" className={rubik.className}>
       <head />
       <body>
-        <main className="bg-black/[0.96] antialiased bg-grid-white/[0.02] min-h-screen flex items-center justify-center px-2">
+        <main className="bg-[#A9A0B4] antialiased bg-grid-white/[0.02] min-h-screen flex items-center justify-center px-2">
           {children}
         </main>
         <Toaster />
