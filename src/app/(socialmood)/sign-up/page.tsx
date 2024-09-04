@@ -15,7 +15,7 @@ export default async function SignUpPage() {
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
                       flex flex-col items-center justify-center 
                       p-10 z-10 w-[600px]
-                      bg-gradient-to-b from-white/30 backdrop-blur-sm drop-shadow-xl
+                      bg-gradient-to-b from-white/20 via-white/10 to-white/5 backdrop-blur-lg drop-shadow-xl
                       border border-white/80 rounded-[50px]"
       >
         <SignUpForm />
