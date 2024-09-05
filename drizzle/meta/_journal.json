@@ -29,6 +29,13 @@
       "when": 1725495941813,
       "tag": "0005_safe_jack_power",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1725563512641,
+      "tag": "0006_regular_zodiak",
+      "breakpoints": true
     }
   ]
 }

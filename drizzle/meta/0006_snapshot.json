@@ -1,8 +1,8 @@
 {
-  "version": "5",
+  "version": "6",
   "dialect": "sqlite",
-  "id": "9b67ee7e-a2ca-4656-8708-b96f5e342e41",
-  "prevId": "f15eded3-4364-492a-b3fd-175c3c3fde59",
+  "id": "9863bbc9-df58-4ff1-9e95-66dd636413b7",
+  "prevId": "821cb9cb-556c-4357-a43d-ab534a58d682",
   "tables": {
     "categorias": {
       "name": "categorias",
@@ -723,6 +723,91 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "oauth_account": {
+      "name": "oauth_account",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "id_usuario": {
+          "name": "id_usuario",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_proveedor_autenticacion": {
+          "name": "id_proveedor_autenticacion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "codigo_usuario_proveedor": {
+          "name": "codigo_usuario_proveedor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "token_acceso": {
+          "name": "token_acceso",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "token_refresh": {
+          "name": "token_refresh",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expira": {
+          "name": "expira",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "oauth_account_id_usuario_usuarios_id_fk": {
+          "name": "oauth_account_id_usuario_usuarios_id_fk",
+          "tableFrom": "oauth_account",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "id_usuario"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "oauth_account_id_proveedor_autenticacion_proveedores_autenticacion_id_fk": {
+          "name": "oauth_account_id_proveedor_autenticacion_proveedores_autenticacion_id_fk",
+          "tableFrom": "oauth_account",
+          "tableTo": "proveedores_autenticacion",
+          "columnsFrom": [
+            "id_proveedor_autenticacion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "planes": {
       "name": "planes",
       "columns": {
@@ -788,6 +873,13 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "paypal_plan_id": {
+          "name": "paypal_plan_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -795,6 +887,13 @@
           "name": "planes_nombre_unique",
           "columns": [
             "nombre"
+          ],
+          "isUnique": true
+        },
+        "planes_paypal_plan_id_unique": {
+          "name": "planes_paypal_plan_id_unique",
+          "columns": [
+            "paypal_plan_id"
           ],
           "isUnique": true
         }
@@ -1074,7 +1173,7 @@
         },
         "usuario_id": {
           "name": "usuario_id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1156,8 +1255,8 @@
       "compositePrimaryKeys": {
         "subcategorias_reglas_id_subcategoria_id_regla_pk": {
           "columns": [
-            "id_regla",
-            "id_subcategoria"
+            "id_subcategoria",
+            "id_regla"
           ],
           "name": "subcategorias_reglas_id_subcategoria_id_regla_pk"
         }
@@ -1533,8 +1632,8 @@
       "compositePrimaryKeys": {
         "usuarios_subscripciones_id_usuario_id_subscripcion_pk": {
           "columns": [
-            "id_subscripcion",
-            "id_usuario"
+            "id_usuario",
+            "id_subscripcion"
           ],
           "name": "usuarios_subscripciones_id_usuario_id_subscripcion_pk"
         }
@@ -1645,9 +1744,10 @@
   "enums": {},
   "_meta": {
     "schemas": {},
-    "tables": {
-      "\"session\"": "\"sesiones\""
-    },
+    "tables": {},
     "columns": {}
+  },
+  "internal": {
+    "indexes": {}
   }
 }

@@ -24,3 +24,32 @@ export const SignInSchema = z.object({
     .string()
     .min(8, { message: "Password must be at least 8 characters long" }),
 });
+
+export type VariantType =
+  | "default"
+  | "blue"
+  | "green"
+  | "yellow"
+  | "orange"
+  | "google"
+  | "angry"
+  | "link"
+  | null
+  | undefined;
+
+export type SizeType =
+  | "default"
+  | "defaultBold"
+  | "sm"
+  | "smBold"
+  | "lg"
+  | "lgBold"
+  | "icon"
+  | "gg"
+  | "angry"
+  | null
+  | undefined;
+
+export type IconType = "ig" | "fb" | "gg" | "ag" | "angry";
+
+export type ButtonType = "button" | "submit" | "reset";
