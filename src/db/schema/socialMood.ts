@@ -118,6 +118,7 @@ export const planesTable = sqliteTable("planes", {
   descripcion: text("descripcion"),
   id_estado_plan: integer("id_estado_plan").notNull().references(() => estadosPlanTable.id),
   id_tipo_facturacion: integer("id_tipo_facturacion").notNull().references(() => tiposFacturacionTable.id),
+  paypal_plan_id: text("paypal_plan_id").notNull().unique()
 });
 
 // Tabla Proveedores_Autenticacion
