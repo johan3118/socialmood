@@ -8,6 +8,14 @@ import GgIcon from "./ggIcon";
 import AngryIcon from "./angryIcon";
 import { VariantType, SizeType, IconType, ButtonType } from "@/types";
 
+// Función utilitaria para agregar !important a cada regla de estilo en customStyle
+const addImportantToStyles = (styles: string) => {
+  return styles
+    .split(" ")
+    .map((style) => `${style} !important`)
+    .join(" ");
+};
+
 export default function SocialButton({
   variant = "default",
   pendingText,
@@ -17,19 +25,27 @@ export default function SocialButton({
   size = "default",
   type,
   icon,
+  customStyle,
 }: {
   variant: VariantType;
+  customStyle?: string;
   pendingText?: string;
   defaultText: string;
   isPending?: boolean;
   size?: SizeType;
-  icon: IconType;
+  icon?: IconType;
   type?: ButtonType;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { pending } = useFormStatus();
+
+  const importantCustomStyle = customStyle
+    ? addImportantToStyles(customStyle)
+    : "";
+
   return (
     <Button
+      className={importantCustomStyle}
       variant={variant}
       size={size}
       type={type}
@@ -42,8 +58,10 @@ export default function SocialButton({
         <GgIcon />
       ) : icon === "fb" ? (
         <FbIcon />
-      ) : (
+      ) : icon === "angry" ? (
         <AngryIcon />
+      ) : (
+        ""
       )}
       {pending || isPending ? pendingText : defaultText}
     </Button>
