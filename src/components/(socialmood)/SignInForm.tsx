@@ -22,6 +22,7 @@ import FormButton from "@/components/(socialmood)/FormButton";
 import { useState } from "react";
 import Link from 'next/link'
 import Image from "next/image";
+import SocialButton from "./SocialButton";
 
 
 export function SignInForm() {
@@ -102,11 +103,24 @@ export function SignInForm() {
           )}
         />
         <div>
-          <FormButton
+          <SocialButton
+            customStyle="w-full"
             isPending={isPending}
             variant="default"
             defaultText="Log in"
             pendingText="Loging in..."
+            type="submit"
+          />
+        </div>
+        <div>
+          <SocialButton
+            customStyle="w-full"
+            isPending={isPending}
+            variant="google"
+            defaultText="Inicia sesión con Google"
+            pendingText="Signing in..."
+            type="button"
+            icon="gg"
           />
         </div>
         <p className="text-sm text-white text-center">

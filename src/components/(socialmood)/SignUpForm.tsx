@@ -21,6 +21,7 @@ import { useState } from "react";
 import FormButton from "@/components/(socialmood)/FormButton";
 import Link from 'next/link'
 import Image from "next/image";
+import SocialButton from "./SocialButton";
 
 
 export function SignUpForm() {
@@ -64,7 +65,7 @@ export function SignUpForm() {
     <Form {...form}>
       <Image className="" src={"/socialmood-logo.svg"} width={163} height={70} alt={""} />
       <h1 className="text-3xl font-bold text-white">Sign Up</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full px-20 py-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full px-20">
         <FormField
           control={form.control}
           name="nombre"
@@ -185,16 +186,27 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
-
-        <FormButton
-          isPending={isPending}
-          variant="default"
-          defaultText="Sign up"
-          pendingText="Signing up..."
-        />
-
-
-        <br />
+        <div>
+          <SocialButton
+            customStyle="w-full"
+            isPending={isPending}
+            variant="default"
+            defaultText="Sign up"
+            pendingText="Signing up..."
+            type="submit"
+          />
+        </div>
+        <div>
+          <SocialButton
+            customStyle="w-full"
+            isPending={isPending}
+            variant="google"
+            defaultText="Inicia sesión con Google"
+            pendingText="Signing in..."
+            type="button"
+            icon="gg"
+          />
+        </div>
         <p className="text-sm text-white text-center">
           Tienes una cuenta?{" "}
           <Link href="/sign-in" className="font-medium text-white hover:underline">
