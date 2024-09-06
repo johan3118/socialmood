@@ -29,6 +29,7 @@ export const signUp = async (values: {
   // Generate a random ID for the user
   let userId: number;
   // Insert the user into the database
+
   try {
     // Find the user in the database
     const existingUser = await db.query.usuariosTable.findFirst({

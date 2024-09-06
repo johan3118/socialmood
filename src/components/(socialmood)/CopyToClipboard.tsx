@@ -29,7 +29,7 @@ export const CopyToClipboard = ({ text }: { text: string }) => {
         value={text}
         className="bg-slate-300 text-muted-foreground"
       />
-      <Button size="icon" variant={"outline"} onClick={() => copyToClipboard()}>
+      <Button size="icon" variant={"default"} onClick={() => copyToClipboard()}>
         {copied ? (
           <CheckIcon
             className={cn(

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Ubuntu, Inter, Poppins } from "next/font/google";
+import { Ubuntu, Inter, Poppins, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
-const rubik = Ubuntu({
+const rubik = Montserrat({
   style: "normal",
   weight: ["400", "500", "700"],
   display: "swap",

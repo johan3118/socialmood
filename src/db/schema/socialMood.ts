@@ -118,6 +118,7 @@ export const planesTable = sqliteTable("planes", {
   descripcion: text("descripcion"),
   id_estado_plan: integer("id_estado_plan").notNull().references(() => estadosPlanTable.id),
   id_tipo_facturacion: integer("id_tipo_facturacion").notNull().references(() => tiposFacturacionTable.id),
+  paypal_plan_id: text("paypal_plan_id").notNull().unique()
 });
 
 // Tabla Proveedores_Autenticacion
@@ -227,3 +228,18 @@ export const usuariosSubscripcionesTable = sqliteTable("usuarios_subscripciones"
 }, (table) => ({
   pk: primaryKey({ columns: [table.id_usuario, table.id_subscripcion] })
 }));
+
+// Tabla OAuth_Account
+export const oauthAccountTable = sqliteTable("oauth_account", {
+  id: integer("id", { mode: 'number' }).notNull().primaryKey({ autoIncrement: true }),
+  idUsuario: integer("id_usuario")
+    .notNull()
+    .references(() => usuariosTable.id), // Relación con tabla usuarios
+  idProveedorAutenticacion: integer("id_proveedor_autenticacion")
+    .notNull()
+    .references(() => proveedoresAutenticacionTable.id), // Relación con tabla proveedoresAutenticacion
+  codigoUsuarioProveedor: text("codigo_usuario_proveedor").notNull(),
+  tokenAcceso: text("token_acceso").notNull(),
+  tokenRefresh: text("token_refresh").notNull(),
+  expira: integer("expira").notNull(),
+});

@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
 
 export default function FormButton({
-  variant = "outline",
+  variant = "default",
   pendingText,
   defaultText,
   isPending,
 }: {
-  variant: "outline" | "default";
+  variant: "default";
   pendingText: string;
   defaultText: string;
   isPending?: boolean;
