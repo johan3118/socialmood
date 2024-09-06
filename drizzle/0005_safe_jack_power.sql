@@ -106,6 +106,7 @@ CREATE TABLE `planes` (
 	`descripcion` text,
 	`id_estado_plan` integer NOT NULL,
 	`id_tipo_facturacion` integer NOT NULL,
+	`paypal_plan_id` text NOT NULL,
 	FOREIGN KEY (`id_estado_plan`) REFERENCES `estados_plan`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`id_tipo_facturacion`) REFERENCES `tipos_facturacion`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -139,10 +140,17 @@ CREATE TABLE `reglas` (
 	FOREIGN KEY (`id_regla_padre`) REFERENCES `reglas`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
+CREATE TABLE `sesiones` (
+	`id` text PRIMARY KEY NOT NULL,
+	`usuario_id` integer NOT NULL,
+	`expira` integer NOT NULL,
+	FOREIGN KEY (`usuario_id`) REFERENCES `usuarios`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
 CREATE TABLE `subcategorias_reglas` (
 	`id_subcategoria` integer NOT NULL,
 	`id_regla` integer NOT NULL,
-	PRIMARY KEY(`id_regla`, `id_subcategoria`),
+	PRIMARY KEY(`id_subcategoria`, `id_regla`),
 	FOREIGN KEY (`id_subcategoria`) REFERENCES `subcategorias`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`id_regla`) REFERENCES `reglas`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -195,7 +203,7 @@ CREATE TABLE `tipos_usuario` (
 CREATE TABLE `usuarios_subscripciones` (
 	`id_usuario` integer NOT NULL,
 	`id_subscripcion` integer NOT NULL,
-	PRIMARY KEY(`id_subscripcion`, `id_usuario`),
+	PRIMARY KEY(`id_usuario`, `id_subscripcion`),
 	FOREIGN KEY (`id_usuario`) REFERENCES `usuarios`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`id_subscripcion`) REFERENCES `subscripciones`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -213,14 +221,6 @@ CREATE TABLE `usuarios` (
 	FOREIGN KEY (`id_tipo_usuario`) REFERENCES `tipos_usuario`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-DROP TABLE `user`;--> statement-breakpoint
-/*
- SQLite does not support "Dropping foreign key" out of the box, we do not generate automatic migration for that, so it has to be done manually
- Please refer to: https://www.techonthenet.com/sqlite/tables/alter_table.php
-                  https://www.sqlite.org/lang_altertable.html
-
- Due to that we don't generate migration automatically and it has to be done manually
-*/--> statement-breakpoint
 CREATE UNIQUE INDEX `categorias_nombre_unique` ON `categorias` (`nombre`);--> statement-breakpoint
 CREATE UNIQUE INDEX `colores_nombre_unique` ON `colores` (`nombre`);--> statement-breakpoint
 CREATE UNIQUE INDEX `colores_codigo_hex_unique` ON `colores` (`codigo_hex`);--> statement-breakpoint
@@ -235,6 +235,7 @@ CREATE UNIQUE INDEX `invitaciones_subscripcion_codigo_unique` ON `invitaciones_s
 CREATE UNIQUE INDEX `metodos_pago_nombre_unique` ON `metodos_pago` (`nombre`);--> statement-breakpoint
 CREATE UNIQUE INDEX `metodos_pago_enlace_plataforma_unique` ON `metodos_pago` (`enlace_plataforma`);--> statement-breakpoint
 CREATE UNIQUE INDEX `planes_nombre_unique` ON `planes` (`nombre`);--> statement-breakpoint
+CREATE UNIQUE INDEX `planes_paypal_plan_id_unique` ON `planes` (`paypal_plan_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `proveedores_autenticacion_nombre_unique` ON `proveedores_autenticacion` (`nombre`);--> statement-breakpoint
 CREATE UNIQUE INDEX `proveedores_autenticacion_enlace_unique` ON `proveedores_autenticacion` (`enlace`);--> statement-breakpoint
 CREATE UNIQUE INDEX `redes_sociales_nombre_unique` ON `redes_sociales` (`nombre`);--> statement-breakpoint
@@ -244,11 +245,4 @@ CREATE UNIQUE INDEX `subcategorias_nombre_unique` ON `subcategorias` (`nombre`);
 CREATE UNIQUE INDEX `tipos_facturacion_nombre_unique` ON `tipos_facturacion` (`nombre`);--> statement-breakpoint
 CREATE UNIQUE INDEX `tipos_regla_nombre_unique` ON `tipos_regla` (`nombre`);--> statement-breakpoint
 CREATE UNIQUE INDEX `tipos_usuario_nombre_unique` ON `tipos_usuario` (`nombre`);--> statement-breakpoint
-CREATE UNIQUE INDEX `usuarios_correo_electronico_unique` ON `usuarios` (`correo_electronico`);--> statement-breakpoint
-/*
- SQLite does not support "Creating foreign key on existing column" out of the box, we do not generate automatic migration for that, so it has to be done manually
- Please refer to: https://www.techonthenet.com/sqlite/tables/alter_table.php
-                  https://www.sqlite.org/lang_altertable.html
-
- Due to that we don't generate migration automatically and it has to be done manually
-*/
+CREATE UNIQUE INDEX `usuarios_correo_electronico_unique` ON `usuarios` (`correo_electronico`);

@@ -44,3 +44,32 @@ export const SignInSchema = z.object({
     .min(8, { message: "La contraseña debe tener como mínimo 8 caracteres" })
     .max(20, { message: "El máximo de caracteres es 20" }),
 });
+
+export type VariantType =
+  | "default"
+  | "blue"
+  | "green"
+  | "yellow"
+  | "orange"
+  | "google"
+  | "angry"
+  | "link"
+  | null
+  | undefined;
+
+export type SizeType =
+  | "default"
+  | "defaultBold"
+  | "sm"
+  | "smBold"
+  | "lg"
+  | "lgBold"
+  | "icon"
+  | "gg"
+  | "angry"
+  | null
+  | undefined;
+
+export type IconType = "ig" | "fb" | "gg" | "ag" | "angry";
+
+export type ButtonType = "button" | "submit" | "reset";
