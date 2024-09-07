@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignInSchema } from "../../types";
-import { signIn } from "@/app/actions/(socialmood)/auth.actions";
+import { createGoogleAuthotizationURL, signIn } from "@/app/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import FormButton from "@/components/(socialmood)/FormButton";
@@ -55,6 +55,23 @@ export function SignInForm() {
         router.push("/profile");
       }, 5000);
     }
+  }
+
+  const onGoogleSignInClicked = async () => {
+
+    setIsPending(true);
+    const res = await createGoogleAuthotizationURL();
+    if (res.error) {
+      toast({
+        variant: "destructive",
+        description: res.error,
+      });
+    } else if (res.success) {
+      window.location.href = res.data.toString();
+    }
+
+    setIsPending(false);
+
   }
 
   return (
@@ -121,6 +138,7 @@ export function SignInForm() {
             pendingText="Signing in..."
             type="button"
             icon="gg"
+            onClick={onGoogleSignInClicked}
           />
         </div>
         <p className="text-sm text-white text-center">

@@ -182,21 +182,18 @@ export const createGoogleAuthotizationURL = async () => {
     const state = generateState();
     const codeVerifier = generateCodeVerifier();
   
-    cookies().set("code_verifier", codeVerifier, {
+    cookies().set("codeVerifier", codeVerifier, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
     });
 
     cookies().set("state", state, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
     });
-  
-    const authorizationURL = await google.createAuthorizationURL(
-      state, codeVerifier
-    )
+
+
+    const scopes = ["openid", "profile", "email"]
+
+    const authorizationURL = await google.createAuthorizationURL(state, codeVerifier, { scopes });
   
     return {
       success: true,
