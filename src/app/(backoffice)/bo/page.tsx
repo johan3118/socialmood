@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Spotlight } from "@/components/(socialmood)/Spotlight";
+import { Spotlight } from "@/components/(backoffice)/Spotlight";
 import SocialButton from "@/components/(backoffice)/SocialButton";
 
 export default async function Home() {
