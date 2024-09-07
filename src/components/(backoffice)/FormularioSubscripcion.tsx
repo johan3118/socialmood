@@ -50,6 +50,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
   const [loading, setLoading] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   const handleSave = async () => {
     setLoading(true);
@@ -114,6 +115,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
       const errorMessage = error instanceof Error ? error.message : "Error desconocido.";
       console.error('Error al crear el plan de suscripción:', errorMessage);
       setToastMessage(`Ha ocurrido un error: ${errorMessage}`);
+      setIsError(true);
       setToastOpen(true);
 
     } finally {
@@ -174,10 +176,19 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
       </form>
 
       <Toast.Provider>
-        <Toast.Root open={toastOpen} onOpenChange={setToastOpen}>
-          <Toast.Title>{toastMessage}</Toast.Title>
+        <Toast.Root
+          open={toastOpen}
+          onOpenChange={setToastOpen}
+          className={`p-4 rounded-lg shadow-lg ${
+            isError ? "bg-red-500" : "bg-green-500"
+          } transition-opacity duration-300 ease-in-out text-white`}
+        >
+          <div className="flex items-center">
+            <span className="font-bold">{isError ? "Error" : "Éxito"}:</span>
+            <Toast.Title className="ml-2">{toastMessage}</Toast.Title>
+          </div>
         </Toast.Root>
-        <Toast.Viewport />
+        <Toast.Viewport className="fixed top-5 right-5 flex flex-col gap-2 p-6" />
       </Toast.Provider>
     </>
   );

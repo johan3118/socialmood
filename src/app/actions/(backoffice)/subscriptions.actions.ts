@@ -27,7 +27,7 @@ export const insertPlan = async (plan: {
         paypal_plan_id: plan.paypal_plan_id
       })
 
-      return;
+      return JSON.parse(JSON.stringify(insertedPlan));
     
     };
 
