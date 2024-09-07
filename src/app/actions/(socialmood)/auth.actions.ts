@@ -16,7 +16,8 @@ export const signUp = async (values: {
   apellido: string;
   direccion: string,
   correo_electronico: string,
-  password: string
+  password: string,
+  confirmPassword: string,
 }) => {
   // Check with Zod if the values are valid
   try {
