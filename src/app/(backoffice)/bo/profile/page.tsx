@@ -8,7 +8,7 @@ export default async function ProfilePage() {
   const { user } = await validateRequest();
 
   if (!user) {
-    return redirect("/");
+    return redirect("/bo");
   }
 
   return (

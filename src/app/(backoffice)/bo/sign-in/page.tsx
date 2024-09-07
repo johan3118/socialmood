@@ -7,7 +7,7 @@ export default async function SignInPage() {
   const { user } = await validateRequest();
 
   if (user) {
-    return redirect("/profile");
+    return redirect("/bo/profile");
   }
 
   return (

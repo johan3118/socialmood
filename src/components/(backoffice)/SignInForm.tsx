@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import FormButton from "@/components/(backoffice)/FormButton";
 import { useState } from "react";
 import Image from "next/image";
+import SocialButton from "./SocialButton";
 
 
 export function SignInForm() {
@@ -100,11 +101,12 @@ export function SignInForm() {
           )}
         />
         <div>
-          <FormButton
+          <SocialButton
             isPending={isPending}
             variant="default"
             defaultText="Log in"
             pendingText="Loging in..."
+            customStyle="w-full"
           />
         </div>
       </form>
