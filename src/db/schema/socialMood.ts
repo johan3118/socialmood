@@ -116,6 +116,7 @@ export const planesTable = sqliteTable("planes", {
   cantidad_usuarios_permitidos: integer("cantidad_usuarios_permitidos").notNull(),
   cantidad_cuentas_permitidas: integer("cantidad_cuentas_permitidas").notNull(),
   descripcion: text("descripcion"),
+  paypal_plan_id: text("paypal_plan_id").notNull(),
   id_estado_plan: integer("id_estado_plan").notNull().references(() => estadosPlanTable.id),
   id_tipo_facturacion: integer("id_tipo_facturacion").notNull().references(() => tiposFacturacionTable.id),
 });

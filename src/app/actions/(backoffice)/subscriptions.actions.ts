@@ -10,9 +10,10 @@ export const insertPlan = async (plan: {
     cantidad_cuentas_permitidas: number,
     descripcion: string,
     id_estado_plan: number,
-    id_tipo_facturacion: number
+    id_tipo_facturacion: number,
+    paypal_plan_id: string
   }) => {
-    return await db
+   const insertedPlan = await db
     .insert(planesTable)
     .values({
         nombre: plan.nombre,
@@ -22,6 +23,12 @@ export const insertPlan = async (plan: {
         cantidad_cuentas_permitidas: plan.cantidad_cuentas_permitidas,
         descripcion: plan.descripcion,
         id_estado_plan: plan.id_estado_plan,
-        id_tipo_facturacion: plan.id_tipo_facturacion})
-  };
+        id_tipo_facturacion: plan.id_tipo_facturacion,
+        paypal_plan_id: plan.paypal_plan_id
+      })
+
+      return;
+    
+    };
+
 

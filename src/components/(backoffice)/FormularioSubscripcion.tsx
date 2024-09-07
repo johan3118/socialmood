@@ -19,6 +19,27 @@ interface FormData {
   descripcion: string;
 }
 
+interface SubscriptionPlan {
+  id: string;
+  product_id: string;
+  name: string;
+  status: string;
+  description: string;
+  usage_type: string;
+  create_time: string;
+  links: Array<{
+      href: string;
+      rel: string;
+      method: string;
+      encType: string;
+  }>;
+  payment_preferences: {
+      auto_bill_outstanding: boolean;
+      setup_fee_failure_action: string;
+      payment_failure_threshold: number;
+  };
+}
+
 interface FormularioSubscripcionProps {
   formData: FormData;
   handleInputChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
@@ -34,10 +55,10 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
     setLoading(true);
     try {
       // Crear subscripción en PayPal
-      const accessToken = await getAccessToken();
+      const accessToken: string = await getAccessToken();
       
       const planData = {
-        product_id: "1725585294", // Usa el ID del producto adecuado
+        product_id: "1725734723", // Usa el ID del producto adecuado
         name: formData.nombre,
         description: formData.descripcion,
         status: "INACTIVE",
@@ -65,13 +86,11 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
         }
       };
 
-      console.log(typeof accessToken);
-
-      const subscriptionPlan = await createSubscriptionPlan(accessToken, planData);
+      const subscriptionPlan: SubscriptionPlan = await createSubscriptionPlan(accessToken, planData);
       console.log('Plan de suscripción creado:', subscriptionPlan);
 
       // Guardar el plan de suscripción en la base de datos
-      const idTipoFacturacion: number = formData.tipoFacturacion === "MONTH" ? 1 : 0;
+      const idTipoFacturacion: number = formData.tipoFacturacion === "MONTH" ? 1 : 2;
 
       await insertPlan({
         nombre: formData.nombre,
@@ -80,8 +99,9 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
         cantidad_usuarios_permitidos: parseInt(formData.usuarios),
         cantidad_cuentas_permitidas: parseInt(formData.redesSociales),
         descripcion: formData.descripcion,
-        id_estado_plan: 0, // INACTIVE
-        id_tipo_facturacion: idTipoFacturacion
+        id_estado_plan: 2, // INACTIVE
+        id_tipo_facturacion: idTipoFacturacion,
+        paypal_plan_id: subscriptionPlan.id,
       });
 
       // Mostrar toast de éxito
