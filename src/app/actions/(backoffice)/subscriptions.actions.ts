@@ -1,6 +1,7 @@
 "use server"
 import db from "@/db";
-import {planesTable} from "@/db/schema/socialMood";
+import {planesTable, tiposFacturacionTable, estadosPlanTable} from "@/db/schema/socialMood";
+import {eq} from "drizzle-orm";
 
 export const insertPlan = async (plan: {
     nombre: string,
@@ -30,5 +31,27 @@ export const insertPlan = async (plan: {
       return JSON.parse(JSON.stringify(insertedPlan));
     
     };
+
+export const selectAllPlans = async () => {
+  const allPlans = await db
+      .select({
+        planId: planesTable.id,
+        planNombre: planesTable.nombre,
+        costo: planesTable.costo,
+        cantidad_interacciones_mes: planesTable.cantidad_interacciones_mes,
+        cantidad_usuarios_permitidos: planesTable.cantidad_usuarios_permitidos,
+        cantidad_cuentas_permitidas: planesTable.cantidad_cuentas_permitidas,
+        estado_plan_nombre: estadosPlanTable.nombre,
+        tipo_facturacion_nombre: tiposFacturacionTable.nombre,
+        
+      })
+      .from(planesTable)
+      .innerJoin(estadosPlanTable, eq(planesTable.id_estado_plan, estadosPlanTable.id))
+      .innerJoin(tiposFacturacionTable, eq(planesTable.id_tipo_facturacion, tiposFacturacionTable.id))
+      .all();
+
+return JSON.parse(JSON.stringify(allPlans));
+  
+}
 
 
