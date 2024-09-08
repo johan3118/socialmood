@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import FormularioSubscripcion from "@/components/(backoffice)/FormularioSubscripcion";
 import VistaPreviaSubscripcion from "@/components/(backoffice)/VistaPreviaSubscripcion";
+import {useRouter} from "next/navigation"
 
 interface FormData {
   nombre: string;
@@ -16,14 +17,18 @@ interface FormData {
 }
 
 export default function CrearSubscripcionPage() {
+
+  const router = useRouter();
+
+
   const [formData, setFormData] = useState<FormData>({
     nombre: "Plan Básico",
-    tipoFacturacion: "Mensual",
+    tipoFacturacion: "MONTH",
     precio: "25",
     interacciones: "500",
     redesSociales: "3",
     usuarios: "1",
-    descripcion: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.",
+    descripcion: "Escribe tu descripcion aquí.",
   });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -41,11 +46,15 @@ export default function CrearSubscripcionPage() {
     }));
   };
 
+  const handleVolver = () => {
+    router.push("/bo/ListadoSubscripciones");
+  }
+
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen overflow-hidden">
       {/* Lado Izquierdo */}
-      <div className="flex-1 p-20">
-        <Button variant="ghost" className="mb-4">
+      <div className="flex-1 px-20 py-10">
+        <Button variant="ghost" className="mb-4" onClick={handleVolver}>
           <ChevronLeft className="mr-2 h-4 w-4" />
           Volver
         </Button>

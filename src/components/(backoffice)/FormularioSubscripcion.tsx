@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAccessToken, createSubscriptionPlan } from "@/app/services/paypalService";
 import { insertPlan } from "@/app/actions/(backoffice)/subscriptions.actions";
 import * as Toast from '@radix-ui/react-toast';
+import { useRouter } from "next/navigation";
 
 interface FormData {
   nombre: string;
@@ -51,6 +52,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const router = useRouter();
 
   const handleSave = async () => {
     setLoading(true);
@@ -108,6 +110,12 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
       // Mostrar toast de éxito
       setToastMessage("El plan de suscripción se ha creado correctamente.");
       setToastOpen(true);
+
+      setTimeout(() =>{
+        router.push("/bo/ListadoSubscripciones")
+      }, 2000)
+
+
 
     } catch (error) {
 
