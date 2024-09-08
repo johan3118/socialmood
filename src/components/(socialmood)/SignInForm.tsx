@@ -15,13 +15,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignInSchema } from "../../types";
-import { signIn } from "@/app/actions/(socialmood)/auth.actions";
+import { createGoogleAuthotizationURL, signIn } from "@/app/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import FormButton from "@/components/(socialmood)/FormButton";
 import { useState } from "react";
 import Link from 'next/link'
 import Image from "next/image";
+import SocialButton from "./SocialButton";
 
 
 export function SignInForm() {
@@ -54,6 +55,23 @@ export function SignInForm() {
         router.push("/profile");
       }, 5000);
     }
+  }
+
+  const onGoogleSignInClicked = async () => {
+
+    setIsPending(true);
+    const res = await createGoogleAuthotizationURL();
+    if (res.error) {
+      toast({
+        variant: "destructive",
+        description: res.error,
+      });
+    } else if (res.success) {
+      window.location.href = res.data.toString();
+    }
+
+    setIsPending(false);
+
   }
 
   return (
@@ -102,11 +120,25 @@ export function SignInForm() {
           )}
         />
         <div>
-          <FormButton
+          <SocialButton
+            customStyle="w-full"
             isPending={isPending}
             variant="default"
             defaultText="Log in"
             pendingText="Loging in..."
+            type="submit"
+          />
+        </div>
+        <div>
+          <SocialButton
+            customStyle="w-full"
+            isPending={isPending}
+            variant="google"
+            defaultText="Inicia sesión con Google"
+            pendingText="Signing in..."
+            type="button"
+            icon="gg"
+            onClick={onGoogleSignInClicked}
           />
         </div>
         <p className="text-sm text-white text-center">

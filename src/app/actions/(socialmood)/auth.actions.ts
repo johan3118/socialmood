@@ -8,13 +8,16 @@ import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
 import { and } from "drizzle-orm";
 import * as bcrypt from "bcryptjs"; // Import bcrypt
+import { google } from "@/lib/lucia/oauth";
+import { generateState, generateCodeVerifier } from "arctic";
 
 export const signUp = async (values: {
   nombre: string;
   apellido: string;
   direccion: string,
   correo_electronico: string,
-  password: string
+  password: string,
+  confirmPassword: string,
 }) => {
   // Check with Zod if the values are valid
   try {
@@ -42,7 +45,7 @@ export const signUp = async (values: {
         error: "Email already taken",
       };
     }
-    
+
     const newUser = await db
       .insert(usuariosTable)
       .values({
@@ -174,3 +177,33 @@ export const signOut = async () => {
     };
   }
 };
+
+export const createGoogleAuthotizationURL = async () => {
+  try{
+    const state = generateState();
+    const codeVerifier = generateCodeVerifier();
+  
+    cookies().set("codeVerifier", codeVerifier, {
+      httpOnly: true,
+    });
+
+    cookies().set("state", state, {
+      httpOnly: true,
+    });
+
+
+    const scopes = ["openid", "profile", "email"]
+
+    const authorizationURL = await google.createAuthorizationURL(state, codeVerifier, { scopes });
+  
+    return {
+      success: true,
+      data: authorizationURL
+    }
+  }
+  catch(error: any){
+    return {
+      error: error?.message
+    }
+  }
+}

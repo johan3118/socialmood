@@ -20,6 +20,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",
     "@tailwindcss/forms": "^0.5.7",
+    "arctic": "^1.9.2",
     "argon2": "^0.40.1",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",

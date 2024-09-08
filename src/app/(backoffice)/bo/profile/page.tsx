@@ -1,14 +1,13 @@
-import { Button } from "@/components/ui/button";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import { signOut } from "@/app/actions/(backoffice)/auth.actions";
 import { TargetIcon } from "@radix-ui/react-icons";
-import FormButton from "@/components/(backoffice)/FormButton";
+import SocialButton from "@/components/(backoffice)/SocialButton";
 export default async function ProfilePage() {
   const { user } = await validateRequest();
 
   if (!user) {
-    return redirect("/");
+    return redirect("/bo");
   }
 
   return (
@@ -23,8 +22,8 @@ export default async function ProfilePage() {
         </h1>
       </div>
       <form action={signOut}>
-        <FormButton
-          variant="outline"
+        <SocialButton
+          variant="default"
           defaultText="Sign out"
           pendingText="Signing out..."
         />
