@@ -22,11 +22,12 @@ export default async function ProfilePage() {
           Welcome {user.username}
         </h1>
       </div>
-      <form action={signOut}>
+      <form action={redirect("/get-sub")}>
         <SocialButton
+          type="submit"
           variant="default"
-          defaultText="Sign out"
-          pendingText="Signing out..."
+          defaultText="Get Subscription"
+          pendingText="Loading..."
         />
       </form>
     </main>

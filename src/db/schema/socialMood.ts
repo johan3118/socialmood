@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, primaryKey, foreignKey } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, primaryKey, foreignKey, unique } from "drizzle-orm/sqlite-core";
 
 export const sessionTable = sqliteTable("sesiones", {
   id: text("id").notNull().primaryKey(),
@@ -108,18 +108,25 @@ export const metodosPagoTable = sqliteTable("metodos_pago", {
 });
 
 // Tabla Planes
-export const planesTable = sqliteTable("planes", {
-  id: integer("id", { mode: 'number' }).notNull().primaryKey({ autoIncrement: true }),
-  nombre: text("nombre").notNull().unique(),
-  costo: integer("costo").notNull(),
-  cantidad_interacciones_mes: integer("cantidad_interacciones_mes").notNull(),
-  cantidad_usuarios_permitidos: integer("cantidad_usuarios_permitidos").notNull(),
-  cantidad_cuentas_permitidas: integer("cantidad_cuentas_permitidas").notNull(),
-  descripcion: text("descripcion"),
-  id_estado_plan: integer("id_estado_plan").notNull().references(() => estadosPlanTable.id),
-  id_tipo_facturacion: integer("id_tipo_facturacion").notNull().references(() => tiposFacturacionTable.id),
-  paypal_plan_id: text("paypal_plan_id").notNull().unique()
-});
+export const planesTable = sqliteTable(
+  "planes",
+  {
+    id: integer("id", { mode: "number" }).notNull().primaryKey({ autoIncrement: true }),
+    nombre: text("nombre").notNull(),
+    costo: integer("costo").notNull(),
+    cantidad_interacciones_mes: integer("cantidad_interacciones_mes").notNull(),
+    cantidad_usuarios_permitidos: integer("cantidad_usuarios_permitidos").notNull(),
+    cantidad_cuentas_permitidas: integer("cantidad_cuentas_permitidas").notNull(),
+    descripcion: text("descripcion"),
+    id_estado_plan: integer("id_estado_plan").notNull().references(() => estadosPlanTable.id),
+    id_tipo_facturacion: integer("id_tipo_facturacion").notNull().references(() => tiposFacturacionTable.id),
+    paypal_plan_id: text("paypal_plan_id").notNull(),
+  },
+  (table) => ({
+    uniqueKey: unique().on(table.nombre, table.paypal_plan_id), // Composite unique constraint
+  })
+);
+
 
 // Tabla Proveedores_Autenticacion
 export const proveedoresAutenticacionTable = sqliteTable("proveedores_autenticacion", {
