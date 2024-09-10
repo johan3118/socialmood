@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -23,10 +23,13 @@ export default function CrearSubscripcionPage() {
     interacciones: "500",
     redesSociales: "3",
     usuarios: "1",
-    descripcion: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.",
+    descripcion:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.",
   });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -45,13 +48,19 @@ export default function CrearSubscripcionPage() {
     <div className="flex min-h-screen">
       {/* Lado Izquierdo */}
       <div className="flex-1 p-20">
-        <Button variant="ghost" className="mb-4">
+        <Button className="mb-4">
           <ChevronLeft className="mr-2 h-4 w-4" />
           Volver
         </Button>
         <h1 className="text-3xl font-bold mb-2">Crear Subscripción</h1>
-        <p className="text-gray-500 mb-6">Ingrese los datos del plan de subscripción</p>
-        <FormularioSubscripcion formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} />
+        <p className="text-gray-500 mb-6">
+          Ingrese los datos del plan de subscripción
+        </p>
+        <FormularioSubscripcion
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSelectChange={handleSelectChange}
+        />
       </div>
 
       {/* Lado Derecho */}
