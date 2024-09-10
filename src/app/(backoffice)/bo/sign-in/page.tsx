@@ -1,4 +1,4 @@
-import { SignInForm } from "@/components/(backoffice)/SignInForm";
+import { SignInForm } from "@/components/(backoffice)/sign-in-form";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import Image from "next/image";

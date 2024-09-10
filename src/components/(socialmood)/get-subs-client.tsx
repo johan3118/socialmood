@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import ClientSubscription from "@/components/(socialmood)/ClientSubscription";
+import ClientSubscription from "@/components/(socialmood)/client-subscription";
 
 export default function GetSubscriptionClient({
   userid,

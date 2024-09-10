@@ -185,8 +185,7 @@ export const GET = async (req: NextRequest) => {
         sessionCookie.attributes
     );
 
-    return NextResponse.redirect(new URL("/profile", process.env.NEXT_PUBLIC_BASE_URL),
+    return NextResponse.redirect(new URL("/app", process.env.NEXT_PUBLIC_BASE_URL),
         { status: 302 }
     );
-
 }

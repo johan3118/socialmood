@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/checkButton";
 import { useFormStatus } from "react-dom";
 import IconContainer from "./check";
-import { VariantType, SizeType, IconType, ButtonType } from "@/types";
+import { ButtonType } from "@/types";
 
 // Función utilitaria para agregar !important a cada regla de estilo en customStyle
 const addImportantToStyles = (styles: string) => {

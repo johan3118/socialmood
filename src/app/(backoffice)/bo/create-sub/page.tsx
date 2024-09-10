@@ -2,8 +2,8 @@
 import React, { useState, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
-import FormularioSubscripcion from "@/components/(backoffice)/FormularioSubscripcion";
-import VistaPreviaSubscripcion from "@/components/(backoffice)/VistaPreviaSubscripcion";
+import FormularioSubscripcion from "@/components/(backoffice)/sub-form";
+import VistaPreviaSubscripcion from "@/components/(backoffice)/preview-subscription";
 
 interface FormData {
   nombre: string;

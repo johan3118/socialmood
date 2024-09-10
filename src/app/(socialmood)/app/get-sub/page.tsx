@@ -4,11 +4,11 @@ import basic from "/public/basic.png";
 import pro from "/public/pro.png";
 import premium from "/public/premium.png";
 import Image from "next/image";
-import BlurredContainer from "@/components/(socialmood)/BlurBackground";
-import HorizontalLine from "@/components/(socialmood)/horizontalLine";
+import BlurredContainer from "@/components/(socialmood)/blur-background";
+import HorizontalLine from "@/components/(socialmood)/horizontal-line";
 import IconContainer from "@/components/(socialmood)/check";
 import { getSubscriptionPlans } from "@/app/actions/(socialmood)/get-plans.actions";
-import SubscribeButton from "@/components/(socialmood)/SubscribeButton"; // Client-side component
+import SubscribeButton from "@/components/(socialmood)/subscribe-button"; // Client-side component
 import { getUserSubscription } from "@/app/actions/(socialmood)/get-plans.actions";
 
 export default async function GetSubscription() {

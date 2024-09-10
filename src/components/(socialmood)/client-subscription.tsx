@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import CheckSocialButton from "@/components/(socialmood)/CheckSocialButton";
-import BlurredContainer from "@/components/(socialmood)/BlurBackground";
-import HorizontalLine from "@/components/(socialmood)/horizontalLine";
-import PayPalButton from "@/components/(socialmood)/paypalButton";
+import CheckSocialButton from "@/components/(socialmood)/check-social-button";
+import BlurredContainer from "@/components/(socialmood)/blur-background";
+import HorizontalLine from "@/components/(socialmood)/horizontal-line";
+import PayPalButton from "@/components/(socialmood)/paypal-button";
 import basic from "/public/basic.png";
 import pro from "/public/pro.png";
 import premium from "/public/premium.png";

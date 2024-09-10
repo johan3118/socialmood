@@ -1,13 +1,13 @@
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Spotlight } from "@/components/(backoffice)/Spotlight";
-import SocialButton from "@/components/(backoffice)/SocialButton";
+import { Spotlight } from "@/components/(backoffice)/spotlight";
+import SocialButton from "@/components/(backoffice)/social-button";
 
 export default async function Home() {
   const { user } = await validateRequest();
   if (user) {
-    return redirect("/profile");
+    return redirect("/app/profile");
   }
 
   return (

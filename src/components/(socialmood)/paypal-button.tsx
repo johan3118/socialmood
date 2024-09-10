@@ -62,7 +62,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
               });
 
               if (response.success) {
-                router.push("/profile");
+                router.push("/app/profile");
               } else {
                 alert("Hubo un problema al procesar la suscripción.");
               }

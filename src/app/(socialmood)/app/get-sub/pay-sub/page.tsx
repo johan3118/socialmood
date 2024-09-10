@@ -4,7 +4,7 @@ import {
   getPlansByName,
   getPlanById,
 } from "@/app/actions/(socialmood)/get-plans.actions";
-import GetSubscriptionClient from "@/components/(socialmood)/GetSubsClient";
+import GetSubscriptionClient from "@/components/(socialmood)/get-subs-client";
 
 export default async function GetSubscription({
   searchParams,

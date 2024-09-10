@@ -2,9 +2,10 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useFormStatus } from "react-dom";
-import IgIcon from "./igIcon";
-import GgIcon from "./ggIcon";
-import AngryIcon from "./angryIcon";
+import FbIcon from "./fb-icon";
+import IgIcon from "./ig-icon";
+import GgIcon from "./gg-icon";
+import AngryIcon from "./angry-icon";
 import { VariantType, SizeType, IconType, ButtonType } from "@/types";
 
 // Función utilitaria para agregar !important a cada regla de estilo en customStyle
@@ -55,6 +56,8 @@ export default function SocialButton({
         <IgIcon />
       ) : icon === "gg" ? (
         <GgIcon />
+      ) : icon === "fb" ? (
+        <FbIcon />
       ) : icon === "angry" ? (
         <AngryIcon />
       ) : (

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { getAccessToken, createSubscriptionPlan } from "@/app/services/paypalService";
+import { getAccessToken, createSubscriptionPlan } from "@/app/services/paypal";
 import { insertPlan } from "@/app/actions/(backoffice)/subscriptions.actions";
 import * as Toast from '@radix-ui/react-toast';
 

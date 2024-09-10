@@ -1,7 +1,7 @@
 "use client"; // Client-side component
 
 import { useRouter } from "next/navigation";
-import SocialButton from "@/components/(socialmood)/SocialButton";
+import SocialButton from "@/components/(socialmood)/social-button";
 
 interface SubscribeButtonProps {
   planId: number;
@@ -23,7 +23,7 @@ export default function SubscribeButton({
   const router = useRouter();
 
   const handleSubscribeClick = () => {
-    router.push(`/get-sub/pay-sub?id=${planId}`);
+    router.push(`/app/get-sub/pay-sub?id=${planId}`);
   };
 
   return (

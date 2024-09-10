@@ -1,9 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
-import { signOut } from "@/app/actions/(socialmood)/auth.actions";
 import { TargetIcon } from "@radix-ui/react-icons";
-import SocialButton from "@/components/(socialmood)/SocialButton";
+import SocialButton from "@/components/(socialmood)/social-button";
 export default async function ProfilePage() {
   const { user } = await validateRequest();
 
@@ -22,7 +20,7 @@ export default async function ProfilePage() {
           Welcome {user.username}
         </h1>
       </div>
-      <form action={redirect("/get-sub")}>
+      <form action={redirect("/app/get-sub")}>
         <SocialButton
           type="submit"
           variant="default"

@@ -6,22 +6,20 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignUpSchema } from "../../types";
+import { SignUpSchema } from "@/types";
 import { createGoogleAuthotizationURL, signUp } from "@/app/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import FormButton from "@/components/(socialmood)/FormButton";
 import Link from 'next/link'
 import Image from "next/image";
-import SocialButton from "./SocialButton";
+import SocialButton from "./social-button";
 
 
 export function SignUpForm() {
@@ -57,7 +55,7 @@ export function SignUpForm() {
       });
       setTimeout(() => {
         setIsPending(false);
-        router.push("/profile");
+        router.push("/app/profile");
       }, 5000);
     }
   }
@@ -227,7 +225,7 @@ export function SignUpForm() {
         </div>
         <p className="text-sm text-white text-center">
           Tienes una cuenta?{" "}
-          <Link href="/sign-in" className="font-medium text-white hover:underline">
+          <Link href="/app/sign-in" className="font-medium text-white hover:underline">
             Log In
           </Link>
         </p>

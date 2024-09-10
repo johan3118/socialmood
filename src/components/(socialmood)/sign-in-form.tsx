@@ -3,11 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,11 +16,10 @@ import { SignInSchema } from "../../types";
 import { createGoogleAuthotizationURL, signIn } from "@/app/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import FormButton from "@/components/(socialmood)/FormButton";
 import { useState } from "react";
 import Link from 'next/link'
 import Image from "next/image";
-import SocialButton from "./SocialButton";
+import SocialButton from "./social-button";
 
 
 export function SignInForm() {
@@ -52,7 +49,7 @@ export function SignInForm() {
       });
       setTimeout(() => {
         setIsPending(false);
-        router.push("/profile");
+        router.push("/app/profile");
       }, 5000);
     }
   }
@@ -143,7 +140,7 @@ export function SignInForm() {
         </div>
         <p className="text-sm text-white text-center">
           No tienes una cuenta?{" "}
-          <Link href="/sign-up" className="font-medium text-white hover:underline">
+          <Link href="/app/sign-up" className="font-medium text-white hover:underline">
             Regístrate
           </Link>
         </p>

@@ -22,6 +22,8 @@ export const insertPlan = async (plan: {
         cantidad_cuentas_permitidas: plan.cantidad_cuentas_permitidas,
         descripcion: plan.descripcion,
         id_estado_plan: plan.id_estado_plan,
-        id_tipo_facturacion: plan.id_tipo_facturacion})
+        id_tipo_facturacion: plan.id_tipo_facturacion,
+        paypal_plan_id: ""
+      })
   };
 

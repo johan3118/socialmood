@@ -1,14 +1,14 @@
-import { SignUpForm } from "@/components/(socialmood)/SignUpForm";
+import { SignUpForm } from "@/components/(socialmood)/sign-up-form";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import BlurredContainer from "@/components/(socialmood)/BlurBackground";
+import BlurredContainer from "@/components/(socialmood)/blur-background";
 
 export default async function SignUpPage() {
   const { user } = await validateRequest();
 
   if (user) {
-    return redirect("/profile");
+    return redirect("/app/profile");
   }
 
   return (

@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Spotlight } from "@/components/(socialmood)/Spotlight";
+import { Spotlight } from "@/components/(socialmood)/spotlight";
 
 export default async function Home() {
   const { user } = await validateRequest();
   if (user) {
-    return redirect("/profile");
+    return redirect("/app/profile");
   }
 
   return (
@@ -32,11 +32,11 @@ export default async function Home() {
             johan, pazzis, paola, allen
           </p>
           <div className="flex items-center space-x-2 mt-5">
-            <Link href={"/sign-up"}>
+            <Link href={"app/sign-up"}>
               <Button variant={"default"}>Sign up</Button>
             </Link>
             <p className="text-white text-xs">or</p>
-            <Link href={"/sign-in"}>
+            <Link href={"app/sign-in"}>
               <Button variant={"default"}>Sign in</Button>
             </Link>
           </div>

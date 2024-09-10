@@ -18,7 +18,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
-import SocialButton from "./SocialButton";
+import SocialButton from "./social-button";
 
 
 export function SignInForm() {
@@ -48,7 +48,7 @@ export function SignInForm() {
       });
       setTimeout(() => {
         setIsPending(false);
-        router.push("/profile");
+        router.push("/bo/profile");
       }, 5000);
     }
   }
