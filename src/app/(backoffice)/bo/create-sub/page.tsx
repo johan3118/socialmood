@@ -15,7 +15,7 @@ interface FormData {
   descripcion: string;
 }
 
-export default function CrearSubscripcionPage() {
+export default function CreateSubPage() {
   const [formData, setFormData] = useState<FormData>({
     nombre: "Plan Básico",
     tipoFacturacion: "Mensual",
