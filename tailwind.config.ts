@@ -18,6 +18,9 @@ const config = {
       },
     },
     extend: {
+      colors: {
+        backgroundPurple: '#2C2436',
+      },
       keyframes: {
         spotlight: {
           "0%": {
