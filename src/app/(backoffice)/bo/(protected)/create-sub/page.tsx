@@ -18,7 +18,7 @@ interface FormData {
 export default function CreateSubPage() {
   const [formData, setFormData] = useState<FormData>({
     nombre: "Plan Básico",
-    tipoFacturacion: "Mensual",
+    tipoFacturacion: "MONTH",
     precio: "25",
     interacciones: "500",
     redesSociales: "3",
@@ -45,7 +45,7 @@ export default function CreateSubPage() {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-white">
       {/* Lado Izquierdo */}
       <div className="flex-1 p-20">
         <Button className="mb-4">
