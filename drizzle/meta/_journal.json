@@ -36,6 +36,13 @@
       "when": 1725563512641,
       "tag": "0006_regular_zodiak",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1725910349707,
+      "tag": "0007_cold_jamie_braddock",
+      "breakpoints": true
     }
   ]
 }

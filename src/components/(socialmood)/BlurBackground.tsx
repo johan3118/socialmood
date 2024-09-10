@@ -17,10 +17,21 @@ const BlurredContainer: React.FC<BlurredContainerProps> = ({
   const variantStyles =
     variant === "blur"
       ? "bg-gradient-to-b from-white/20 via-white/10 to-white/5 backdrop-blur-lg"
-      : "bg-gradient-to-b from-pink-300 via-rose-400 to-rose-500";
+      : "";
+
+  const inlineStyle =
+    variant === "rose"
+      ? {
+          background:
+            "linear-gradient(123.02deg, #FFFFFF -183.77%, #D24EA6 92.72%)",
+        }
+      : {};
 
   return (
-    <div className={`${baseStyles} ${variantStyles} ${customStyle}`}>
+    <div
+      className={`${baseStyles} ${variantStyles} ${customStyle}`}
+      style={inlineStyle}
+    >
       {children}
     </div>
   );
