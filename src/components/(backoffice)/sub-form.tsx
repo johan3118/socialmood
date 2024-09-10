@@ -35,7 +35,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
     try {
       // Crear subscripción en PayPal
       const accessToken = await getAccessToken();
-      
+
       const planData = {
         product_id: "1725585294", // Usa el ID del producto adecuado
         name: formData.nombre,
@@ -106,7 +106,12 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
       <form className="space-y-6">
         <div>
           <Label htmlFor="nombre">Nombre</Label>
-          <Input id="nombre" name="nombre" className="bg-gray-100" value={formData.nombre} onChange={handleInputChange} />
+          <Input id="nombre" name="nombre"
+            className="w-full px-3 py-2 
+                            rounded-[12px] border-transparent
+                            focus:outline-none focus:ring-2 focus:ring-primary
+                            bg-[#EBEBEB] text-black "
+            value={formData.nombre} onChange={handleInputChange} />
         </div>
         <div className="flex space-x-4">
           <div className="flex-1">
@@ -123,7 +128,12 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
           </div>
           <div className="flex-1">
             <Label htmlFor="precio">Precio</Label>
-            <Input className="bg-gray-100" id="precio" name="precio" value={formData.precio} onChange={handleInputChange} />
+            <Input className="w-full px-3 py-2 
+                            rounded-[12px] border-transparent
+                            focus:outline-none focus:ring-2 focus:ring-primary
+                            bg-[#EBEBEB] text-black "
+              id="precio" name="precio"
+              value={formData.precio} onChange={handleInputChange} />
           </div>
         </div>
 
@@ -132,21 +142,42 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
 
         <div>
           <Label htmlFor="interacciones">Cantidad de interacciones procesadas por hora</Label>
-          <Input className="bg-gray-100" id="interacciones" name="interacciones" value={formData.interacciones} onChange={handleInputChange} />
+          <Input className="w-full px-3 py-2 
+                            rounded-[12px] border-transparent
+                            focus:outline-none focus:ring-2 focus:ring-primary
+                            bg-[#EBEBEB] text-black "
+            id="interacciones"
+            name="interacciones"
+            value={formData.interacciones} onChange={handleInputChange} />
         </div>
         <div className="flex space-x-4">
           <div className="flex-1">
             <Label htmlFor="redesSociales">Redes sociales asociadas</Label>
-            <Input className="bg-gray-100" id="redesSociales" name="redesSociales" value={formData.redesSociales} onChange={handleInputChange} />
+            <Input className="w-full px-3 py-2 
+                            rounded-[12px] border-transparent
+                            focus:outline-none focus:ring-2 focus:ring-primary
+                            bg-[#EBEBEB] text-black "
+              id="redesSociales"
+              name="redesSociales"
+              value={formData.redesSociales} onChange={handleInputChange} />
           </div>
           <div className="flex-1">
             <Label htmlFor="usuarios">Usuarios asociados</Label>
-            <Input className="bg-gray-100" id="usuarios" name="usuarios" value={formData.usuarios} onChange={handleInputChange} />
+            <Input className="w-full px-3 py-2 
+                            rounded-[12px] border-transparent
+                            focus:outline-none focus:ring-2 focus:ring-primary
+                            bg-[#EBEBEB] text-black "
+              id="usuarios"
+              name="usuarios"
+              value={formData.usuarios} onChange={handleInputChange} />
           </div>
         </div>
         <div>
           <Label htmlFor="descripcion">Descripción</Label>
-          <Textarea className="bg-gray-100 h-30" id="descripcion" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
+          <Textarea className="w-full px-3 py-2 
+                            rounded-[12px] border-transparent
+                            focus:outline-none focus:ring-2 focus:ring-primary
+                            bg-[#EBEBEB] text-black " id="descripcion" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
         </div>
         <Button className="bg-[#D24EA6] w-1/3" onClick={handleSave} disabled={loading}>
           {loading ? 'Guardando...' : 'Guardar'}
