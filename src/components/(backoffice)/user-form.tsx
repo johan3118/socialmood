@@ -1,145 +1,203 @@
 "use client"
 import React, { ChangeEvent, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { getAccessToken, createSubscriptionPlan } from "@/app/services/paypal";
-import { insertPlan } from "@/app/actions/(backoffice)/subscriptions.actions";
-import * as Toast from '@radix-ui/react-toast';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { CreateUserSchema } from "@/types";
+import { useForm } from "react-hook-form";
+import SocialButton from "./social-button";
+import { createUser } from "@/app/actions/(backoffice)/user.actions";
 
-interface FormData {
-  nombre: string;
-  apellido: string;
-  direccion: string;
-  tipoUsuario: string;
-  correo: string;
-  password: string;
-  confirmPassword: string;
-}
+export function UserForm() {
+  const [isPending, setIsPending] = useState(false);
 
-interface UserFormProps {
-  formData: FormData;
-  handleInputChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleSelectChange: (name: keyof FormData, value: string) => void;
-}
+  const form = useForm<z.infer<typeof CreateUserSchema>>({
+    resolver: zodResolver(CreateUserSchema),
+    defaultValues: {
+      nombre: "",
+      apellido: "",
+      direccion: "",
+      tipoUsuario: "1",
+      correo: "",
+      password: "",
+      confirmPassword: ""
+    },
+  });
 
-const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handleSelectChange }) => {
-  const [loading, setLoading] = useState(false);
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      /*
-      const subscriptionPlan = await createSubscriptionPlan(accessToken, planData);
-      console.log('Plan de suscripción creado:', subscriptionPlan);
-
-      // Guardar el plan de suscripción en la base de datos
-      const idTipoFacturacion: number = formData.tipoFacturacion === "MONTH" ? 1 : 0;
-
-      await insertPlan({
-        nombre: formData.nombre,
-        costo: parseFloat(formData.precio),
-        cantidad_interacciones_mes: parseInt(formData.interacciones),
-        cantidad_usuarios_permitidos: parseInt(formData.usuarios),
-        cantidad_cuentas_permitidas: parseInt(formData.redesSociales),
-        descripcion: formData.descripcion,
-        id_estado_plan: 0, // INACTIVE
-        id_tipo_facturacion: idTipoFacturacion
+  async function onSubmit(values: z.infer<typeof CreateUserSchema>) {
+    setIsPending(true);
+    const res = await createUser(values);
+    if (res.error) {
+      setIsPending(false);
+      toast({
+        variant: "destructive",
+        description: res.error,
       });
-      */
-      // Mostrar toast de éxito
-      setToastMessage("El plan de suscripción se ha creado correctamente.");
-      setToastOpen(true);
-
-    } catch (error) {
-
-      // Mostrar toast de error
-      const errorMessage = error instanceof Error ? error.message : "Error desconocido.";
-      console.error('Error al crear el plan de suscripción:', errorMessage);
-      setToastMessage(`Ha ocurrido un error: ${errorMessage}`);
-      setToastOpen(true);
-
-    } finally {
-      setLoading(false);
+    } else if (res.success) {
+      toast({
+        variant: "default",
+        description: "Account created successfully",
+      });
+      setTimeout(() => {
+        setIsPending(false);
+      }, 5000);
+      form.reset();
     }
-  };
+  }
 
   return (
     <>
-      <form className="space-y-6">
-        <div>
-          <Label htmlFor="nombre">Nombre</Label>
-          <Input id="nombre" name="nombre" className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black " value={formData.nombre} onChange={handleInputChange} />
-        </div>
-        <div>
-          <Label htmlFor="apellido">Apellido</Label>
-          <Input id="apellido" name="apellido" className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black " value={formData.apellido} onChange={handleInputChange} />
-        </div>
-        <div>
-          <Label htmlFor="direccion">Direccion</Label>
-          <Input id="direccion" name="direccion" className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black " value={formData.direccion} onChange={handleInputChange} />
-        </div>
-        <div className="flex-1">
-          <Label htmlFor="tipoUsuario">Tipo de Usuario</Label>
-          <Select name="tipoUsuario" value={formData.tipoUsuario} onValueChange={(value) => handleSelectChange("tipoUsuario", value)}>
-            <SelectTrigger className="bg-gray-100">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1">Gestor de comunidad</SelectItem>
-              <SelectItem value="2">Gestor de operaciones</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="correo">Correo electrónico</Label>
-          <Input id="correo" name="correo" className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black " value={formData.correo} onChange={handleInputChange} />
-        </div>
-        <div>
-          <Label htmlFor="password">Contraseña</Label>
-          <Input id="password" name="password" className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black " type="password"
-            value={formData.password} onChange={handleInputChange} />
-        </div>
-        <div>
-          <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
-          <Input id="confirmPassword" name="confirmPassword" className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black " type="password"
-            value={formData.confirmPassword} onChange={handleInputChange} />
-        </div>
-        <Button className="bg-[#D24EA6] w-1/3" onClick={handleSave} disabled={loading}>
-          {loading ? 'Guardando...' : 'Guardar'}
-        </Button>
-      </form>
-
-      <Toast.Provider>
-        <Toast.Root open={toastOpen} onOpenChange={setToastOpen}>
-          <Toast.Title>{toastMessage}</Toast.Title>
-        </Toast.Root>
-        <Toast.Viewport />
-      </Toast.Provider>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full">
+          <FormField
+            control={form.control}
+            name="nombre"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-black">Nombre</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full px-3 py-2 
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black "
+                    autoComplete="nombre" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="apellido"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-black">Apellido</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full px-3 py-2 
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black "
+                    autoComplete="apellido" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> {" "}
+          <FormField
+            control={form.control}
+            name="direccion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-black">Direccion</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full px-3 py-2 
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black "
+                    autoComplete="direccion" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="tipoUsuario"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-black">Tipo de Usuario</FormLabel>
+                <FormControl>
+                  <Select name="tipoUsuario" onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="bg-gray-100">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Gestor de comunidad</SelectItem>
+                      <SelectItem value="2">Gestor de operaciones</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="correo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-black">Correo electrónico</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full px-3 py-2 
+                   rounded-[12px] border-transparent
+                   focus:outline-none focus:ring-2 focus:ring-primary
+                   bg-[#EBEBEB] text-black "
+                    autoComplete="correo" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-black">Contraseña</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full px-3 py-2 
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black "
+                    autoComplete="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="block text-sm font-medium text-black">Confirmar contraseña</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full px-3 py-2 
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black "
+                    autoComplete="confirmPassword" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SocialButton
+            customStyle="w-full"
+            isPending={isPending}
+            variant="default"
+            defaultText="Registrar"
+            pendingText="Registrando..."
+            type="submit"
+          />
+        </form>
+      </Form>
     </>
   );
 };
-
-export default UserForm;
