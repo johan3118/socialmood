@@ -164,6 +164,7 @@ export function UserForm() {
                     rounded-[12px] border-transparent
                     focus:outline-none focus:ring-2 focus:ring-primary
                     bg-[#EBEBEB] text-black "
+                    type="password"
                     autoComplete="password" {...field} />
                 </FormControl>
                 <FormMessage />
@@ -182,6 +183,7 @@ export function UserForm() {
                     rounded-[12px] border-transparent
                     focus:outline-none focus:ring-2 focus:ring-primary
                     bg-[#EBEBEB] text-black "
+                    type="password"
                     autoComplete="confirmPassword" {...field} />
                 </FormControl>
                 <FormMessage />
