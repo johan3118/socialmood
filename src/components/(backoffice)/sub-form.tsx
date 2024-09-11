@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAccessToken, createSubscriptionPlan } from "@/app/services/paypal";
 import { insertPlan } from "@/app/actions/(backoffice)/subscriptions.actions";
 import * as Toast from '@radix-ui/react-toast';
+import { useRouter } from "next/navigation";
 
 interface FormData {
   nombre: string;
@@ -17,6 +18,27 @@ interface FormData {
   redesSociales: string;
   usuarios: string;
   descripcion: string;
+}
+
+interface SubscriptionPlan {
+  id: string;
+  product_id: string;
+  name: string;
+  status: string;
+  description: string;
+  usage_type: string;
+  create_time: string;
+  links: Array<{
+      href: string;
+      rel: string;
+      method: string;
+      encType: string;
+  }>;
+  payment_preferences: {
+      auto_bill_outstanding: boolean;
+      setup_fee_failure_action: string;
+      payment_failure_threshold: number;
+  };
 }
 
 interface FormularioSubscripcionProps {
@@ -29,15 +51,17 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
   const [loading, setLoading] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+  const router = useRouter();
 
   const handleSave = async () => {
     setLoading(true);
     try {
       // Crear subscripción en PayPal
-      const accessToken = await getAccessToken();
-
+      const accessToken: string = await getAccessToken();
+      
       const planData = {
-        product_id: "1725585294", // Usa el ID del producto adecuado
+        product_id: "1725734723", // Usa el ID del producto adecuado
         name: formData.nombre,
         description: formData.descripcion,
         status: "INACTIVE",
@@ -65,13 +89,11 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
         }
       };
 
-      console.log(typeof accessToken);
-
-      const subscriptionPlan = await createSubscriptionPlan(accessToken, planData);
+      const subscriptionPlan: SubscriptionPlan = await createSubscriptionPlan(accessToken, planData);
       console.log('Plan de suscripción creado:', subscriptionPlan);
 
       // Guardar el plan de suscripción en la base de datos
-      const idTipoFacturacion: number = formData.tipoFacturacion === "MONTH" ? 1 : 0;
+      const idTipoFacturacion: number = formData.tipoFacturacion === "MONTH" ? 1 : 2;
 
       await insertPlan({
         nombre: formData.nombre,
@@ -80,13 +102,20 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
         cantidad_usuarios_permitidos: parseInt(formData.usuarios),
         cantidad_cuentas_permitidas: parseInt(formData.redesSociales),
         descripcion: formData.descripcion,
-        id_estado_plan: 0, // INACTIVE
-        id_tipo_facturacion: idTipoFacturacion
+        id_estado_plan: 2, // INACTIVE
+        id_tipo_facturacion: idTipoFacturacion,
+        paypal_plan_id: subscriptionPlan.id,
       });
 
       // Mostrar toast de éxito
       setToastMessage("El plan de suscripción se ha creado correctamente.");
       setToastOpen(true);
+
+      setTimeout(() =>{
+        router.push("/bo/sub-table")
+      }, 2000)
+
+
 
     } catch (error) {
 
@@ -94,6 +123,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
       const errorMessage = error instanceof Error ? error.message : "Error desconocido.";
       console.error('Error al crear el plan de suscripción:', errorMessage);
       setToastMessage(`Ha ocurrido un error: ${errorMessage}`);
+      setIsError(true);
       setToastOpen(true);
 
     } finally {
@@ -106,12 +136,10 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
       <form className="space-y-6">
         <div>
           <Label htmlFor="nombre">Nombre</Label>
-          <Input id="nombre" name="nombre"
-            className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black "
-            value={formData.nombre} onChange={handleInputChange} />
+          <Input id="nombre" name="nombre" className="w-full px-3 py-2 
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black " value={formData.nombre} onChange={handleInputChange} />
         </div>
         <div className="flex space-x-4">
           <div className="flex-1">
@@ -129,11 +157,9 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
           <div className="flex-1">
             <Label htmlFor="precio">Precio</Label>
             <Input className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black "
-              id="precio" name="precio"
-              value={formData.precio} onChange={handleInputChange} />
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black " id="precio" name="precio" value={formData.precio} onChange={handleInputChange} />
           </div>
         </div>
 
@@ -143,41 +169,32 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
         <div>
           <Label htmlFor="interacciones">Cantidad de interacciones procesadas por hora</Label>
           <Input className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black "
-            id="interacciones"
-            name="interacciones"
-            value={formData.interacciones} onChange={handleInputChange} />
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black " id="interacciones" name="interacciones" value={formData.interacciones} onChange={handleInputChange} />
         </div>
         <div className="flex space-x-4">
           <div className="flex-1">
             <Label htmlFor="redesSociales">Redes sociales asociadas</Label>
             <Input className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black "
-              id="redesSociales"
-              name="redesSociales"
-              value={formData.redesSociales} onChange={handleInputChange} />
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black " id="redesSociales" name="redesSociales" value={formData.redesSociales} onChange={handleInputChange} />
           </div>
           <div className="flex-1">
             <Label htmlFor="usuarios">Usuarios asociados</Label>
             <Input className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black "
-              id="usuarios"
-              name="usuarios"
-              value={formData.usuarios} onChange={handleInputChange} />
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black " id="usuarios" name="usuarios" value={formData.usuarios} onChange={handleInputChange} />
           </div>
         </div>
         <div>
           <Label htmlFor="descripcion">Descripción</Label>
           <Textarea className="w-full px-3 py-2 
-                            rounded-[12px] border-transparent
-                            focus:outline-none focus:ring-2 focus:ring-primary
-                            bg-[#EBEBEB] text-black " id="descripcion" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black " id="descripcion" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
         </div>
         <Button className="bg-[#D24EA6] w-1/3" onClick={handleSave} disabled={loading}>
           {loading ? 'Guardando...' : 'Guardar'}
@@ -185,10 +202,19 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
       </form>
 
       <Toast.Provider>
-        <Toast.Root open={toastOpen} onOpenChange={setToastOpen}>
-          <Toast.Title>{toastMessage}</Toast.Title>
+        <Toast.Root
+          open={toastOpen}
+          onOpenChange={setToastOpen}
+          className={`p-4 rounded-lg shadow-lg ${
+            isError ? "bg-red-500" : "bg-green-500"
+          } transition-opacity duration-300 ease-in-out text-white`}
+        >
+          <div className="flex items-center">
+            <span className="font-bold">{isError ? "Error" : "Éxito"}:</span>
+            <Toast.Title className="ml-2">{toastMessage}</Toast.Title>
+          </div>
         </Toast.Root>
-        <Toast.Viewport />
+        <Toast.Viewport className="fixed top-5 right-5 flex flex-col gap-2 p-6" />
       </Toast.Provider>
     </>
   );

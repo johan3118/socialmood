@@ -11,7 +11,7 @@ export default async function SignInPage() {
   }
 
   return (
-    <div>
+    <div className="bg-[#A9A0B4]">
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
                       flex flex-col items-center justify-center 
                       p-10 z-10 w-[600px] space-y-4 

@@ -100,7 +100,7 @@ export function UserForm() {
             name="direccion"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block text-sm font-medium text-black">Direccion</FormLabel>
+                <FormLabel className="block text-sm font-medium text-black">Dirección</FormLabel>
                 <FormControl>
                   <Input
                     className="w-full px-3 py-2 

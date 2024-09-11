@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import FormularioSubscripcion from "@/components/(backoffice)/sub-form";
 import VistaPreviaSubscripcion from "@/components/(backoffice)/preview-subscription";
+import {useRouter} from "next/navigation";
 
 interface FormData {
   nombre: string;
@@ -27,6 +28,8 @@ export default function CreateSubPage() {
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.",
   });
 
+  const router = useRouter();
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -44,15 +47,23 @@ export default function CreateSubPage() {
     }));
   };
 
+  const handleBack = () => {
+    router.push("/bo/sub-table");
+
+  }
+
+
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white flex-grow">
       {/* Lado Izquierdo */}
       <div className="flex-1 p-20">
-        <Button className="mb-4">
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Volver
-        </Button>
-        <h1 className="text-3xl font-bold mb-2">Crear Subscripción</h1>
+
+        <div className="flex ">
+        <ChevronLeft className="mr-2 h-10 w-10" onClick={handleBack}/>
+        <h1 className="text-3xl font-bold mb-2">Crear Plan Subscripción</h1>
+        </div>
+       
+
         <p className="text-gray-500 mb-6">
           Ingrese los datos del plan de subscripción
         </p>
