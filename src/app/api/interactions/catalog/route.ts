@@ -84,7 +84,24 @@ export const POST = async (req: NextRequest) => {
 
         const result = await response('gpt-4o-mini', messages);
 
-        return NextResponse.json({ message: result, status: 302 });
+        const isValidJson = (str: string) => {
+            try {
+                JSON.parse(str);
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
+
+        if (!isValidJson(result?.toString() || '')) {
+            return NextResponse.error()
+        }
+
+        const interaction = JSON.parse(result?.toString().substring(result?.toString().indexOf('{'), result?.toString().lastIndexOf('}') + 1) || '{}')
+
+        console.log(interaction)
+
+        return NextResponse.json({ interaction, status: 200 });
     }
     catch (e) {
         console.error(e)

@@ -13,7 +13,7 @@ async function response(model: string, messages: any) {
         messages: messages
     });
 
-    return completion.choices[0].message.content;
+    return completion.choices[0].message.content?.toString();
 }
 
 export default response;
