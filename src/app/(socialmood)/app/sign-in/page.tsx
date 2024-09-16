@@ -12,7 +12,7 @@ export default async function SignInPage() {
   }
 
   return (
-    <div>
+    <div className="w-full min-h-full h-screen flex items-center justify-center bg-[#2C2436]">
       <BlurredContainer>
         <SignInForm />
       </BlurredContainer>

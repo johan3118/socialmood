@@ -12,7 +12,7 @@ export default async function SignUpPage() {
   }
 
   return (
-    <div>
+    <div className="bg-[#2C2436] w-full min-h-full flex justify-center items-center overflow-hidden">
         <BlurredContainer>
           <SignUpForm />
         </BlurredContainer>
