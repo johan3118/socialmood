@@ -1,4 +1,4 @@
-import { User } from "lucide-react"
+import UserProfile from "@/components/(socialmood)/user-profile"
 
 export default function MainBar() {
   return (
@@ -11,15 +11,8 @@ export default function MainBar() {
           Supervisa los moods de todas tus redes sociales
         </p>
       </div>
-      <div className="flex items-center space-x-2">
-        <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
-          <User className="text-white" />
-        </div>
-        <div>
-          <p className="font-medium">Allen Silverio</p>
-          <p className="text-xs text-gray-400">Usuario</p>
-        </div>
-      </div>
+      <UserProfile/>
+     
     </header>
   )
 }
