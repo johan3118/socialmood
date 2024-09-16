@@ -8,7 +8,7 @@ export const POST = async (req: NextRequest) => {
 
         const simplifiedMessage = removeStopwords(message.split(' '), spa).join(' ')
 
-        const context = `
+        const context_message = `
         Eres un gestor de comunidad cuyo objetivo es catalogar las interacciones de los usuarios provenientes de las redes sociales de una compañía.  
         
         Reciben mensajes de los usuarios y necesitan clasificarlos en diferentes categorías y subcategorías para poder analizarlos.
@@ -63,15 +63,26 @@ export const POST = async (req: NextRequest) => {
         }
         `
 
-        const prompt = `
+        const prompt_message = `
         {
             "mensaje": "${simplifiedMessage}"
         }
         `
 
-        console.log(prompt)
+        const context = {
+            role: 'system',
+            content: context_message
+        }
 
-        const result = await response(prompt, 'gpt-4o-mini', context);
+        const prompt =
+        {
+            role: 'user',
+            content: prompt_message
+        }
+
+        const messages = [context, prompt]
+
+        const result = await response('gpt-4o-mini', messages);
 
         return NextResponse.json({ message: result, status: 302 });
     }

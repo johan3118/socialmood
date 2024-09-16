@@ -6,20 +6,11 @@ const openai = new OpenAI({
     organization: process.env.OPENAI_ORGANIZATION_ID
 });
 
-async function response(message: string, model: string, context: string) {
+async function response(model: string, messages: any) {
     const completion = await openai.chat.completions.create({
         model: model,
-        temperature: 0.4,
-        messages: [
-            {
-                role: 'system',
-                content: context
-            },
-            {
-                role: 'user',
-                content: message
-            }
-        ]
+        temperature: 0.3,
+        messages: messages
     });
 
     return completion.choices[0].message.content;
