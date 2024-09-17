@@ -11,7 +11,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="h-screen w-full flex md:items-center md:justify-center antialiased bg-grid-white/[0.02] relative overflow-hidden">
+    <div className="bg-[#2C2436] h-screen w-full min-h-full flex md:items-center md:justify-center antialiased bg-grid-white/[0.02] relative overflow-hidden">
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
         fill="white"
@@ -27,7 +27,7 @@ export default async function Home() {
           <span className="font-bold">Drizzle, </span>and
           <span className="font-bold"> Turso</span>.
         </p>
-        <div className="mt-10 flex flex-col items-center ">
+        <div className="mt-10 flex flex-col items-center">
           <p className="text-white font-semibold text-sm text-center">
             johan, pazzis, paola, allen
           </p>
