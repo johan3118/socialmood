@@ -29,11 +29,13 @@ const menuItems: MenuItem[] = [
   {
     id: 'interactions',
     label: 'Interacciones',
-    route: '/app/dashboard',
+    route: '/app/listado-interacciones',
     icon: <span className="text-xl">💬</span>,
     subItems: [
-      { id: 'responses', label: 'Respuestas', route: '/app/dashboard', color: '#10B981' },
-      { id: 'rules', label: 'Reglas', route: '/app/dashboard', color: '#F59E0B' },
+      { id: 'interactions', label: 'Interacciones', route: '/app/listado-interacciones', color: '#F59E0B' },
+      { id: 'responses', label: 'Respuestas', route: '/app/listado-interacciones', color: '#10B981' },
+      { id: 'rules', label: 'Reglas', route: '/app/listado-interacciones', color: '#F59E0B' },
+      
     ],
   },
 ]
