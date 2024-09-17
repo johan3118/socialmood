@@ -107,3 +107,22 @@ export const CreateUserSchema = z
     message: "Las contraseñas con coinciden",
     path: ["confirmPassword"],
   });
+
+  export type Interacciones = {
+  fecha_recepcion: string;
+  fecha_respuesta: Date | null; 
+  mensaje: string; 
+  enlace_publicacion: string; 
+  codigo_cuenta_emisor: string; 
+  enlace_foto_emisor: string;
+  codigo_cuenta_receptor: string; 
+  id_cuenta_receptor: number; 
+  nombre_red_social_receptor: string; 
+  categoria: string; 
+  subcategoria: string;
+  emociones_predominantes: string; 
+  respondida: boolean; 
+  respuesta: string | null; 
+  usuario_cuenta_receptor: string; 
+  usuario_cuenta_emisor: string;
+};
