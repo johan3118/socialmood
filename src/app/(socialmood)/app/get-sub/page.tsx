@@ -43,7 +43,7 @@ export default async function GetSubscription() {
   }));
 
   return (
-    <main className="flex flex-col xl:flex-row w-full min-h-screen items-center justify-center xl:px-40 xl:space-x-10">
+    <main className="flex flex-col xl:flex-row items-center justify-center xl:px-40 xl:space-x-10 bg-[#2C2436] w-full h-screen">
       {planDescription.map((plan, index) => (
         <BlurredContainer
           key={index}

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { ChevronDown, ChevronUp, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { signOut } from '@/app/actions/(backoffice)/auth.actions'
 
 interface MenuItem {
   id: string
@@ -29,11 +30,13 @@ const menuItems: MenuItem[] = [
   {
     id: 'interactions',
     label: 'Interacciones',
-    route: '/app/dashboard',
+    route: '/app/listado-interacciones',
     icon: <span className="text-xl">💬</span>,
     subItems: [
-      { id: 'responses', label: 'Respuestas', route: '/app/dashboard', color: '#10B981' },
-      { id: 'rules', label: 'Reglas', route: '/app/dashboard', color: '#F59E0B' },
+      { id: 'interactions', label: 'Interacciones', route: '/app/listado-interacciones', color: '#F59E0B' },
+      { id: 'responses', label: 'Respuestas', route: '/app/listado-interacciones', color: '#10B981' },
+      { id: 'rules', label: 'Reglas', route: '/app/listado-interacciones', color: '#F59E0B' },
+      
     ],
   },
 ]
@@ -50,6 +53,10 @@ export default function Sidebar() {
   const handleRoute = (route: string) => {
     setSelectedItem(route)
     router.push(route)
+  }
+
+  const  handleSignOut = async () => {
+    await signOut()
   }
 
   return (
@@ -100,7 +107,7 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <button className="mt-auto p-2 rounded hover:bg-gray-800 flex items-center">
+      <button className="mt-auto p-2 rounded hover:bg-gray-800 flex items-center" onClick={handleSignOut}>
         <LogOut size={18} className="mr-3" />
         Cerrar sesión
       </button>
