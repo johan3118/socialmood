@@ -29,10 +29,14 @@ export default async function GetSubscription({
   const planAnual = planes.find((p) => p.id_tipo_facturacion === 2) || null;
 
   return (
-    <GetSubscriptionClient
+    <div className="bg-[#2C2436] w-full h-screen">
+      <GetSubscriptionClient
       userid={user.id}
       planMensual={planMensual}
       planAnual={planAnual}
     />
+
+    </div>
+    
   );
 }

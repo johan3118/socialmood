@@ -40,6 +40,15 @@ export async function getPlansByName(nombre: string) {
 }
 
 
+export async function hasSubscription(userId: number) {
+  console.log(userId);
+  const result = await db
+    .select()
+    .from(subscripcionesTable)
+    .where(eq(subscripcionesTable.id_propietario, userId));
+  return result.length > 0;
+}
+
 export async function handleNewSubscription({
   userId,  
   subscriptionID,
