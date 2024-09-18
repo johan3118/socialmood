@@ -107,3 +107,12 @@ export const CreateUserSchema = z
     message: "Las contraseñas con coinciden",
     path: ["confirmPassword"],
   });
+
+
+  
+  // Add Social Media Account Schema
+export const AddSocialSchema = z.object({
+  platform: z.string().min(1, { message: "Debe seleccionar una plataforma" }),
+  account: z.string().min(1, { message: "Debe seleccionar una cuenta" }),
+  color: z.string().min(1, { message: "Debe seleccionar un color" }),
+});
