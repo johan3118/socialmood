@@ -1,55 +1,48 @@
 'use server'
+import clientPromise from "@/utils/startMongo"
+
+interface Perfil {
+    red_social: string;
+    username: string;
+    color: string;
+}
+
+interface Interacciones {
+    perfil: Perfil;
+    mensaje: string;
+    emisor: string;
+    categoria: string;
+    subcategoria: string;
+    fecha: string;
+}
 
 export async function getInteractions() {
-    const interactions = [
-        {
+    const client = await clientPromise;
+    const db = client.db("socialMood");
+
+    const interactions = await db.collection("Interacciones").find().toArray();
+
+    console.log(interactions);
+
+    let formattedInteractions = new Array<Interacciones>();
+
+    interactions.forEach(interaction => {
+        const formattedInteraction = {
             perfil: {
-                red_social: "Instagram",
-                username: "@joseph",
+                red_social: interaction.nombre_red_social_receptor,
+                username: interaction.usuario_cuenta_receptor,
                 color: "#FF0000"
             },
-            mensaje: "Odio esto",
-            emisor: "@pablito",
-            categoria: "Negativo",
-            subcategoria: "Queja",
-            fecha: "26/06/2024 3:00 PM"
-        },
-        {
-            perfil: {
-                red_social: "Facebook",
-                username: "@joseph",
-                color: "#FF0000"
-            },
-            mensaje: "Me encanta este producto",
-            emisor: "@pablito",
-            categoria: "Positivo",
-            subcategoria: "Elogio",
-            fecha: "26/06/2024 3:00 PM"
-        },
-        {
-            perfil: {
-                red_social: "Instagram",
-                username: "@joseph",
-                color: "#FF0000"
-            },
-            mensaje: "Hola, soy Joseph",
-            emisor: "@pablito",
-            categoria: "Neutral",
-            subcategoria: "Consulta",
-            fecha: "26/06/2024 3:00 PM"
-        },
-        {
-            perfil: {
-                red_social: "Instagram",
-                username: "@joseph",
-                color: "#FF0000"
-            },
-            mensaje: "Que horrible App",
-            emisor: "@pablito",
-            categoria: "Negativo",
-            subcategoria: "Queja",
-            fecha: "26/06/2024 3:00 PM"
+            mensaje: interaction.mensaje,
+            emisor: interaction.usuario_cuenta_emisor,
+            categoria: interaction.categoria,
+            subcategoria: interaction.subcategoria,
+            fecha: interaction.fecha_recepcion
         }
-    ]
-    return interactions;
+        formattedInteractions.push(formattedInteraction);
+    });
+    
+
+    return formattedInteractions;
+
 }
