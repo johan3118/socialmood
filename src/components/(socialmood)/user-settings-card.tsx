@@ -6,7 +6,7 @@ import BlurredContainer from "@/components/(socialmood)/blur-background"
 
 function UserSettingsCard() {
   return (
-    <BlurredContainer customStyle='max-h-[30vh]'>
+    <BlurredContainer customStyle='h-[30vh] max-w-[56vh]'>
 
 <div className='flex gap-x-3 items-center w-full'>
 

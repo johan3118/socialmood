@@ -1,55 +1,98 @@
-"use client"
-import React from 'react'
-import { ArrowLeft, Edit, Plus, X } from "lucide-react"
-import { User } from "lucide-react"
-import BlurredContainer from "@/components/(socialmood)/blur-background"
+"use client";
+import React, { useState } from "react";
+import { X } from "lucide-react";
+import BlurredContainer from "@/components/(socialmood)/blur-background";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils"; // Importación de la función 'cn'
+import EstadoLabel from "@/components/(socialmood)/estado-label";
+import Modal from "@/components/(socialmood)/modal"; // Componente modal
+import AddSocialForm from "@/components/(socialmood)/add-social-form"; // El componente que quieres mostrar en el modal
 
-function SocialMediaCard() {
+interface Perfil {
+  red_social: string;
+  username: string;
+  color: string;
+  estado: "ACTIVO" | "INACTIVO";
+}
+
+interface SocialMediaCardProps {
+  perfiles: Perfil[];
+}
+
+const socialIconMap: { [key: string]: string } = {
+  Instagram: "/instagram.svg",
+  Facebook: "/facebook.svg",
+  Twitter: "/twitter.svg",
+};
+
+const SocialMediaCard: React.FC<SocialMediaCardProps> = ({ perfiles }) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
+  };
+
   return (
-<BlurredContainer>
-
-
-    <div className="flex items-center justify-between mb-4">
-      <h2 className="text-2xl font-bold">Redes Sociales</h2>
-      <div className="flex items-center">
-        <button aria-label="Editar redes sociales">
-          <Edit className="w-5 h-5 mr-2" />
-        </button>
-        <button aria-label="Añadir red social">
-          <Plus className="w-5 h-5" />
-        </button>
-      </div>
-    </div>
-    <div className="space-y-4">
-      {[
-        { name: "@tutienda.do", platform: "Instagram", status: "activo" },
-        { name: "@tutienda.do", platform: "Facebook", status: "inactivo" },
-        { name: "@tutienda.do", platform: "TikTok", status: "inactivo" },
-      ].map((social, index) => (
-        <div key={index} className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className={`w-8 h-8 rounded-full mr-2 ${
-              social.platform === "Instagram" ? "bg-pink-500" :
-              social.platform === "Facebook" ? "bg-blue-500" : "bg-purple-500"
-            }`}></div>
-            <span>{social.name}</span>
-          </div>
-          <div className="flex items-center">
-            <span className={`px-2 py-1 rounded-full text-xs mr-2 ${
-              social.status === "activo" ? "bg-green-500" : "bg-red-500"
-            }`}>
-              {social.status}
-            </span>
-            <button aria-label={`Eliminar ${social.platform}`}>
-              <X className="w-4 h-4" />
+    <>
+      {isModalOpen && (
+        <Modal onClose={toggleModal}>
+          <AddSocialForm onClose={toggleModal}/>
+        </Modal>
+      )}
+      <BlurredContainer customStyle='h-[30vh] max-w-[56vh]'>
+        <div className='flex items-center justify-between w-full mb-3'>
+          <h2 className='text-2xl font-bold'>Redes Sociales</h2>
+          <div className='options flex items-center'>
+            <button
+              className='w-6 h-6 bg-[#D24EA6] text-2xl rounded-xl flex items-center justify-center'
+              onClick={toggleModal}
+            >
+              +
             </button>
           </div>
         </div>
-      ))}
-    </div>
-    </BlurredContainer>
-    
-  )
-}
 
-export default SocialMediaCard
+        <table className="w-full">
+          <thead className="text-left">
+            <tr>
+              <th className="pb-2">Cuentas</th>
+              <th className="pb-2 px-5">Estado</th>
+              <th> </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {perfiles.map((perfil, index) => (
+              <tr key={index}>
+                <td className="pr-15 pb-2">
+                  <span
+                    className={cn(buttonVariants({
+                      variant:
+                        perfil.red_social === "Instagram"
+                          ? "blue"
+                          : perfil.red_social === "Facebook"
+                            ? "orange"
+                            : "default",
+                      size: "smBold"
+                    }), "w-full flex justify-start items-center py-2")}
+                  >
+                    <img
+                      src={socialIconMap[perfil.red_social] || "/default.svg"}
+                      alt={`${perfil.red_social} Icon`}
+                      className="flex justify-left mr-2"
+                    />
+                    {perfil.username}
+                  </span>
+                </td>
+
+                <td className="px-5 pb-2"><EstadoLabel estado={perfil.estado} /></td>
+                <td className="pb-2"><X /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </BlurredContainer>
+    </>
+  );
+};
+export default SocialMediaCard;

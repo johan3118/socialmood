@@ -6,7 +6,7 @@ import BlurredContainer from "@/components/(socialmood)/blur-background"
 
 function TeamCard() {
   return (
-    <BlurredContainer>
+    <BlurredContainer customStyle='max-h-[30vh]'>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold">Usuarios</h2>
               <div className="flex items-center">
