@@ -20,8 +20,8 @@ const buttonVariants = cva(
           "bg-[linear-gradient(106.25deg,_#FFFFFF_-272.33%,_#F86A3A_92.58%)] text-slate-50 shadow hover:shadow-lg gap-1",
         google: "bg-white shadow hover:shadow-lg gap-4",
         angry:
-          "bg-[linear-gradient(108.65deg,_#F0F0F0_-86.91%,_rgba(255,255,255,0)_584.25%)] shadow hover:shadow-lg gap-1",
-        link: "text-slate-900 underline-offset-4 hover:underline dark:text-slate-50",
+          "bg-[linear-gradient(108.65deg,_#F0F0F0_-86.91%,_rgba(255,255,255,0)_584.25%)] text-black shadow hover:shadow-lg gap-1",
+        link: " text-slate-900 underline-offset-4 hover:underline dark:text-slate-50",
       },
       size: {
         default: "h-9 px-14 py-4",
