@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "821cb9cb-556c-4357-a43d-ab534a58d682",
+  "id": "2df20001-70c8-437a-a6f6-4fc1781df486",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "categorias": {
@@ -723,6 +723,91 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "oauth_account": {
+      "name": "oauth_account",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "id_usuario": {
+          "name": "id_usuario",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "id_proveedor_autenticacion": {
+          "name": "id_proveedor_autenticacion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "codigo_usuario_proveedor": {
+          "name": "codigo_usuario_proveedor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "token_acceso": {
+          "name": "token_acceso",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "token_refresh": {
+          "name": "token_refresh",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expira": {
+          "name": "expira",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "oauth_account_id_usuario_usuarios_id_fk": {
+          "name": "oauth_account_id_usuario_usuarios_id_fk",
+          "tableFrom": "oauth_account",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "id_usuario"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "oauth_account_id_proveedor_autenticacion_proveedores_autenticacion_id_fk": {
+          "name": "oauth_account_id_proveedor_autenticacion_proveedores_autenticacion_id_fk",
+          "tableFrom": "oauth_account",
+          "tableTo": "proveedores_autenticacion",
+          "columnsFrom": [
+            "id_proveedor_autenticacion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "planes": {
       "name": "planes",
       "columns": {
@@ -798,16 +883,10 @@
         }
       },
       "indexes": {
-        "planes_nombre_unique": {
-          "name": "planes_nombre_unique",
+        "planes_nombre_paypal_plan_id_unique": {
+          "name": "planes_nombre_paypal_plan_id_unique",
           "columns": [
-            "nombre"
-          ],
-          "isUnique": true
-        },
-        "planes_paypal_plan_id_unique": {
-          "name": "planes_paypal_plan_id_unique",
-          "columns": [
+            "nombre",
             "paypal_plan_id"
           ],
           "isUnique": true
