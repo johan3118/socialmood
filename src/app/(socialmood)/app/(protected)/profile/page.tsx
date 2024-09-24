@@ -2,11 +2,19 @@ import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import { TargetIcon } from "@radix-ui/react-icons";
 import SocialButton from "@/components/(socialmood)/social-button";
+import {hasSubscription} from "@/app/actions/(socialmood)/get-plans.actions";
 export default async function ProfilePage() {
   const { user } = await validateRequest();
 
   if (!user) {
     return redirect("/");
+  }
+
+  const activeSub = await hasSubscription(user.id)
+  console.log(activeSub)
+
+  if (!activeSub) {
+    return redirect("/app/get-sub")
   }
 
   return (
@@ -20,7 +28,7 @@ export default async function ProfilePage() {
           Welcome {user.username}
         </h1>
       </div>
-      <form action={redirect("/app/get-sub")}>
+      <form action={redirect("/app/dashboard")}>
         <SocialButton
           type="submit"
           variant="default"

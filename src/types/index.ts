@@ -108,11 +108,28 @@ export const CreateUserSchema = z
     path: ["confirmPassword"],
   });
 
-
-  
   // Add Social Media Account Schema
 export const AddSocialSchema = z.object({
   platform: z.string().min(1, { message: "Debe seleccionar una plataforma" }),
   account: z.string().min(1, { message: "Debe seleccionar una cuenta" }),
   color: z.string().min(1, { message: "Debe seleccionar un color" }),
 });
+
+export type Interacciones = {
+  fecha_recepcion: string;
+  fecha_respuesta: Date | null; 
+  mensaje: string; 
+  enlace_publicacion: string; 
+  codigo_cuenta_emisor: string; 
+  enlace_foto_emisor: string;
+  codigo_cuenta_receptor: string; 
+  id_cuenta_receptor: number; 
+  nombre_red_social_receptor: string; 
+  categoria: string; 
+  subcategoria: string;
+  emociones_predominantes: string; 
+  respondida: boolean; 
+  respuesta: string | null; 
+  usuario_cuenta_receptor: string; 
+  usuario_cuenta_emisor: string;
+};
