@@ -54,9 +54,10 @@ export default function MainBar() {
         <UserProfile />
       </header>
       <div className='flex mx-12 my-8  space-x-4 '>
-      <SearchBar />
+
+        <div className='w-full z-[1]'><SearchBar/></div>
       <SocialButton
-            customStyle="w-32 "
+            customStyle="w-32"
             variant="default"
             defaultText="Filtros"
             type="submit"

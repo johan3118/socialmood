@@ -85,7 +85,7 @@ const SocialMediaCard: React.FC = () => {
             <tbody>
               {perfiles.map((perfil, index) => (
                 <tr key={index}>
-                  <td className="pr-15 pb-2">
+                  <td className="pb-2">
                     <span
                       className={cn(
                         buttonVariants({
@@ -97,7 +97,7 @@ const SocialMediaCard: React.FC = () => {
                               : "default",
                           size: "smBold",
                         }),
-                        "w-full flex justify-start items-center py-2"
+                        "w-full flex justify-start items-center py-2 pr-30"
                       )}
                     >
                       <img

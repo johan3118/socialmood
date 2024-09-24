@@ -54,3 +54,41 @@ return JSON.parse(JSON.stringify(allPlans));
   
 }
 
+export const activatePlan = async (planId: number) => {
+  try {
+    // Actualizamos el id_estado_plan a 1 (activo)
+    const result = await db
+      .update(planesTable)
+      .set({ id_estado_plan: 1 })
+      .where(eq(planesTable.id, planId));
+
+    if (result.rowsAffected > 0) {
+      console.log(`El plan con ID ${planId} ha sido activado exitosamente.`);
+      return JSON.parse(JSON.stringify(result));
+    } else {
+      console.log(`No se encontró el plan con ID ${planId}.`);
+    }
+  } catch (error) {
+    console.error("Error al activar el plan:", error);
+  }
+}
+
+export const deactivatePlan = async (planId: number) => {
+  try {
+    // Actualizamos el id_estado_plan a 1 (activo)
+    const result = await db
+      .update(planesTable)
+      .set({ id_estado_plan: 2 })
+      .where(eq(planesTable.id, planId));
+
+    if (result.rowsAffected > 0) {
+      console.log(`El plan con ID ${planId} ha sido activado exitosamente.`);
+      return JSON.parse(JSON.stringify(result));
+    } else {
+      console.log(`No se encontró el plan con ID ${planId}.`);
+    }
+  } catch (error) {
+    console.error("Error al activar el plan:", error);
+  }
+}
+
