@@ -22,8 +22,6 @@ export async function getInteractions() {
 
     const interactions = await db.collection("Interacciones").find().toArray();
 
-    console.log(interactions);
-
     let formattedInteractions = new Array<Interacciones>();
 
     interactions.forEach(interaction => {
