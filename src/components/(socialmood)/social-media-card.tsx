@@ -57,7 +57,7 @@ const SocialMediaCard: React.FC = () => {
           <AddSocialForm onClose={toggleModal} />
         </Modal>
       )}
-      <BlurredContainer customStyle="h-[30vh] m-0">
+      <BlurredContainer customStyle="h-[30vh] !m-0">
         <div className="flex items-center justify-between w-full mb-3">
           <h2 className="text-2xl font-bold">Redes Sociales</h2>
           <div className="options flex items-center">

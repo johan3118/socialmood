@@ -7,7 +7,7 @@ import Image from "next/image"
 
 function UserCurrentPlanCard() {
   return (
-    <BlurredContainer customStyle='h-[30vh] m-0'>
+    <BlurredContainer customStyle='h-[30vh] !m-0'>
         <div className="flex items-center w-full">
 
           <div className='payment-info w-full'>
