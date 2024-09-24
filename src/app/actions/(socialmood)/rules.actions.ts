@@ -13,6 +13,7 @@ interface Perfil {
 }
 
 interface Reglas {
+  id: number;
   perfil: Perfil;
   alias: string;
   subcategorias: string[];
@@ -48,6 +49,7 @@ export async function getRules(subscriptionId: number) {
       const arrayCategories = categories.map((category) => category.subcategorias);
     
     return {
+      id: rule.id,
       perfil: {
         red_social: rule.nombre_red_social_receptor,
         username: rule.usuario_cuenta_receptor,
