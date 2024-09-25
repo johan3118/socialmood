@@ -121,6 +121,13 @@ export const CreateUserSchema = z
     path: ["confirmPassword"],
   });
 
+  // Add Social Media Account Schema
+export const AddSocialSchema = z.object({
+  platform: z.string().min(1, { message: "Debe seleccionar una plataforma" }),
+  account: z.string().min(1, { message: "Debe seleccionar una cuenta" }),
+  color: z.string().min(1, { message: "Debe seleccionar un color" }),
+});
+
 export type Interacciones = {
   fecha_recepcion: string;
   fecha_respuesta: Date | null;
