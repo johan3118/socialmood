@@ -34,8 +34,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-
 import SocialButton from "./social-button";
 
 interface CreateRuleProps {
