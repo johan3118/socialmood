@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch"; // Importa el switch de shadcn
-import { selectAllPlans } from "@/app/actions/(backoffice)/subscriptions.actions";
+import { selectAllPlans, activatePlan, deactivatePlan } from "@/app/actions/(backoffice)/subscriptions.actions";
 import {useRouter} from 'next/navigation';
 
 interface PlanSubscripcion {
@@ -36,20 +36,29 @@ const PlanesSubscripcionTable: React.FC = () => {
   }, []);
 
   // Manejar el cambio de estado del switch
-  const handleSwitchChange = (id: string) => {
-    setPlanesSubscripcion((prevPlanesSubscripcion) =>
-      prevPlanesSubscripcion.map((plan) =>
-        plan.planId === id
-          ? {
-              ...plan,
-              estado_plan_nombre:
-                plan.estado_plan_nombre === "ACTIVO"
-                  ? "INACTIVO"
-                  : "ACTIVO", // Alterna entre 'ACTIVO' y 'INACTIVO'
-            }
-          : plan
-      )
-    );
+  const handleSwitchChange = async (id: number, isActive: boolean) => {
+    try {
+      // Actualiza el estado del plan en la base de datos
+      if (isActive) {
+        await activatePlan(id); // Activa el plan si el switch está encendido
+      } else {
+        await deactivatePlan(id); // Desactiva el plan si el switch está apagado
+      }
+
+      // Actualiza el estado local para reflejar el cambio
+      setPlanesSubscripcion((prevPlanesSubscripcion) =>
+        prevPlanesSubscripcion.map((plan) =>
+          parseInt(plan.planId) === id
+            ? {
+                ...plan,
+                estado_plan_nombre: isActive ? "ACTIVO" : "INACTIVO", // Actualiza el estado visualmente
+              }
+            : plan
+        )
+      );
+    } catch (error) {
+      console.error("Error al actualizar el estado del plan:", error);
+    }
   };
 
   const handleCrearSubscripcion = () => {
@@ -58,14 +67,13 @@ const PlanesSubscripcionTable: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6">
-        <div className="flex justify-between mb-6">
+      <div className="flex justify-between mb-6">
         <h2 className="text-xl font-bold">Listado de subscripciones</h2>
-      <button className="btn w-8 h-8 bg-[#D24EA6] rounded-lg" onClick={handleCrearSubscripcion}>
-        <span className="text-white text-2xl">+</span>
-      </button>
+        <button className="btn w-8 h-8 bg-[#D24EA6] rounded-lg" onClick={handleCrearSubscripcion}>
+          <span className="text-white text-2xl">+</span>
+        </button>
+      </div>
 
-        </div>
-      
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-[#422EA3] text-white">
           <tr>
@@ -101,7 +109,7 @@ const PlanesSubscripcionTable: React.FC = () => {
                 <Switch
                   className="data-[state=checked]:bg-[#422EA3]"
                   checked={plan.estado_plan_nombre === "ACTIVO"}
-                  onCheckedChange={() => handleSwitchChange(plan.planId)}
+                  onCheckedChange={(checked) => handleSwitchChange(parseInt(plan.planId), checked)}
                 />
                 {/* Icono de edición */}
                 <button className="ml-4 text-gray-500 hover:text-gray-800">
