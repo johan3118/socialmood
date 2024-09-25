@@ -28,6 +28,7 @@ interface Reglas {
 
 const ListadoInteraccionesTable: React.FC = () => {
     const [Reglas, setReglas] = useState<Reglas[]>([]);
+    const [Open, setOpen] = useState<boolean>(false);
     const router = useRouter();
 
     const [action, setAction] = useState<string>("Create");
@@ -60,6 +61,12 @@ const ListadoInteraccionesTable: React.FC = () => {
         fetchReglas();
     }, []);
 
+    const handleOpenChange = (newOpenValue: boolean) => {
+        setOpen(newOpenValue);
+    };
+
+
+
 
     const handleRefreshTable = () => {
         fetchReglas();
@@ -67,19 +74,22 @@ const ListadoInteraccionesTable: React.FC = () => {
     };
 
     const handleAddRule = () => {
+        setOpen(true);
         setAction("Create");
     };
 
     const handleEditRule = (ruleID: number) => {
+        setOpen(true);
         setAction("Edit");
     }
 
     const handleDeleteRule = (ruleID: number) => {
+        setOpen(true);
         setAction("Delete");
     }
 
     return (
-        <Dialog>
+        <Dialog open={Open}>
             <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-10 mx-12 py-8">
                 <div className="container mx-auto p-6">
                     <div className="flex justify-between mb-6">
@@ -181,7 +191,9 @@ const ListadoInteraccionesTable: React.FC = () => {
                 </div>
             </div>
             {
-                action === "Create" ? <CreateRule /> : action === "Edit" ? <EditRule ruleID={ruleID} /> : action === "Delete" ? <DeleteRule ruleID={ruleID} /> : null
+                action === "Create" ? <CreateRule onOpenChange={handleOpenChange} /> :
+                    action === "Edit" ? <EditRule ruleID={ruleID} onOpenChange={handleOpenChange} /> :
+                        action === "Delete" ? <DeleteRule ruleID={ruleID} onOpenChange={handleOpenChange} /> : null
             }
         </Dialog>
     );

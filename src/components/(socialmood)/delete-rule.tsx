@@ -8,13 +8,12 @@ import {
 } from "@/components/ui/dialog"
 import SocialButton from "./social-button";
 
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-
 interface DeleteRuleProps {
     ruleID: number;
+    onOpenChange: (newOpenValue: boolean) => void;
 }
 
-export default function DeleteRule({ ruleID }: DeleteRuleProps) {
+export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
     return (
         <DialogContent>
             <DialogHeader className="flex items-center justify-center">
@@ -27,25 +26,27 @@ export default function DeleteRule({ ruleID }: DeleteRuleProps) {
                 <p className="text-[18px] text-center">¿Estás seguro de que quieres eliminar estar regla? Esta contiene reglas hijas asociadas</p>
 
                 <div className="mt-12 flex items-center justify-center space-x-2 ">
-                    <DialogPrimitive.Close>
-                        <SocialButton
-                            variant="google"
-                            defaultText="Cancelar"
-                            customStyle="text-black bg-[#EBEBEBA8]/[66%] text-[20px]"
-                        />
-                    </DialogPrimitive.Close>
+                    <SocialButton
+                        variant="google"
+                        defaultText="Cancelar"
+                        customStyle="text-black bg-[#EBEBEBA8]/[66%] text-[20px]"
+                        onClick={() => { onOpenChange(false) }}
+                    />
 
-                    <DialogPrimitive.Close>
-                        <SocialButton
-                            variant="default"
-                            defaultText="Eliminar"
-                            customStyle="text-[20px]"
-                        />
-                    </DialogPrimitive.Close>
+                    <SocialButton
+                        variant="default"
+                        defaultText="Eliminar"
+                        customStyle="text-[20px]"
+                        onClick={() => { onOpenChange(false) }}
+                    />
+
 
                 </div>
 
             </DialogDescription>
+            <button onClick={() => { onOpenChange(false) }} className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground text-white">
+                <img src="/delete.svg" alt="Close" className="w-6 h-6" />
+            </button>
         </DialogContent>
     );
 }
