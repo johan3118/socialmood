@@ -48,13 +48,19 @@ export const SignInSchema = z.object({
 
 export const CreateRuleSchema = z.object({
   alias: z
-    .string(),
+    .string().
+    min(2, { message: "Debe tener como mínimo 2 caracteres" }),
   red_social: z
-    .string(),
+    .string()
+    .min(1, { message: "Debe seleccionar una red social" }),
   instrucciones: z.
-    string(),
+    string().
+    min(1, { message: "Debe tener como mínimo 1 caracteres" }).
+    max(1000, { message: "El máximo de caracteres es 1000" }),
   tipo: z.
-    string()
+    string().min(1, { message: "Debe seleccionar un tipo de regla" }),
+  subcategorias: z.
+    array(z.string().min(1)).refine((value) => value.some((item) => item)),
 });
 
 
@@ -121,7 +127,7 @@ export const CreateUserSchema = z
     path: ["confirmPassword"],
   });
 
-  // Add Social Media Account Schema
+// Add Social Media Account Schema
 export const AddSocialSchema = z.object({
   platform: z.string().min(1, { message: "Debe seleccionar una plataforma" }),
   account: z.string().min(1, { message: "Debe seleccionar una cuenta" }),

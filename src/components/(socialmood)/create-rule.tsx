@@ -11,7 +11,7 @@ import {
     DialogClose,
 } from "@/components/ui/dialog"
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 
 import { CreateRuleSchema } from "../../types";
@@ -23,6 +23,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+import { Checkbox } from "@/components/ui/checkbox";
 
 import {
     Form,
@@ -40,6 +42,25 @@ interface CreateRuleProps {
     onOpenChange: (newOpenValue: boolean) => void;
 }
 
+const items = [
+    {
+        id: "1",
+        label: "Recomendación",
+    },
+    {
+        id: "2",
+        label: "Consulta",
+    },
+    {
+        id: "3",
+        label: "Queja",
+    },
+    {
+        id: "4",
+        label: "Elogio",
+    }
+] as const
+
 export default function CreateRule({ onOpenChange }: CreateRuleProps) {
 
     const [isPending, setIsPending] = useState(false);
@@ -50,14 +71,21 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
             alias: "",
             red_social: "1",
             tipo: "1",
-            instrucciones: ""
+            instrucciones: "",
+            subcategorias: [],
         },
     });
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
         setIsPending(true);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        console.log(values);
+        form.reset();
         setIsPending(false);
+        onOpenChange(false);
+    }
+
+    async function onClose() {
+        form.reset();
         onOpenChange(false);
     }
 
@@ -109,7 +137,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                             </div>
                             <hr className="my-3" />
                             <div className="flex w-full space-x-28">
-                                <div className="w-1/2 ">
+                                <div className="w-1/2 space-y-3">
                                     <FormField
                                         control={form.control}
                                         name="red_social"
@@ -134,6 +162,48 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                                             </FormItem>
                                         )}
                                     />{" "}
+                                    <FormField
+                                        control={form.control}
+                                        name="subcategorias"
+                                        render={() => (
+                                            <FormItem>
+                                                <FormLabel className="block text-sm font-medium">Subcategorias</FormLabel>
+                                                {items.map((item) => (
+                                                    <FormField
+                                                        key={item.id}
+                                                        control={form.control}
+                                                        name="subcategorias"
+                                                        render={({ field }) => {
+                                                            return (
+                                                                <FormItem
+                                                                    key={item.id}
+                                                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                                                >
+                                                                    <FormControl>
+                                                                        <Checkbox
+                                                                            checked={field.value?.includes(item.id)}
+                                                                            onCheckedChange={(checked) => {
+                                                                                return checked
+                                                                                    ? field.onChange([...field.value, item.id])
+                                                                                    : field.onChange(
+                                                                                        field.value?.filter(
+                                                                                            (value) => value !== item.id
+                                                                                        )
+                                                                                    )
+                                                                            }}
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormLabel className="font-normal">
+                                                                        {item.label}
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            )
+                                                        }}
+                                                    />
+                                                ))}
+                                            </FormItem>
+                                        )}
+                                    />
                                 </div>
                                 <div className="w-1/2">
                                     <FormField
@@ -174,7 +244,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                                                     <Textarea placeholder="Redactar instrucciones..." className="w-full px-3 py-2 
                     rounded-[12px] border-transparent
                     focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black " id="instrucciones" name="instrucciones" defaultValue={field.value} />
+                    bg-[#EBEBEB] text-black " {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -183,12 +253,11 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                                 </div>
                             </div>
 
-
                         </div>
                     </DialogDescription>
                 </form>
             </Form>
-            <button onClick={() => { onOpenChange(false) }} className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground text-white">
+            <button onClick={onClose} className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground text-white">
                 <img src="/delete.svg" alt="Close" className="w-6 h-6" />
             </button>
         </DialogContent>
