@@ -7,12 +7,12 @@ import {
     DialogContent,
     DialogDescription,
     DialogHeader,
-    DialogTitle
+    DialogTitle,
+    DialogClose,
 } from "@/components/ui/dialog"
 
 import { useState } from "react";
 
-import { Checkbox } from "@/components/ui/checkbox";
 
 import { CreateRuleSchema } from "../../types";
 
@@ -24,6 +24,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import { Checkbox } from "@/components/ui/checkbox";
+
 import {
     Form,
     FormControl,
@@ -32,39 +34,35 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-
 import { Input } from "@/components/ui/input";
 
 import SocialButton from "./social-button";
-import { Label } from "../ui/label";
 
-interface EditRuleProps {
-    ruleID: number;
+interface CreateRuleChildProps {
     onOpenChange: (newOpenValue: boolean) => void;
-
+    parentID: number;
 }
 
-export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
+const items = [
+    {
+        id: "1",
+        label: "Recomendación",
+    },
+    {
+        id: "2",
+        label: "Consulta",
+    },
+    {
+        id: "3",
+        label: "Queja",
+    },
+    {
+        id: "4",
+        label: "Elogio",
+    }
+] as const
 
-
-    const items = [
-        {
-            id: "1",
-            label: "Recomendación",
-        },
-        {
-            id: "2",
-            label: "Consulta",
-        },
-        {
-            id: "3",
-            label: "Queja",
-        },
-        {
-            id: "4",
-            label: "Elogio",
-        }
-    ] as const
+export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleChildProps) {
 
     const [isPending, setIsPending] = useState(false);
 
@@ -99,7 +97,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                     <DialogHeader className="w-full">
                         <DialogTitle className="flex justify-between w-full mt-6">
                             <div className="flex"><img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
-                                <h1 className="ml-2 text-[40px]">Editar Regla</h1>
+                                <h1 className="ml-2 text-[40px]">Crear Regla</h1>
                             </div>
                             <SocialButton
                                 variant="default"
@@ -207,24 +205,8 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="instrucciones"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="block text-sm font-medium">Instrucciones</FormLabel>
-                                                <FormControl>
-                                                    <Textarea placeholder="Redactar instrucciones..." className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black " {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
                                 </div>
-                                <div className="w-1/2 space-y-3">
+                                <div className="w-1/2">
                                     <FormField
                                         control={form.control}
                                         name="tipo"
@@ -249,40 +231,36 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                             </FormItem>
                                         )}
                                     />{" "}
-                                    <div>
-                                        <Label className="text-lg font-semibold">Reglas relacionadas</Label>
-                                        <div className="mt-1">
-                                            <SocialButton
-                                                variant="default"
-                                                isPending={isPending}
-                                                defaultText="Añadir Hijo +"
-                                                customStyle="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white"
-                                                type="button"
-                                                size="sm"
-                                            />
-                                            <div className="space-y-2 mt-2">
-                                                {[2, 3, 4].map((num) => (
-                                                    <div key={num} className="flex items-center space-x-2">
-                                                        <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                                            0{num}
-                                                        </div>
-                                                        <span>Regla xxxxxxxxxxx</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-
+                            <div className="flex w-full">
+                                <div className="w-full mt-5">
+                                    <FormField
+                                        control={form.control}
+                                        name="instrucciones"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="block text-sm font-medium">Instrucciones</FormLabel>
+                                                <FormControl>
+                                                    <Textarea placeholder="Redactar instrucciones..." className="w-full px-3 py-2 
+                    rounded-[12px] border-transparent
+                    focus:outline-none focus:ring-2 focus:ring-primary
+                    bg-[#EBEBEB] text-black " {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            </div>
 
                         </div>
                     </DialogDescription>
                 </form>
-            </Form >
+            </Form>
             <button onClick={onClose} className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground text-white">
                 <img src="/delete.svg" alt="Close" className="w-6 h-6" />
             </button>
-        </DialogContent >
+        </DialogContent>
     );
 }

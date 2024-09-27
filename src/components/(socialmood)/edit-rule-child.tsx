@@ -38,13 +38,13 @@ import { Input } from "@/components/ui/input";
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";
 
-interface EditRuleProps {
+interface EditRuleChildProps {
     ruleID: number;
     onOpenChange: (newOpenValue: boolean) => void;
 
 }
 
-export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
+export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildProps) {
 
 
     const items = [
