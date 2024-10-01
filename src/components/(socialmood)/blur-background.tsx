@@ -12,7 +12,7 @@ const BlurredContainer: React.FC<BlurredContainerProps> = ({
   customStyle = "",
 }) => {
   const baseStyles =
-    "relative flex flex-col items-center justify-center p-6 md:p-10 max-w-full w-[90%] md:w-[600px] border border-white/80 rounded-[30px] md:rounded-[50px] m-4 z-50 drop-shadow-xl";
+    "relative flex flex-col items-center justify-center p-6 md:p-10 max-w-full w-[90%] md:w-[600px] border border-white/80 rounded-[30px] md:rounded-[50px] m-4 z-49 drop-shadow-xl";
 
   const variantStyles =
     variant === "blur"

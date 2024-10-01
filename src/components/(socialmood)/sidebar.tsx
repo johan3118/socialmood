@@ -35,7 +35,7 @@ const menuItems: MenuItem[] = [
     subItems: [
       { id: 'interactions', label: 'Interacciones', route: '/app/listado-interacciones', color: '#F59E0B' },
       { id: 'responses', label: 'Respuestas', route: '/app/listado-interacciones', color: '#10B981' },
-      { id: 'rules', label: 'Reglas', route: '/app/listado-interacciones', color: '#F59E0B' },
+      { id: 'rules', label: 'Reglas', route: '/app/reglas', color: '#F59E0B' },
       
     ],
   },

@@ -14,7 +14,7 @@ export default function MainBar() {
           title: 'Respuestas',
           phrase: 'Revisa las respuestas automaticas de tus interacciones.'
         };
-      case '/app/listado-reglas':
+      case '/app/reglas':
         return {
           title: 'Reglas',
           phrase: 'Configura las reglas para tus respuestas automaticas.'
@@ -52,10 +52,6 @@ export default function MainBar() {
         </div>
         <UserProfile />
       </header>
-      <div className='flex mx-12 my-8  space-x-4 '>
-
-      </div>
-
     </div>
   );
 }

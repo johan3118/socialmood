@@ -45,6 +45,25 @@ export const SignInSchema = z.object({
     .max(20, { message: "El máximo de caracteres es 20" }),
 });
 
+
+export const CreateRuleSchema = z.object({
+  alias: z
+    .string().
+    min(2, { message: "Debe tener como mínimo 2 caracteres" }),
+  red_social: z
+    .string()
+    .min(1, { message: "Debe seleccionar una red social" }),
+  instrucciones: z.
+    string().
+    min(1, { message: "Debe tener como mínimo 1 caracteres" }).
+    max(1000, { message: "El máximo de caracteres es 1000" }),
+  tipo: z.
+    string().min(1, { message: "Debe seleccionar un tipo de regla" }),
+  subcategorias: z.
+    array(z.string().min(1)).refine((value) => value.some((item) => item)),
+});
+
+
 export type VariantType =
   | "default"
   | "blue"
@@ -108,21 +127,28 @@ export const CreateUserSchema = z
     path: ["confirmPassword"],
   });
 
-  export type Interacciones = {
+// Add Social Media Account Schema
+export const AddSocialSchema = z.object({
+  platform: z.string().min(1, { message: "Debe seleccionar una plataforma" }),
+  account: z.string().min(1, { message: "Debe seleccionar una cuenta" }),
+  color: z.string().min(1, { message: "Debe seleccionar un color" }),
+});
+
+export type Interacciones = {
   fecha_recepcion: string;
-  fecha_respuesta: Date | null; 
-  mensaje: string; 
-  enlace_publicacion: string; 
-  codigo_cuenta_emisor: string; 
+  fecha_respuesta: Date | null;
+  mensaje: string;
+  enlace_publicacion: string;
+  codigo_cuenta_emisor: string;
   enlace_foto_emisor: string;
-  codigo_cuenta_receptor: string; 
-  id_cuenta_receptor: number; 
-  nombre_red_social_receptor: string; 
-  categoria: string; 
+  codigo_cuenta_receptor: string;
+  id_cuenta_receptor: number;
+  nombre_red_social_receptor: string;
+  categoria: string;
   subcategoria: string;
-  emociones_predominantes: string; 
-  respondida: boolean; 
-  respuesta: string | null; 
-  usuario_cuenta_receptor: string; 
+  emociones_predominantes: string;
+  respondida: boolean;
+  respuesta: string | null;
+  usuario_cuenta_receptor: string;
   usuario_cuenta_emisor: string;
 };
