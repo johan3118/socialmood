@@ -67,16 +67,19 @@ const ListadoInteraccionesTable: React.FC = () => {
 
     const handleAddRule = () => {
         setOpen(true);
+        setRuleID(0);
         setAction("Create");
     };
 
     const handleEditRule = (ruleID: number) => {
         setOpen(true);
+        setRuleID(ruleID);
         setAction("Edit");
     }
 
     const handleDeleteRule = (ruleID: number) => {
         setOpen(true);
+        setRuleID(ruleID);
         setAction("Delete");
     }
 
