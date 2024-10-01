@@ -1,8 +1,7 @@
 "use client"
 import { usePathname } from 'next/navigation';
 import UserProfile from "@/components/(socialmood)/user-profile";
-import SearchBar from "@/components/(socialmood)/searchbar"; 
-import SocialButton from "@/components/(socialmood)/social-button"; 
+
 
 export default function MainBar() {
   const pathname = usePathname();
@@ -54,13 +53,7 @@ export default function MainBar() {
         <UserProfile />
       </header>
       <div className='flex mx-12 my-8  space-x-4 '>
-      <SearchBar />
-      <SocialButton
-            customStyle="w-32 "
-            variant="default"
-            defaultText="Filtros"
-            type="submit"
-          />
+
       </div>
 
     </div>
