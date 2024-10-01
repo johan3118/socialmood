@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import SocialButton from "./social-button";
 
-export default function FilterModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boolean; onClose: () => void; onSave: (filter: any ) => void }) {
   const [selectedFilters, setSelectedFilters] = useState({
     category: [],
     subcategory: [],
@@ -11,6 +11,11 @@ export default function FilterModal({ isOpen, onClose }: { isOpen: boolean; onCl
   });
 
   if (!isOpen) return null;
+
+  const onSaveFilters = () => { 
+    onSave(selectedFilters);
+    onClose();
+  }
 
   const handleCheckboxChange = (type: string, value: string) => {
     setSelectedFilters((prevState) => {
@@ -117,7 +122,7 @@ export default function FilterModal({ isOpen, onClose }: { isOpen: boolean; onCl
         {/* Botón Aplicar Filtros */}
         <div className="flex justify-end">
         <SocialButton
-        onClick={onClose} 
+        onClick={onSaveFilters} 
         customStyle="w-32"
         variant="default"
         defaultText="Aplicar filtros"
