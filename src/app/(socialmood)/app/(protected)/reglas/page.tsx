@@ -37,8 +37,7 @@ function PantallaGestionReglasPage() {
         onClick={openFilterModal} 
       />
         <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
-        <ListadoReglasTable
-        filter={selectedFilters}
+        <ListadoReglasTable filter={selectedFilters}
         />
     </div>
   )

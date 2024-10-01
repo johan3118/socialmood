@@ -26,7 +26,11 @@ interface Reglas {
     subcategorias: string[];
 }
 
-const ListadoReglasTable: React.FC = (filter: any) => {
+interface ListadoReglasTableProps {
+    filter: any;
+}
+
+const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
     const [Reglas, setReglas] = useState<Reglas[]>([]);
     const [Open, setOpen] = useState<boolean>(false);
 
@@ -49,7 +53,7 @@ const ListadoReglasTable: React.FC = (filter: any) => {
 
     const fetchReglas = async () => {
         try {
-            const reglas = await Promise.all(await getRules(20));
+            const reglas = await Promise.all(await getRules(20, filter));
             setReglas(reglas);
         } catch (error) {
             console.error("Error al cargar las reglas:", error);
@@ -85,8 +89,8 @@ const ListadoReglasTable: React.FC = (filter: any) => {
 
     useEffect(() => {
         fetchReglas();
-    }, []);
-    
+    }, [filter]);
+
     return (
         <Dialog open={Open}>
             <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-10 mx-12 py-8">
