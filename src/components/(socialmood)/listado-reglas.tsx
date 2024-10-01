@@ -26,7 +26,7 @@ interface Reglas {
     subcategorias: string[];
 }
 
-const ListadoInteraccionesTable: React.FC = () => {
+const ListadoReglasTable: React.FC = (filter: any) => {
     const [Reglas, setReglas] = useState<Reglas[]>([]);
     const [Open, setOpen] = useState<boolean>(false);
 
@@ -198,4 +198,4 @@ const ListadoInteraccionesTable: React.FC = () => {
     );
 };
 
-export default ListadoInteraccionesTable;
+export default ListadoReglasTable;
