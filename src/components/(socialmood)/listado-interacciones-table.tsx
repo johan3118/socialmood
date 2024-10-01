@@ -1,9 +1,10 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from "react";
 import { getInteractions } from "@/app/actions/(socialmood)/get-interactions.actions";
 import { useRouter } from 'next/navigation';
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils"; // Importación de la función 'cn'
+import { cn } from "@/lib/utils"; 
+
 
 interface Perfil {
   red_social: string;
@@ -24,6 +25,7 @@ const ListadoInteraccionesTable: React.FC = () => {
   // Estado para manejar los planes obtenidos de la base de datos
   const [Interacciones, setInteracciones] = useState<Interacciones[]>([]);
   const router = useRouter();
+
 
   const socialIconMap: { [key: string]: string } = {
     Instagram: "/instagram.svg",
@@ -63,11 +65,14 @@ const ListadoInteraccionesTable: React.FC = () => {
 
   };
 
+
+
   return (
     <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-10 mx-12 py-8">
       <div className="container mx-auto p-6">
         <div className="flex justify-between mb-6">
           <h1 className="text-[24px] text-white font-bold">Interacciones Capturadas</h1>
+ 
           <button
             className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center"
             onClick={handleRefreshTable}
@@ -151,6 +156,7 @@ const ListadoInteraccionesTable: React.FC = () => {
   ))}
 </tbody>
         </table>
+
       </div>
     </div>
   );
