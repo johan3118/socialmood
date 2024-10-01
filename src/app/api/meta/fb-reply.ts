@@ -1,9 +1,11 @@
 import { loadFacebookSDK, getFB } from './meta';
 
 /**
- * @param postId 
+ * @param commentId 
+ * @param message 
+ * @param accessToken 
  */
-export const fetchPostDetails = async (postId: string): Promise<any> => {
+export const replyToComment = async (commentId: string, message: string, accessToken: string): Promise<any> => {
   await loadFacebookSDK();
 
   const FB = getFB();
@@ -14,14 +16,14 @@ export const fetchPostDetails = async (postId: string): Promise<any> => {
 
   return new Promise((resolve, reject) => {
     FB.api(
-      `/${postId}`,
-      'GET',
-      { fields: 'id,message,created_time,full_picture' }, 
+      `/${commentId}/comments`,
+      'POST',
+      { message, access_token: accessToken },
       (response: any) => {
         if (response && !response.error) {
-          resolve(response); 
+          resolve(response);
         } else {
-          console.error("Error fetching post details:", response.error);
+          console.error("Error replying to comment:", response.error);
           reject(response.error);
         }
       }

@@ -8,45 +8,37 @@ declare global {
 let sdkLoadingPromise: Promise<void> | null = null;
 
 export const loadFacebookSDK = (): Promise<void> => {
-  // Ensure that we return the same Promise if SDK is already being loaded
   if (sdkLoadingPromise) {
     return sdkLoadingPromise;
   }
 
   sdkLoadingPromise = new Promise((resolve, reject) => {
-    // Check if SDK is already loaded
     if (typeof window.FB !== 'undefined') {
       resolve();
       return;
     }
 
-    // Load the Facebook SDK asynchronously
-    (function (d, s, id) {
-      var js: any,
-        fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {
-        resolve(); // SDK is already loaded
-        return;
-      }
-      js = d.createElement(s);
-      js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js";
-
-      fjs?.parentNode?.insertBefore(js, fjs);
-    })(document, "script", "facebook-jssdk");
-
     window.fbAsyncInit = function () {
       window.FB.init({
-        appId: "816292020710832", // Replace with your app ID
+        appId: "857764283115548", 
         cookie: true,
         xfbml: true,
-        version: "v20.0", // Replace with your API version
+        version: "v20.0",
       });
-
       resolve();
     };
 
-    // Add error handling for script loading
+    (function (d, s, id) {
+      let js: any, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        resolve();
+        return;
+      }
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs?.parentNode?.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
     const fbScript = document.getElementById("facebook-jssdk") as HTMLScriptElement;
     fbScript.onerror = () => reject("Failed to load Facebook SDK.");
   });
@@ -54,15 +46,39 @@ export const loadFacebookSDK = (): Promise<void> => {
   return sdkLoadingPromise;
 };
 
-// Function to check login state
 export const checkLoginState = (callback: (response: any) => void) => {
-  if (typeof window.FB !== 'undefined') {
-    window.FB.getLoginStatus(function (response: any) {
-      callback(response);
-    });
-  } else {
-    console.error("Facebook SDK is not fully loaded yet.");
-  }
+  loadFacebookSDK().then(() => {
+    if (typeof window.FB !== 'undefined') {
+      window.FB.getLoginStatus(function (response: any) {
+        if (response.status === 'connected') {
+          console.log("User is logged in and the SDK is managing the session.");
+          callback(response);
+        } else {
+          console.log("User is not logged in.");
+        }
+      });
+    }
+  });
+};
+
+export const loginWithFacebook = () => {
+  loadFacebookSDK().then(() => {
+    if (typeof window.FB !== 'undefined') {
+      window.FB.login(
+        function (response: any) {
+          if (response.authResponse) {
+            console.log("User logged in:", response);
+            window.FB.api('/me', function (userResponse: any) {
+              console.log("User Info:", userResponse);
+            });
+          } else {
+            console.log("User cancelled login or did not authorize.");
+          }
+        },
+        { scope: 'public_profile,email,pages_read_engagement,pages_show_list,pages_manage_posts' }  
+      );
+    }
+  });
 };
 
 export const getFB = () => {

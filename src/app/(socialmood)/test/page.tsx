@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { loadFacebookSDK, checkLoginState, getFB } from "@/app/api/meta/meta"; // Adjust path as necessary
+import { loadFacebookSDK, getFB, checkLoginState } from "@/app/api/meta/meta";
 
 const FacebookLogin = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if the user is logged in
-  const [isSDKLoaded, setIsSDKLoaded] = useState(false); // Track if the SDK is loaded
-  const [userName, setUserName] = useState<string | null>(null); // Store user's name
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSDKLoaded, setIsSDKLoaded] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userPages, setUserPages] = useState<any[]>([]);
 
   useEffect(() => {
-    // Load Facebook SDK from external file
     loadFacebookSDK()
       .then(() => {
-        setIsSDKLoaded(true); // Mark the SDK as loaded
+        setIsSDKLoaded(true);
         checkLoginState(statusChangeCallback);
       })
       .catch((error) => {
@@ -21,37 +21,56 @@ const FacebookLogin = () => {
   }, []);
 
   useEffect(() => {
-    // Parse the XFBML elements (like fb-login-button) after SDK loads
     if (isSDKLoaded) {
       const FB = getFB();
       if (FB) {
-        FB.XFBML.parse(); // Ensure that XFBML elements are parsed and rendered
+        FB.XFBML.parse();
       }
     }
   }, [isSDKLoaded]);
 
-  // Handle login status changes
   const statusChangeCallback = (response: any) => {
     console.log("statusChangeCallback response:", response);
 
     if (response.status === "connected") {
-      // User is logged in
       setIsLoggedIn(true);
-      fetchUserName(); // Fetch the user’s name
+      fetchUserName();
+      fetchUserPages();
     } else {
+      console.log("User is not logged in.");
       setIsLoggedIn(false);
     }
   };
 
-  // Fetch the user's name via the Facebook API
   const fetchUserName = () => {
     const FB = getFB();
     if (FB) {
-      FB.api("/me", function (response: any) {
-        setUserName(response.name); // Store the user's name in the state
+      FB.api("/me", { fields: "name" }, function (response: any) {
+        if (response && !response.error) {
+          console.log("User Name:", response.name);
+          setUserName(response.name);
+        } else {
+          console.error("Error fetching user information:", response.error);
+        }
       });
-    } else {
-      console.error("Facebook SDK not loaded yet.");
+    }
+  };
+
+  const fetchUserPages = () => {
+    const FB = getFB();
+    if (FB) {
+      FB.api(
+        "/me/accounts",
+        { fields: "name,id,access_token" },
+        function (response: any) {
+          if (response && !response.error) {
+            console.log("User Pages:", response.data);
+            setUserPages(response.data);
+          } else {
+            console.error("Error fetching user pages:", response.error);
+          }
+        }
+      );
     }
   };
 
@@ -62,12 +81,24 @@ const FacebookLogin = () => {
       ) : isLoggedIn ? (
         <div>
           <h3>Welcome, {userName ? userName : "User"}!</h3>
+          <h4>Associated Pages:</h4>
+          <ul>
+            {userPages.length > 0 ? (
+              userPages.map((page) => (
+                <li key={page.id}>
+                  {page.name} (Page ID: {page.id})
+                </li>
+              ))
+            ) : (
+              <li>No pages available</li>
+            )}
+          </ul>
         </div>
       ) : (
         <div>
           <div
             className="fb-login-button"
-            data-scope="public_profile,email"
+            data-scope="public_profile,email,pages_read_engagement,pages_show_list,pages_manage_posts"
             data-width=""
             data-size="large"
             data-button-type="login_with"
