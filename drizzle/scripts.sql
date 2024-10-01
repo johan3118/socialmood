@@ -96,6 +96,18 @@ CREATE TABLE `metodos_pago` (
 	`enlace_plataforma` text
 );
 --> statement-breakpoint
+CREATE TABLE `oauth_account` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`id_usuario` integer NOT NULL,
+	`id_proveedor_autenticacion` integer NOT NULL,
+	`codigo_usuario_proveedor` text NOT NULL,
+	`token_acceso` text NOT NULL,
+	`token_refresh` text NOT NULL,
+	`expira` integer NOT NULL,
+	FOREIGN KEY (`id_usuario`) REFERENCES `usuarios`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`id_proveedor_autenticacion`) REFERENCES `proveedores_autenticacion`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
 CREATE TABLE `planes` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`nombre` text NOT NULL,
@@ -234,8 +246,7 @@ CREATE UNIQUE INDEX `facturas_codigo_transaccion_unique` ON `facturas` (`codigo_
 CREATE UNIQUE INDEX `invitaciones_subscripcion_codigo_unique` ON `invitaciones_subscripcion` (`codigo`);--> statement-breakpoint
 CREATE UNIQUE INDEX `metodos_pago_nombre_unique` ON `metodos_pago` (`nombre`);--> statement-breakpoint
 CREATE UNIQUE INDEX `metodos_pago_enlace_plataforma_unique` ON `metodos_pago` (`enlace_plataforma`);--> statement-breakpoint
-CREATE UNIQUE INDEX `planes_nombre_unique` ON `planes` (`nombre`);--> statement-breakpoint
-CREATE UNIQUE INDEX `planes_paypal_plan_id_unique` ON `planes` (`paypal_plan_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `planes_nombre_paypal_plan_id_unique` ON `planes` (`nombre`,`paypal_plan_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `proveedores_autenticacion_nombre_unique` ON `proveedores_autenticacion` (`nombre`);--> statement-breakpoint
 CREATE UNIQUE INDEX `proveedores_autenticacion_enlace_unique` ON `proveedores_autenticacion` (`enlace`);--> statement-breakpoint
 CREATE UNIQUE INDEX `redes_sociales_nombre_unique` ON `redes_sociales` (`nombre`);--> statement-breakpoint
