@@ -23,7 +23,7 @@ export default function DeleteRuleChild({ ruleID, onOpenChange }: DeleteRuleChil
 
             <DialogDescription className="w-[70%]">
                 <hr className="my-3" />
-                <p className="text-[18px] text-center">¿Estás seguro de que quieres eliminar estar regla? Esta contiene reglas hijas asociadas</p>
+                <p className="text-[18px] text-center">¿Estás seguro de que quieres eliminar estar regla?</p>
 
                 <div className="mt-12 flex items-center justify-center space-x-2 ">
                     <SocialButton

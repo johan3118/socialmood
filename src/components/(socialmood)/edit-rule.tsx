@@ -1,6 +1,3 @@
-"use client";
-
-
 import React from "react";
 
 import {
@@ -21,6 +18,14 @@ import { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    Dialog,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+
+import CreateRuleChild from "@/components/(socialmood)/create-rule-child";
+import EditRuleChild from "@/components/(socialmood)/edit-rule-child";
+import DeleteRuleChild from "@/components/(socialmood)/delete-rule-child";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -46,7 +51,21 @@ interface EditRuleProps {
 
 export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
 
+    const [action, setAction] = useState<string>("Create");
 
+    const [Open, setOpen] = useState<boolean>(false);
+    
+    const handleAddRule = () => {
+        setAction("Create");
+    };
+
+    const handleEditRule = (ruleID: number) => {
+        setAction("Edit");
+    }
+
+    const handleDeleteRule = (ruleID: number) => {
+        setAction("Delete");
+    }
     const items = [
         {
             id: "1",
@@ -90,6 +109,10 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
     async function onClose() {
         form.reset();
         onOpenChange(false);
+    }
+
+    const handleOpenChild = (newOpenValue: boolean) => {
+        setOpen(newOpenValue);
     }
 
     return (
@@ -138,7 +161,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                     />
                                 </div>
                             </div>
-                            <hr className="my-3" />
+                            <hr className="my-3 border-2 bg-white bg-opacity-30" />
                             <div className="flex w-full space-x-28">
                                 <div className="w-1/2 space-y-3">
                                     <FormField
@@ -251,25 +274,56 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                     />{" "}
                                     <div>
                                         <Label className="text-lg font-semibold">Reglas relacionadas</Label>
-                                        <div className="mt-1">
-                                            <SocialButton
-                                                variant="default"
-                                                isPending={isPending}
-                                                defaultText="Añadir Hijo +"
-                                                customStyle="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white"
-                                                type="button"
-                                                size="sm"
-                                            />
-                                            <div className="space-y-2 mt-2">
-                                                {[2, 3, 4].map((num) => (
-                                                    <div key={num} className="flex items-center space-x-2">
-                                                        <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                                            0{num}
+                                        <hr className="my-3 border-2 bg-white bg-opacity-30" />
+                                        <div className="mt-3">
+                                            <Dialog open={Open}>
+                                                <DialogTrigger>
+                                                    <SocialButton
+                                                        variant="default"
+                                                        isPending={isPending}
+                                                        defaultText="Añadir Hijo +"
+                                                        customStyle="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white text-[16px]"
+                                                        type="button"
+                                                        size="sm"
+                                                        onClick={handleAddRule}
+                                                    />
+                                                </DialogTrigger>
+
+
+                                                <div className="space-y-2 mt-2">
+                                                    {[2, 3, 4].map((num) => (
+                                                        <div key={num} className="flex items-center space-x-2">
+                                                            <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                                                                0{num}
+                                                            </div>
+                                                            <span className="text-[16px]">Regla xxxxxxxxxxx</span>
+                                                            <div className="flex items-center space-x-2">
+                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleEditRule(1) }}>
+
+                                                                    <img
+                                                                        src="/edit.svg"
+                                                                        alt="Edit"
+                                                                        className=" w-6 h-6"
+                                                                    />
+                                                                </DialogTrigger>
+                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleDeleteRule(1) }}>
+                                                                    <img
+                                                                        src="/delete.svg"
+                                                                        alt="Delete"
+                                                                        className=" w-6 h-6"
+                                                                    />
+                                                                </DialogTrigger>
+                                                            </div>
                                                         </div>
-                                                        <span>Regla xxxxxxxxxxx</span>
-                                                    </div>
-                                                ))}
-                                            </div>
+                                                    ))}
+                                                </div>
+                                                {
+                                                    action === "Create" ? <CreateRuleChild onOpenChange={handleOpenChild} parentID={ruleID} /> :
+                                                        action === "Edit" ? <EditRuleChild ruleID={ruleID} onOpenChange={handleOpenChild} /> :
+                                                            action === "Delete" ? <DeleteRuleChild ruleID={ruleID} onOpenChange={handleOpenChild} /> : null
+                                                }
+
+                                            </Dialog>
                                         </div>
                                     </div>
                                 </div>

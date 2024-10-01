@@ -1,6 +1,3 @@
-"use client";
-
-
 import React from "react";
 
 import {
@@ -93,13 +90,13 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
     }
 
     return (
-        <DialogContent className="flex items-start md:w-[90%]">
+        <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full py-5">
                     <DialogHeader className="w-full">
                         <DialogTitle className="flex justify-between w-full mt-6">
                             <div className="flex"><img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
-                                <h1 className="ml-2 text-[40px]">Editar Regla</h1>
+                                <h1 className="ml-2 text-[40px]">Editar Regla Hijo</h1>
                             </div>
                             <SocialButton
                                 variant="default"
@@ -138,7 +135,7 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                     />
                                 </div>
                             </div>
-                            <hr className="my-3" />
+                            <hr className="my-3 border-2 bg-white bg-opacity-30" />
                             <div className="flex w-full space-x-28">
                                 <div className="w-1/2 space-y-3">
                                     <FormField
@@ -251,15 +248,8 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                     />{" "}
                                     <div>
                                         <Label className="text-lg font-semibold">Reglas relacionadas</Label>
+                                        <hr className="my-3 border-2 bg-white bg-opacity-30" />
                                         <div className="mt-1">
-                                            <SocialButton
-                                                variant="default"
-                                                isPending={isPending}
-                                                defaultText="Añadir Hijo +"
-                                                customStyle="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white"
-                                                type="button"
-                                                size="sm"
-                                            />
                                             <div className="space-y-2 mt-2">
                                                 {[2, 3, 4].map((num) => (
                                                     <div key={num} className="flex items-center space-x-2">
@@ -274,8 +264,6 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </DialogDescription>
                 </form>

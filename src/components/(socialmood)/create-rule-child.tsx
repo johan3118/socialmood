@@ -1,31 +1,18 @@
-"use client";
-
-
 import React from "react";
-
 import {
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogClose,
 } from "@/components/ui/dialog"
-
 import { useState } from "react";
-
-
 import { CreateRuleSchema } from "../../types";
-
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 import { Checkbox } from "@/components/ui/checkbox";
-
 import {
     Form,
     FormControl,
@@ -35,7 +22,6 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import SocialButton from "./social-button";
 
 interface CreateRuleChildProps {
@@ -91,13 +77,13 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
     }
 
     return (
-        <DialogContent className="flex items-start md:w-[90%]">
+        <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full py-5">
                     <DialogHeader className="w-full">
                         <DialogTitle className="flex justify-between w-full mt-6">
                             <div className="flex"><img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
-                                <h1 className="ml-2 text-[40px]">Crear Regla</h1>
+                                <h1 className="ml-2 text-[40px]">Crear Regla Hijo</h1>
                             </div>
                             <SocialButton
                                 variant="default"

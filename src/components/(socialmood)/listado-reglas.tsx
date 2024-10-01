@@ -1,7 +1,7 @@
-"use client";
-import React, { useEffect, useState } from "react";
+"use client"
+
+import React, { useState, useEffect } from "react";
 import { getRules } from "@/app/actions/(socialmood)/rules.actions";
-import { useRouter } from 'next/navigation';
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils"; // Importación de la función 'cn'
 import CreateRule from "@/components/(socialmood)/create-rule";
@@ -29,7 +29,6 @@ interface Reglas {
 const ListadoInteraccionesTable: React.FC = () => {
     const [Reglas, setReglas] = useState<Reglas[]>([]);
     const [Open, setOpen] = useState<boolean>(false);
-    const router = useRouter();
 
     const [action, setAction] = useState<string>("Create");
     const [ruleID, setRuleID] = useState<number>(0);
@@ -57,16 +56,9 @@ const ListadoInteraccionesTable: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        fetchReglas();
-    }, []);
-
     const handleOpenChange = (newOpenValue: boolean) => {
         setOpen(newOpenValue);
     };
-
-
-
 
     const handleRefreshTable = () => {
         fetchReglas();
@@ -88,6 +80,10 @@ const ListadoInteraccionesTable: React.FC = () => {
         setAction("Delete");
     }
 
+    useEffect(() => {
+        fetchReglas();
+    }, []);
+    
     return (
         <Dialog open={Open}>
             <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-10 mx-12 py-8">
