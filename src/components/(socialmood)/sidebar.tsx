@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { ChevronDown, ChevronUp, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { signOut } from '@/app/actions/(backoffice)/auth.actions'
 
 interface MenuItem {
   id: string
@@ -54,6 +55,10 @@ export default function Sidebar() {
     router.push(route)
   }
 
+  const  handleSignOut = async () => {
+    await signOut()
+  }
+
   return (
     <div className="w-64 h-screen bg-[#241F2C] text-white p-6 flex flex-col">
       <div className="mb-10 mt-6 pl-5">
@@ -102,7 +107,7 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <button className="mt-auto p-2 rounded hover:bg-gray-800 flex items-center">
+      <button className="mt-auto p-2 rounded hover:bg-gray-800 flex items-center" onClick={handleSignOut}>
         <LogOut size={18} className="mr-3" />
         Cerrar sesión
       </button>
