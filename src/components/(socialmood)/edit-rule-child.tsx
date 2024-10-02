@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
     DialogContent,
@@ -32,6 +32,9 @@ import {
 
 import { Input } from "@/components/ui/input";
 
+import { getRuleSubcategories, getSocialMediaAccounts, getRule, createChildRule } from "@/app/actions/(socialmood)/rules.actions";
+
+
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";
 
@@ -43,6 +46,9 @@ interface EditRuleChildProps {
 
 export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildProps) {
 
+    const [open, setOpen] = useState(false);
+
+    const [redSocial, setRedSocial] = useState("");
 
     const items = [
         {
@@ -63,13 +69,16 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
         }
     ] as const
 
+    const subscription = 20
+
+
     const [isPending, setIsPending] = useState(false);
 
     const form = useForm<z.infer<typeof CreateRuleSchema>>({
         resolver: zodResolver(CreateRuleSchema),
         defaultValues: {
             alias: "",
-            red_social: "1",
+            red_social: redSocial,
             tipo: "1",
             instrucciones: "",
             subcategorias: [],
@@ -89,10 +98,62 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
         onOpenChange(false);
     }
 
+    const [Subcategorias, SetSubcategorias] = useState([
+        {
+            id: "1",
+            label: "Recomendación",
+        },
+        {
+            id: "2",
+            label: "Consulta",
+        },
+        {
+            id: "3",
+            label: "Queja",
+        },
+        {
+            id: "4",
+            label: "Elogio",
+        }
+    ]);
+
+    const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
+
+
+    async function fetchSocialMedia() {
+        const socialMedia = await getRule(ruleID);
+        const cuenta = (socialMedia?.perfil?.id_cuenta?.toString() || "");
+        setRedSocial(cuenta);
+        form.setValue("red_social", cuenta);
+    }
+
+    const fetchSubcategorias = async () => {
+        const subcategorias = await getRuleSubcategories(ruleID);
+        SetSubcategorias(subcategorias.map(subcategoria => ({
+            ...subcategoria,
+            id: subcategoria.id.toString()
+        })));
+    };
+
+    async function fetchSocialMediaAccounts() {
+        const accounts = await getSocialMediaAccounts(subscription);
+        setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+    }
+
+    const updateData = async () => {
+        await fetchSubcategorias();
+        await fetchSocialMediaAccounts();
+        await fetchSocialMedia();
+    }
+
+    useEffect(() => {
+        updateData();
+    }, [ruleID]);
+
     return (
         <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full py-5">
+                <form className="space-y-5 w-full py-5">
                     <DialogHeader className="w-full">
                         <DialogTitle className="flex justify-between w-full mt-6">
                             <div className="flex"><img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
@@ -104,7 +165,8 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                 defaultText="Guardar"
                                 customStyle="text-[20px]"
                                 pendingText="Guardando..."
-                                type="submit"
+                                type="button"
+                                onClick={()=>{onSubmit(form.getValues())}}
                             />
                         </DialogTitle>
                     </DialogHeader>
@@ -145,16 +207,19 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                             <FormItem>
                                                 <FormLabel className="block text-sm font-medium">Red Social</FormLabel>
                                                 <FormControl>
-                                                    <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value}>
-                                                        <SelectTrigger className="w-full px-3 py-2 
+                                                    <Select name="red_social" onValueChange={field.onChange} value={redSocial}>
+                                                        <SelectTrigger disabled className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
                             bg-white text-[#2C2436] ">
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="1">@titobarbershop</SelectItem>
-                                                            <SelectItem value="2">@martasalon</SelectItem>
+                                                            {socialMedias.map((socialMedia) => (
+                                                                <SelectItem key={socialMedia.id} value={socialMedia.id}>
+                                                                    {socialMedia.label}
+                                                                </SelectItem>
+                                                            ))}
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>
