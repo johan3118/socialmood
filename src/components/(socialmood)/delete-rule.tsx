@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
     DialogContent,
@@ -10,9 +10,11 @@ import SocialButton from "./social-button";
 
 import { useState } from "react";
 
+
+
 import { toast } from "@/components/ui/use-toast";
 
-import { deleteRule } from "@/app/actions/(socialmood)/rules.actions";
+import { deleteRule, ruleHasChildren } from "@/app/actions/(socialmood)/rules.actions";
 
 interface DeleteRuleProps {
     ruleID: number;
@@ -22,6 +24,8 @@ interface DeleteRuleProps {
 
 export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
     const [isPending, setIsPending] = useState(false);
+
+    const [hasChildren, setHasChildren] = useState(false);
 
 
     const handleDeleteRule = async () => {
@@ -41,7 +45,18 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
             onOpenChange(false);
         }
         setIsPending(false);
+
+        
     }
+
+    useEffect(() => {
+        const fetchHasChildren = async () => {
+            const hasChildren = await ruleHasChildren(ruleID);
+            setHasChildren(hasChildren);
+        };
+        fetchHasChildren();
+    }, [ruleID]);
+
 
     return (
         <DialogContent>
@@ -52,7 +67,11 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
 
             <DialogDescription className="w-[70%]">
                 <hr className="my-3" />
-                <p className="text-[18px] text-center">¿Estás seguro de que quieres eliminar estar regla? Esta contiene reglas hijas asociadas</p>
+                <p className="text-[18px] text-center">
+                    {hasChildren
+                        ? '¿Estás seguro de que quieres eliminar esta regla? Esta contiene reglas hijas asociadas'
+                        : '¿Estás seguro de que quieres eliminar esta regla?'}
+                </p>
 
                 <div className="mt-12 flex items-center justify-center space-x-2 ">
                     <SocialButton

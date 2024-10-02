@@ -113,6 +113,7 @@ export async function getRules(subscriptionId: number, filter: any) {
       .where(
         and(
           eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId),
+          isNull(reglasTable.id_regla_padre),
           or(
             isCategoryFilter ? inArray(categoriasTable.nombre, categories) : undefined,
             isSubcategoryFilter ? inArray(subcategoriasTable.nombre, subcategories) : undefined,
@@ -310,12 +311,20 @@ export async function createRule(rule: {
   }
 }
 
-
+export async function ruleHasChildren(ruleId: number) {
+  const childRules = await db.select({ id: reglasTable.id }).from(reglasTable).where(eq(reglasTable.id_regla_padre, ruleId));
+  return childRules.length > 0;
+}
 
 export async function deleteRule(ruleId: number) {
 
   try {
     await db.transaction(async (trx) => {
+      const childRules = await trx.select({ id: reglasTable.id }).from(reglasTable).where(eq(reglasTable.id_regla_padre, ruleId));
+      for (const childRule of childRules) {
+        await trx.delete(subcategoriasReglasTable).where(eq(subcategoriasReglasTable.id_regla, childRule.id)).execute();
+        await trx.delete(reglasTable).where(eq(reglasTable.id, childRule.id)).execute();
+      }
       await trx.delete(subcategoriasReglasTable).where(eq(subcategoriasReglasTable.id_regla, ruleId)).execute();
       await trx.delete(reglasTable).where(eq(reglasTable.id, ruleId)).execute();
     });
