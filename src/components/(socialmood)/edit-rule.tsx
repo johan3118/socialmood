@@ -69,6 +69,9 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
 
     const [Open, setOpen] = useState<boolean>(false);
 
+    const [RuleID, setRuleID] = useState<number>(0);
+
+
     const [ChildReglas, setChildReglas] = useState<Reglas[]>([]);
 
     const fetchChildRules = async () => {
@@ -82,14 +85,19 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
 
     const handleAddRule = () => {
         setAction("Create");
+        setOpen(true);
     };
 
     const handleEditRule = (ruleID: number) => {
         setAction("Edit");
+        setRuleID(ruleID);
+        setOpen(true);
     }
 
     const handleDeleteRule = (ruleID: number) => {
         setAction("Delete");
+        setRuleID(ruleID);
+        setOpen(true);
     }
     const items = [
         {
@@ -133,11 +141,11 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
         fetchSocialMediaAccounts();
         async function fetchRuleInfo() {
             const rule = await getRule(ruleID);
-            form.setValue("alias", rule.alias);
-            form.setValue("red_social", rule.perfil.id_cuenta?.toString() || "");
-            form.setValue("tipo", rule.id_tipo_regla?.toString() || "");
-            form.setValue("instrucciones", rule.instrucciones || "");
-            form.setValue("subcategorias", rule.subcategorias);
+            form.setValue("alias", rule?.alias);
+            form.setValue("red_social", rule?.perfil.id_cuenta?.toString() || "");
+            form.setValue("tipo", rule?.id_tipo_regla?.toString() || "");
+            form.setValue("instrucciones", rule?.instrucciones || "");
+            form.setValue("subcategorias", rule?.subcategorias);
         }
         fetchRuleInfo();
         fetchChildRules();
@@ -158,7 +166,9 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
     }
 
     const handleOpenChild = (newOpenValue: boolean) => {
+        fetchChildRules();
         setOpen(newOpenValue);
+
     }
 
     return (
@@ -347,7 +357,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                                             </div>
                                                             <span className="text-[16px]">{regla.alias}</span>
                                                             <div className="flex items-center space-x-2">
-                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleEditRule(1) }}>
+                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleEditRule(regla.id) }}>
 
                                                                     <img
                                                                         src="/edit.svg"
@@ -355,7 +365,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                                                         className=" w-6 h-6"
                                                                     />
                                                                 </DialogTrigger>
-                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleDeleteRule(1) }}>
+                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleDeleteRule(regla.id) }}>
                                                                     <img
                                                                         src="/delete.svg"
                                                                         alt="Delete"
@@ -368,8 +378,8 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                                 </div>
                                                 {
                                                     action === "Create" ? <CreateRuleChild onOpenChange={handleOpenChild} parentID={ruleID} /> :
-                                                        action === "Edit" ? <EditRuleChild ruleID={ruleID} onOpenChange={handleOpenChild} /> :
-                                                            action === "Delete" ? <DeleteRuleChild ruleID={ruleID} onOpenChange={handleOpenChild} /> : null
+                                                        action === "Edit" ? <EditRuleChild ruleID={RuleID} onOpenChange={handleOpenChild} /> :
+                                                            action === "Delete" ? <DeleteRuleChild ruleID={RuleID} onOpenChange={handleOpenChild} /> : null
                                                 }
 
                                             </Dialog>
