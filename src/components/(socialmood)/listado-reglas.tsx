@@ -62,6 +62,9 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
 
     const handleOpenChange = (newOpenValue: boolean) => {
         setOpen(newOpenValue);
+        if (newOpenValue === false) {
+            fetchReglas();
+        }
     };
 
     const handleRefreshTable = () => {
