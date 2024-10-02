@@ -19,27 +19,30 @@ function PantallaGestionReglasPage() {
     ruleType: [],
   });
 
-  const onSaveFilters = (filter: any) => { 
+  const onSaveFilters = (filter: any) => {
     setSelectedFilters(filter);
     console.log(filter);
   }
 
   return (
-    
-    <div>
+
+    <div className="space-y-4">
+      <div className="flex space-x-4 mx-12">
         <SearchBar />
 
         <SocialButton
-        customStyle="w-32"
-        variant="default"
-        defaultText="Filtros"
-        type="button" // Cambiado a 'button' para evitar enviar un formulario
-        onClick={openFilterModal} 
-      />
-        <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
-        <ListadoReglasTable
-        filter={selectedFilters}
+          customStyle="w-32"
+          variant="default"
+          defaultText="Filtros"
+          type="button" // Cambiado a 'button' para evitar enviar un formulario
+          onClick={openFilterModal}
         />
+      </div>
+
+      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
+      <ListadoReglasTable
+        filter={selectedFilters}
+      />
     </div>
   )
 }
