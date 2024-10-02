@@ -1,11 +1,11 @@
-import React from "react";
+"use client"
+import React, { useEffect } from "react";
 import {
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { useState } from "react";
 import { CreateRuleSchema } from "../../types";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -24,40 +24,51 @@ import {
 import { Input } from "@/components/ui/input";
 import SocialButton from "./social-button";
 
+
+import { useState } from "react";
+import { toast } from "@/components/ui/use-toast";
+import { getRuleSubcategories, getSocialMediaAccounts, getRule, createChildRule} from "@/app/actions/(socialmood)/rules.actions";
+
 interface CreateRuleChildProps {
     onOpenChange: (newOpenValue: boolean) => void;
     parentID: number;
 }
 
-const items = [
-    {
-        id: "1",
-        label: "Recomendación",
-    },
-    {
-        id: "2",
-        label: "Consulta",
-    },
-    {
-        id: "3",
-        label: "Queja",
-    },
-    {
-        id: "4",
-        label: "Elogio",
-    }
-] as const
-
 export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleChildProps) {
 
     const [isPending, setIsPending] = useState(false);
+
+    const subscription = 20
+
+    const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
+
+    const [socialMedia, setSocialMedia] = useState<string>("");
+
+    const [Subcategorias, SetSubcategorias] = useState([
+        {
+            id: "1",
+            label: "Recomendación",
+        },
+        {
+            id: "2",
+            label: "Consulta",
+        },
+        {
+            id: "3",
+            label: "Queja",
+        },
+        {
+            id: "4",
+            label: "Elogio",
+        }
+    ]);
 
     const form = useForm<z.infer<typeof CreateRuleSchema>>({
         resolver: zodResolver(CreateRuleSchema),
         defaultValues: {
             alias: "",
-            red_social: "1",
-            tipo: "1",
+            red_social: "",
+            tipo: "2",
             instrucciones: "",
             subcategorias: [],
         },
@@ -65,16 +76,54 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
         setIsPending(true);
-        console.log(values);
-        form.reset();
+        const res = await createChildRule(values, parentID);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule created successfully",
+            });
+            onOpenChange(false);
+        }
         setIsPending(false);
-        onOpenChange(false);
+
     }
 
     async function onClose() {
-        form.reset();
         onOpenChange(false);
     }
+
+    useEffect(() => {
+        const fetchSubcategorias = async () => {
+            const subcategorias = await getRuleSubcategories(parentID);
+            SetSubcategorias(subcategorias.map(subcategoria => ({
+                ...subcategoria,
+                id: subcategoria.id.toString()
+            })));
+        };
+        fetchSubcategorias();
+        async function fetchSocialMediaAccounts() {
+            const accounts = await getSocialMediaAccounts(subscription);
+            setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+        }
+        fetchSocialMediaAccounts();
+
+        async function fetchSocialMedia() {
+            const socialMedia = await getRule(parentID);
+            const cuenta = (socialMedia?.perfil?.id_cuenta?.toString() || "");
+            //setSocialMedia(cuenta)
+            form.setValue("red_social", cuenta);
+            console.log(cuenta);
+        }
+
+        fetchSocialMedia();
+
+    }, [parentID]);
 
     return (
         <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">
@@ -133,15 +182,18 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                                                 <FormLabel className="block text-sm font-medium">Red Social</FormLabel>
                                                 <FormControl>
                                                     <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value}>
-                                                        <SelectTrigger className="w-full px-3 py-2 
+                                                        <SelectTrigger disabled className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
                             bg-white text-[#2C2436] ">
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="1">@titobarbershop</SelectItem>
-                                                            <SelectItem value="2">@martasalon</SelectItem>
+                                                            {socialMedias.map((socialMedia) => (
+                                                                <SelectItem key={socialMedia.id} value={socialMedia.id}>
+                                                                    {socialMedia.label}
+                                                                </SelectItem>
+                                                            ))}
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>
@@ -155,7 +207,7 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                                         render={() => (
                                             <FormItem>
                                                 <FormLabel className="block text-sm font-medium">Subcategorias</FormLabel>
-                                                {items.map((item) => (
+                                                {Subcategorias.map((item) => (
                                                     <FormField
                                                         key={item.id}
                                                         control={form.control}

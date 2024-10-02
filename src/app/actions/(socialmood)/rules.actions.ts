@@ -311,6 +311,61 @@ export async function createRule(rule: {
   }
 }
 
+export async function createChildRule(rule: {
+  red_social: string;
+  tipo: string;
+  instrucciones: string;
+  alias: string;
+  subcategorias: string[];
+}, parentRuleId: number) {
+
+  try {
+    const existingRule = await db
+      .select({ alias: reglasTable.alias })
+      .from(reglasTable)
+      .where(eq(reglasTable.alias, rule.alias))
+      .limit(1);
+
+    if (existingRule.length > 0) {
+      return {
+        error: "Rule with the same alias already exists",
+      };
+    }
+
+    await db.transaction(async (trx) => {
+      const newRule = await trx.insert(reglasTable).values({
+        prompt: rule.instrucciones,
+        id_tipo_regla: parseInt(rule.tipo),
+        id_regla_padre: parentRuleId,
+        id_cuenta: parseInt(rule.red_social),
+        alias: rule.alias
+      }).returning({
+        id: reglasTable.id
+      });
+
+      const newRuleId = newRule[0].id;
+
+      const subcategorias = rule.subcategorias;
+
+      for (const subcategoria of subcategorias) {
+        await trx.insert(subcategoriasReglasTable).values({
+          id_regla: newRuleId,
+          id_subcategoria: parseInt(subcategoria),
+        }).execute();
+      }
+    });
+
+    return {
+      success: "Rule created successfully",
+    };
+  } catch (error) {
+    console.error("Error creating rule:", error);
+    return {
+      error: "An error occurred while creating the rule",
+    };
+  }
+}
+
 export async function ruleHasChildren(ruleId: number) {
   const childRules = await db.select({ id: reglasTable.id }).from(reglasTable).where(eq(reglasTable.id_regla_padre, ruleId));
   return childRules.length > 0;
@@ -365,4 +420,12 @@ export async function updateRule(rule: any) {
   });
 
   return updatedRule;
+}
+
+export async function getRuleSubcategories(ruleID: number) {
+  const subcategories = await db.select({ id: subcategoriasTable.id, label: subcategoriasTable.nombre })
+    .from(subcategoriasTable)
+    .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_subcategoria, subcategoriasTable.id))
+    .where(eq(subcategoriasReglasTable.id_regla, ruleID));
+  return subcategories;
 }
