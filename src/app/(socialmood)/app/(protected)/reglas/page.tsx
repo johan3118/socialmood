@@ -19,14 +19,15 @@ function PantallaGestionReglasPage() {
     ruleType: [],
   });
 
-  const onSaveFilters = (filter: any) => { 
+  const onSaveFilters = (filter: any) => {
     setSelectedFilters(filter);
     console.log(filter);
   }
 
   return (
-    
-    <div>
+
+    <div className="space-y-4">
+      <div className="flex space-x-4 mx-12">
         <SearchBar />
 
         <SocialButton
@@ -39,6 +40,12 @@ function PantallaGestionReglasPage() {
         <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
         <ListadoReglasTable filter={selectedFilters}
         />
+      </div>
+
+      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
+      <ListadoReglasTable
+        filter={selectedFilters}
+      />
     </div>
   )
 }
