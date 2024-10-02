@@ -71,7 +71,7 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
           <h3 className="block text-lg font-medium">Subcategoría:</h3>
           <hr className="border-[#FFF] my-4" />
           <div className="flex space-x-4">
-            {["Consulta", "Queja", "Elogio", "Sugerencia"].map((subcategory) => (
+            {["Consulta", "Queja", "Elogio", "Recomendación"].map((subcategory) => (
               <label key={subcategory} className="flex items-center space-x-2 text-black font-medium space-x-2 bg-white py-2 px-4 rounded-full">
                 <input
                   type="checkbox"
