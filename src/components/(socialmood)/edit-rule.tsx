@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
     DialogContent,
@@ -42,6 +42,7 @@ import { Input } from "@/components/ui/input";
 
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";
+import { getSocialMediaAccounts, getRule, getChildRules } from "@/app/actions/(socialmood)/rules.actions";
 
 interface EditRuleProps {
     ruleID: number;
@@ -49,12 +50,36 @@ interface EditRuleProps {
 
 }
 
+interface Perfil {
+    red_social: string;
+    username: string;
+    color: string;
+}
+
+interface Reglas {
+    id: number;
+    perfil: Perfil;
+    alias: string;
+    subcategorias: string[];
+}
+
 export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
 
     const [action, setAction] = useState<string>("Create");
 
     const [Open, setOpen] = useState<boolean>(false);
-    
+
+    const [ChildReglas, setChildReglas] = useState<Reglas[]>([]);
+
+    const fetchChildRules = async () => {
+        try {
+            const reglas = await Promise.all(await getChildRules(ruleID));
+            setChildReglas(reglas);
+        } catch (error) {
+            console.error("Error al cargar las reglas:", error);
+        }
+    };
+
     const handleAddRule = () => {
         setAction("Create");
     };
@@ -97,6 +122,27 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
             subcategorias: [],
         },
     });
+    const subscription = 20
+
+    const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
+    useEffect(() => {
+        async function fetchSocialMediaAccounts() {
+            const accounts = await getSocialMediaAccounts(subscription);
+            setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+        }
+        fetchSocialMediaAccounts();
+        async function fetchRuleInfo() {
+            const rule = await getRule(ruleID);
+            form.setValue("alias", rule.alias);
+            form.setValue("red_social", rule.perfil.id_cuenta?.toString() || "");
+            form.setValue("tipo", rule.id_tipo_regla?.toString() || "");
+            form.setValue("instrucciones", rule.instrucciones || "");
+            form.setValue("subcategorias", rule.subcategorias);
+        }
+        fetchRuleInfo();
+        fetchChildRules();
+
+    }, [ruleID]);
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
         setIsPending(true);
@@ -172,15 +218,18 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                                 <FormLabel className="block text-sm font-medium">Red Social</FormLabel>
                                                 <FormControl>
                                                     <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value}>
-                                                        <SelectTrigger className="w-full px-3 py-2 
+                                                        <SelectTrigger disabled className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
                             bg-white text-[#2C2436] ">
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="1">@titobarbershop</SelectItem>
-                                                            <SelectItem value="2">@martasalon</SelectItem>
+                                                            {socialMedias.map((socialMedia) => (
+                                                                <SelectItem key={socialMedia.id} value={socialMedia.id}>
+                                                                    {socialMedia.label}
+                                                                </SelectItem>
+                                                            ))}
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>
@@ -291,12 +340,12 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
 
 
                                                 <div className="space-y-2 mt-2">
-                                                    {[2, 3, 4].map((num) => (
-                                                        <div key={num} className="flex items-center space-x-2">
+                                                    {ChildReglas.map((regla, index) => (
+                                                        <div key={regla.id} className="flex items-center space-x-2">
                                                             <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                                                0{num}
+                                                                {index}
                                                             </div>
-                                                            <span className="text-[16px]">Regla xxxxxxxxxxx</span>
+                                                            <span className="text-[16px]">{regla.alias}</span>
                                                             <div className="flex items-center space-x-2">
                                                                 <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleEditRule(1) }}>
 

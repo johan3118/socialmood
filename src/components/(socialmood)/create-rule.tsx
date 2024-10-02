@@ -8,7 +8,12 @@ import {
     DialogClose,
 } from "@/components/ui/dialog"
 
+import { useEffect } from "react";
+
+import { createRule, getSocialMediaAccounts } from "@/app/actions/(socialmood)/rules.actions";
+
 import { useState } from "react";
+import { toast } from "@/components/ui/use-toast";
 
 
 import { CreateRuleSchema } from "../../types";
@@ -75,16 +80,40 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
         setIsPending(true);
-        console.log(values);
-        form.reset();
+        const res = await createRule(values);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule created successfully",
+            });
+            onOpenChange(false);
+        }
         setIsPending(false);
-        onOpenChange(false);
+
     }
 
     async function onClose() {
         form.reset();
         onOpenChange(false);
     }
+
+    const subscription = 20
+
+    const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
+
+    useEffect(() => {
+        async function fetchSocialMediaAccounts() {
+            const accounts = await getSocialMediaAccounts(subscription);
+            setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+        }
+        fetchSocialMediaAccounts();
+    }, []);
 
     return (
         <DialogContent className="flex items-start md:w-[90%]">
@@ -150,8 +179,11 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="1">@titobarbershop</SelectItem>
-                                                            <SelectItem value="2">@martasalon</SelectItem>
+                                                            {socialMedias.map((socialMedia) => (
+                                                                <SelectItem key={socialMedia.id} value={socialMedia.id}>
+                                                                    {socialMedia.label}
+                                                                </SelectItem>
+                                                            ))}
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>

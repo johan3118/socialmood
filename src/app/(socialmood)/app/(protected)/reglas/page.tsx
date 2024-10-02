@@ -31,11 +31,14 @@ function PantallaGestionReglasPage() {
         <SearchBar />
 
         <SocialButton
-          customStyle="w-32"
-          variant="default"
-          defaultText="Filtros"
-          type="button" // Cambiado a 'button' para evitar enviar un formulario
-          onClick={openFilterModal}
+        customStyle="w-32"
+        variant="default"
+        defaultText="Filtros"
+        type="button" // Cambiado a 'button' para evitar enviar un formulario
+        onClick={openFilterModal} 
+      />
+        <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
+        <ListadoReglasTable filter={selectedFilters}
         />
       </div>
 

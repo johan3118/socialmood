@@ -3,7 +3,12 @@ import React, { useState } from "react";
 import SocialButton from "./social-button";
 
 export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boolean; onClose: () => void; onSave: (filter: any ) => void }) {
-  const [selectedFilters, setSelectedFilters] = useState({
+  const [selectedFilters, setSelectedFilters] = useState<{
+    category: string[];
+    subcategory: string[];
+    network: string[];
+    ruleType: string[];
+  }>({
     category: [],
     subcategory: [],
     network: [],

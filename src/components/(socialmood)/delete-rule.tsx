@@ -8,12 +8,41 @@ import {
 } from "@/components/ui/dialog"
 import SocialButton from "./social-button";
 
+import { useState } from "react";
+
+import { toast } from "@/components/ui/use-toast";
+
+import { deleteRule } from "@/app/actions/(socialmood)/rules.actions";
+
 interface DeleteRuleProps {
     ruleID: number;
     onOpenChange: (newOpenValue: boolean) => void;
 }
 
+
 export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
+    const [isPending, setIsPending] = useState(false);
+
+
+    const handleDeleteRule = async () => {
+
+        const res = await deleteRule(ruleID);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule deleted successfully",
+            });
+            onOpenChange(false);
+        }
+        setIsPending(false);
+    }
+
     return (
         <DialogContent>
             <DialogHeader className="flex items-center justify-center">
@@ -36,8 +65,10 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
                     <SocialButton
                         variant="default"
                         defaultText="Eliminar"
+                        pendingText="Eliminando..."
                         customStyle="text-[20px]"
-                        onClick={() => { onOpenChange(false) }}
+                        isPending={isPending}
+                        onClick={handleDeleteRule}
                     />
 
 
