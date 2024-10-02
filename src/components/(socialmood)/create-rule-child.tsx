@@ -27,7 +27,7 @@ import SocialButton from "./social-button";
 
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { getRuleSubcategories, getSocialMediaAccounts, getRule, createChildRule} from "@/app/actions/(socialmood)/rules.actions";
+import { getRuleSubcategories, getSocialMediaAccounts, getRule, createChildRule } from "@/app/actions/(socialmood)/rules.actions";
 
 interface CreateRuleChildProps {
     onOpenChange: (newOpenValue: boolean) => void;
@@ -42,7 +42,9 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
 
     const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
 
-    const [socialMedia, setSocialMedia] = useState<string>("");
+    const [redSocial, setRedSocial] = useState("");
+
+    const [open, setOpen] = useState(false);
 
     const [Subcategorias, SetSubcategorias] = useState([
         {
@@ -88,47 +90,54 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                 variant: "default",
                 description: "Rule created successfully",
             });
-            onOpenChange(false);
+            setOpen(false);
+            onOpenChange(open);
         }
         setIsPending(false);
 
     }
 
     async function onClose() {
-        onOpenChange(false);
+        setOpen(false);
+        onOpenChange(open);
+    }
+
+    const fetchSubcategorias = async () => {
+        const subcategorias = await getRuleSubcategories(parentID);
+        SetSubcategorias(subcategorias.map(subcategoria => ({
+            ...subcategoria,
+            id: subcategoria.id.toString()
+        })));
+    };
+
+    async function fetchSocialMediaAccounts() {
+        const accounts = await getSocialMediaAccounts(subscription);
+        setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+    }
+
+    async function fetchSocialMedia() {
+        const socialMedia = await getRule(parentID);
+        const cuenta = (socialMedia?.perfil?.id_cuenta?.toString() || "");
+        setRedSocial(cuenta);
+        form.setValue("red_social", cuenta);
+
+    }
+
+    const updateData = async () => {
+        form.reset();
+        await fetchSubcategorias();
+        await fetchSocialMediaAccounts();
+        await fetchSocialMedia();
     }
 
     useEffect(() => {
-        const fetchSubcategorias = async () => {
-            const subcategorias = await getRuleSubcategories(parentID);
-            SetSubcategorias(subcategorias.map(subcategoria => ({
-                ...subcategoria,
-                id: subcategoria.id.toString()
-            })));
-        };
-        fetchSubcategorias();
-        async function fetchSocialMediaAccounts() {
-            const accounts = await getSocialMediaAccounts(subscription);
-            setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
-        }
-        fetchSocialMediaAccounts();
-
-        async function fetchSocialMedia() {
-            const socialMedia = await getRule(parentID);
-            const cuenta = (socialMedia?.perfil?.id_cuenta?.toString() || "");
-            //setSocialMedia(cuenta)
-            form.setValue("red_social", cuenta);
-            console.log(cuenta);
-        }
-
-        fetchSocialMedia();
-
-    }, [parentID]);
+        updateData();
+    }, []);
 
     return (
         <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full py-5">
+                <form id="create-child-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full py-5">
                     <DialogHeader className="w-full">
                         <DialogTitle className="flex justify-between w-full mt-6">
                             <div className="flex"><img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
@@ -140,7 +149,8 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                                 defaultText="Guardar"
                                 customStyle="text-[20px]"
                                 pendingText="Guardando..."
-                                type="submit"
+                                type="button"
+                                onClick={()=>{onSubmit(form.getValues())}}
                             />
                         </DialogTitle>
                     </DialogHeader>
@@ -181,7 +191,7 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                                             <FormItem>
                                                 <FormLabel className="block text-sm font-medium">Red Social</FormLabel>
                                                 <FormControl>
-                                                    <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <Select name="red_social" onValueChange={field.onChange} value={redSocial}>
                                                         <SelectTrigger disabled className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
