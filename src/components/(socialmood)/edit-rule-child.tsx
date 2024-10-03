@@ -31,8 +31,8 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-
-import { getRuleSubcategories, getSocialMediaAccounts, getRule, createChildRule } from "@/app/actions/(socialmood)/rules.actions";
+import { toast } from "@/components/ui/use-toast";
+import { getRuleSubcategories, getSocialMediaAccounts, getRule, updateRule } from "@/app/actions/(socialmood)/rules.actions";
 
 
 import SocialButton from "./social-button";
@@ -99,15 +99,30 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
     });
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
+        form.trigger();
+        if (!form.formState.isValid) {
+            return;
+        }
         setIsPending(true);
-        console.log(values);
-        
+        const res = await updateRule(values, ruleID);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule updated successfully",
+            });
+            onOpenChange(false);
+        }
         setIsPending(false);
-        onOpenChange(false);
     }
 
     async function onClose() {
-        
+
         onOpenChange(false);
     }
 
@@ -155,10 +170,15 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
 
     async function fetchRuleInfo() {
         const rule = await getRule(ruleID);
-        form.setValue("alias", rule?.alias);
-        form.setValue("tipo", rule?.id_tipo_regla?.toString() || "");
-        form.setValue("instrucciones", rule?.instrucciones || "");
-        form.setValue("subcategorias", rule?.subcategorias);
+        form.reset(
+            {
+                alias: rule?.alias,
+                red_social: rule?.perfil.id_cuenta?.toString() || "",
+                tipo: rule?.id_tipo_regla?.toString() || "",
+                instrucciones: rule?.instrucciones || "",
+                subcategorias: rule?.subcategorias,
+            }
+        )
 
         if (rule?.id_regla_padre) {
             const parentRule = await getRule(rule.id_regla_padre);
@@ -183,7 +203,7 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
             subcategorias: [],
         });
         updateData();
-    }, [ruleID]);
+    }, []);
 
     return (
         <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">

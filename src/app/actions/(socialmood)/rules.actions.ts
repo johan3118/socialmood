@@ -1,7 +1,7 @@
 'use server'
 import db from "@/db";
 import { reglasTable, categoriasTable, tiposReglaTable, subcategoriasTable, subcategoriasReglasTable, cuentasRedesSocialesTable, redesSocialesTable } from "@/db/schema/socialMood";
-import { eq, and, or, inArray, isNull } from "drizzle-orm";
+import { eq, and, or, inArray, isNull, not } from "drizzle-orm";
 import { StyledString } from "next/dist/build/swc";
 import { PropagateToWorkersField } from "next/dist/server/lib/router-utils/types";
 import { CreateRuleSchema } from "@/types";
@@ -424,6 +424,20 @@ export async function updateRule(rule: {
 },ruleId: number) {
 
   try {
+
+    // check if the alias belongs to another rule, bersides the one being updated
+    const existingRule = await db
+      .select({ alias: reglasTable.alias })
+      .from(reglasTable)
+      .where(and(eq(reglasTable.alias, rule?.alias ?? ''), not(eq(reglasTable.id, ruleId))))
+      .limit(1);
+
+    if (existingRule.length > 0) {
+      return {
+        error: "Rule with the same alias already exists",
+      };
+    }
+    
     await db.transaction(async (trx) => {
       await trx.delete(subcategoriasReglasTable).where(eq(subcategoriasReglasTable.id_regla, ruleId)).execute();
       await trx.update(reglasTable).set({
