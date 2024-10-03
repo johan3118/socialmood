@@ -77,6 +77,10 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
     });
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
+        form.trigger();
+        if (!form.formState.isValid) {
+            return;
+        }
         setIsPending(true);
         const res = await createChildRule(values, parentID);
         if (res.error) {
@@ -92,9 +96,9 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
             });
             setOpen(false);
             onOpenChange(open);
+            form.reset();
         }
         setIsPending(false);
-
     }
 
     async function onClose() {
@@ -119,15 +123,22 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
         const socialMedia = await getRule(parentID);
         const cuenta = (socialMedia?.perfil?.id_cuenta?.toString() || "");
         setRedSocial(cuenta);
-        form.setValue("red_social", cuenta);
+        console.log(cuenta);
+        form.reset({
+            tipo: "2",
+            red_social: cuenta,
+        });
 
     }
 
     const updateData = async () => {
-        form.reset();
-        await fetchSubcategorias();
-        await fetchSocialMediaAccounts();
-        await fetchSocialMedia();
+
+
+        setTimeout(async () => {
+            await fetchSubcategorias();
+            await fetchSocialMediaAccounts();
+            await fetchSocialMedia();
+        }, 1000)
     }
 
     useEffect(() => {
@@ -150,7 +161,7 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                                 customStyle="text-[20px]"
                                 pendingText="Guardando..."
                                 type="button"
-                                onClick={()=>{onSubmit(form.getValues())}}
+                                onClick={() => { onSubmit(form.getValues()) }}
                             />
                         </DialogTitle>
                     </DialogHeader>
@@ -196,7 +207,7 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
                             bg-white text-[#2C2436] ">
-                                                            <SelectValue />
+                                                            <SelectValue/>
                                                         </SelectTrigger>
                                                         <SelectContent>
                                                             {socialMedias.map((socialMedia) => (

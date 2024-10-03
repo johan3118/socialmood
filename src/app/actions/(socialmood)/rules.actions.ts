@@ -1,9 +1,10 @@
 'use server'
 import db from "@/db";
 import { reglasTable, categoriasTable, tiposReglaTable, subcategoriasTable, subcategoriasReglasTable, cuentasRedesSocialesTable, redesSocialesTable } from "@/db/schema/socialMood";
-import { eq, and, or, inArray, isNull } from "drizzle-orm";
+import { eq, and, or, inArray, isNull, not } from "drizzle-orm";
 import { StyledString } from "next/dist/build/swc";
 import { PropagateToWorkersField } from "next/dist/server/lib/router-utils/types";
+import { CreateRuleSchema } from "@/types";
 
 
 
@@ -21,6 +22,7 @@ interface Reglas {
   subcategorias: string[];
   instrucciones?: string;
   id_tipo_regla?: number;
+  id_regla_padre?: number;
 }
 
 // get all the social media accounts for a given subscription
@@ -167,6 +169,7 @@ export async function getRule(ruleId: number) {
       id_subcategoria: subcategoriasTable.id,
       id_cuenta: cuentasRedesSocialesTable.id,
       id_tipo_regla: tiposReglaTable.id,
+      id_regla_padre: reglasTable.id_regla_padre,
     })
     .from(reglasTable)
     .innerJoin(cuentasRedesSocialesTable, eq(cuentasRedesSocialesTable.id, reglasTable.id_cuenta))
@@ -198,6 +201,7 @@ export async function getRule(ruleId: number) {
       },
       alias: rule.alias,
       id_tipo_regla: rule.id_tipo_regla,
+      id_regla_padre: rule.id_regla_padre,
       subcategorias: arrayCategories,
       instrucciones: rule.instrucciones,
     } as Reglas;
@@ -266,6 +270,14 @@ export async function createRule(rule: {
 }) {
 
   try {
+    CreateRuleSchema.parse(rule);
+  } catch (error: any) {
+    return {
+      error: "Some fields are missing or invalid",
+    };
+  }
+
+  try {
     const existingRule = await db
       .select({ alias: reglasTable.alias })
       .from(reglasTable)
@@ -318,6 +330,14 @@ export async function createChildRule(rule: {
   alias: string;
   subcategorias: string[];
 }, parentRuleId: number) {
+
+  try {
+    CreateRuleSchema.parse(rule);
+  } catch (error: any) {
+    return {
+      error: "Some fields are missing or invalid",
+    };
+  }
 
   try {
     const existingRule = await db
@@ -395,32 +415,58 @@ export async function deleteRule(ruleId: number) {
   }
 }
 
-export async function updateRule(rule: any) {
-  let updatedRule;
+export async function updateRule(rule: {
+  red_social: string;
+  tipo: string;
+  instrucciones: string;
+  alias: string;
+  subcategorias: string[];
+},ruleId: number) {
 
-  await db.transaction(async (trx) => {
-    updatedRule = await trx.update(reglasTable).set(rule).where(eq(reglasTable.id, rule.id)).execute();
-    await trx.delete(subcategoriasReglasTable).where(eq(subcategoriasReglasTable.id_regla, rule.id)).execute();
+  try {
+
+    // check if the alias belongs to another rule, bersides the one being updated
+    const existingRule = await db
+      .select({ alias: reglasTable.alias })
+      .from(reglasTable)
+      .where(and(eq(reglasTable.alias, rule?.alias ?? ''), not(eq(reglasTable.id, ruleId))))
+      .limit(1);
+
+    if (existingRule.length > 0) {
+      return {
+        error: "Rule with the same alias already exists",
+      };
+    }
+    
+    await db.transaction(async (trx) => {
+      await trx.delete(subcategoriasReglasTable).where(eq(subcategoriasReglasTable.id_regla, ruleId)).execute();
+      await trx.update(reglasTable).set({
+        prompt: rule.instrucciones,
+        alias: rule.alias
+      }).where(eq(reglasTable.id, ruleId)).execute();
+    });
 
     const subcategorias = rule.subcategorias;
+
     for (const subcategoria of subcategorias) {
-      const subcategoriaRecord = await trx
-        .select({ id: subcategoriasTable.id })
-        .from(subcategoriasTable)
-        .where(eq(subcategoriasTable.nombre, subcategoria))
-        .limit(1);
-
-      if (subcategoriaRecord.length > 0) {
-        await trx.insert(subcategoriasReglasTable).values({
-          id_regla: rule.id,
-          id_subcategoria: subcategoriaRecord[0].id,
-        }).execute();
-      }
+      await db.insert(subcategoriasReglasTable).values({
+        id_regla: ruleId,
+        id_subcategoria: parseInt(subcategoria),
+      }).execute();
     }
-  });
 
-  return updatedRule;
+    return {
+      success: "Rule deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting rule:", error);
+    return {
+      error: "An error occurred while deleting the rule",
+    };
+  }
 }
+
+
 
 export async function getRuleSubcategories(ruleID: number) {
   const subcategories = await db.select({ id: subcategoriasTable.id, label: subcategoriasTable.nombre })

@@ -75,18 +75,21 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
     const handleAddRule = () => {
         setOpen(true);
         setRuleID(0);
+        setAction("");
         setAction("Create");
     };
 
     const handleEditRule = (ruleID: number) => {
         setOpen(true);
         setRuleID(ruleID);
+        setAction("");
         setAction("Edit");
     }
 
     const handleDeleteRule = (ruleID: number) => {
         setOpen(true);
         setRuleID(ruleID);
+        setAction("");
         setAction("Delete");
     }
 
