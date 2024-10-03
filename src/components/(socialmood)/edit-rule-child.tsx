@@ -43,12 +43,25 @@ interface EditRuleChildProps {
     onOpenChange: (newOpenValue: boolean) => void;
 
 }
+interface Perfil {
+    red_social: string;
+    username: string;
+    color: string;
+}
 
+interface Reglas {
+    id: number;
+    perfil: Perfil;
+    alias: string;
+    subcategorias: string[];
+}
 export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildProps) {
 
     const [open, setOpen] = useState(false);
 
     const [redSocial, setRedSocial] = useState("");
+
+    const [reglaPadre, setReglaPadre] = useState<Reglas[]>([]);
 
     const items = [
         {
@@ -88,13 +101,13 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
         setIsPending(true);
         console.log(values);
-        form.reset();
+        
         setIsPending(false);
         onOpenChange(false);
     }
 
     async function onClose() {
-        form.reset();
+        
         onOpenChange(false);
     }
 
@@ -140,13 +153,35 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
         setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
     }
 
+    async function fetchRuleInfo() {
+        const rule = await getRule(ruleID);
+        form.setValue("alias", rule?.alias);
+        form.setValue("tipo", rule?.id_tipo_regla?.toString() || "");
+        form.setValue("instrucciones", rule?.instrucciones || "");
+        form.setValue("subcategorias", rule?.subcategorias);
+
+        if (rule?.id_regla_padre) {
+            const parentRule = await getRule(rule.id_regla_padre);
+            setReglaPadre([parentRule]);
+
+        }
+    }
+
     const updateData = async () => {
         await fetchSubcategorias();
         await fetchSocialMediaAccounts();
         await fetchSocialMedia();
+        await fetchRuleInfo();
     }
 
     useEffect(() => {
+        form.reset({
+            alias: "",
+            red_social: "1",
+            tipo: "1",
+            instrucciones: "",
+            subcategorias: [],
+        });
         updateData();
     }, [ruleID]);
 
@@ -166,7 +201,7 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                 customStyle="text-[20px]"
                                 pendingText="Guardando..."
                                 type="button"
-                                onClick={()=>{onSubmit(form.getValues())}}
+                                onClick={() => { onSubmit(form.getValues()) }}
                             />
                         </DialogTitle>
                     </DialogHeader>
@@ -316,12 +351,12 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                         <hr className="my-3 border-2 bg-white bg-opacity-30" />
                                         <div className="mt-1">
                                             <div className="space-y-2 mt-2">
-                                                {[2, 3, 4].map((num) => (
-                                                    <div key={num} className="flex items-center space-x-2">
+                                                {reglaPadre.map((regla, index) => (
+                                                    <div key={index} className="flex items-center space-x-2">
                                                         <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                                            0{num}
+                                                            {index + 1}
                                                         </div>
-                                                        <span>Regla xxxxxxxxxxx</span>
+                                                        <span>{regla.alias}</span>
                                                     </div>
                                                 ))}
                                             </div>

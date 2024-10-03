@@ -42,7 +42,8 @@ import { Input } from "@/components/ui/input";
 
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";
-import { getSocialMediaAccounts, getRule, getChildRules } from "@/app/actions/(socialmood)/rules.actions";
+import { toast } from "@/components/ui/use-toast";
+import { getSocialMediaAccounts, getRule, getChildRules, updateRule } from "@/app/actions/(socialmood)/rules.actions";
 
 interface EditRuleProps {
     ruleID: number;
@@ -70,7 +71,6 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
     const [Open, setOpen] = useState<boolean>(false);
 
     const [RuleID, setRuleID] = useState<number>(0);
-
 
     const [ChildReglas, setChildReglas] = useState<Reglas[]>([]);
 
@@ -133,42 +133,67 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
     const subscription = 20
 
     const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
-    useEffect(() => {
-        async function fetchSocialMediaAccounts() {
-            const accounts = await getSocialMediaAccounts(subscription);
-            setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
-        }
-        fetchSocialMediaAccounts();
-        async function fetchRuleInfo() {
-            const rule = await getRule(ruleID);
-            form.setValue("alias", rule?.alias);
-            form.setValue("red_social", rule?.perfil.id_cuenta?.toString() || "");
-            form.setValue("tipo", rule?.id_tipo_regla?.toString() || "");
-            form.setValue("instrucciones", rule?.instrucciones || "");
-            form.setValue("subcategorias", rule?.subcategorias);
-        }
-        fetchRuleInfo();
-        fetchChildRules();
 
-    }, [ruleID]);
+    async function fetchSocialMediaAccounts() {
+        const accounts = await getSocialMediaAccounts(subscription);
+        setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+    }
+
+    async function fetchRuleInfo() {
+        const rule = await getRule(ruleID);
+        form.reset(
+            {
+                alias: rule?.alias,
+                red_social: rule?.perfil.id_cuenta?.toString() || "",
+                tipo: rule?.id_tipo_regla?.toString() || "",
+                instrucciones: rule?.instrucciones || "",
+                subcategorias: rule?.subcategorias,
+            }
+        )
+    }
+
+    const updateData = async () => {
+        await fetchSocialMediaAccounts();
+        await fetchRuleInfo();
+        await fetchChildRules();
+    }
+
+    useEffect(() => {
+        console.log("useEffect");
+        updateData();
+    }, []);
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
+        form.trigger();
+        if (!form.formState.isValid) {
+            return;
+        }
         setIsPending(true);
-        console.log(values);
-        form.reset();
+        const res = await updateRule(values, ruleID);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule updated successfully",
+            });
+            onOpenChange(false);
+            
+        }
         setIsPending(false);
-        onOpenChange(false);
     }
 
     async function onClose() {
-        form.reset();
         onOpenChange(false);
     }
 
     const handleOpenChild = (newOpenValue: boolean) => {
         fetchChildRules();
         setOpen(newOpenValue);
-
     }
 
     return (
@@ -353,7 +378,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                                     {ChildReglas.map((regla, index) => (
                                                         <div key={regla.id} className="flex items-center space-x-2">
                                                             <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                                                {index}
+                                                                {index + 1}
                                                             </div>
                                                             <span className="text-[16px]">{regla.alias}</span>
                                                             <div className="flex items-center space-x-2">
