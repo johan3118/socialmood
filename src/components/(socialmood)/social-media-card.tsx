@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"; // Importación de la función 'cn'
 import EstadoLabel from "@/components/(socialmood)/estado-label";
 import Modal from "@/components/(socialmood)/modal"; // Componente modal
 import AddSocialForm from "@/components/(socialmood)/add-social-form"; // El componente que quieres mostrar en el modal
+import { getLinkedAccounts } from "@/app/actions/(socialmood)/social.actions";
 
 interface Perfil {
   red_social: string;
@@ -30,16 +31,14 @@ const SocialMediaCard: React.FC = () => {
   useEffect(() => {
     const fetchPerfiles = async () => {
       setLoading(true); // Comenzar a cargar
-      setTimeout(() => {
+
         // Mock del fetch con setTimeout simulando retraso de red
-        const mockPerfiles: Perfil[] = [
-          { red_social: "Instagram", username: "@Allensilverioo", color: "Red", estado: "ACTIVO" },
-          { red_social: "Facebook", username: "@AllenFB", color: "Blue", estado: "INACTIVO" },
-          { red_social: "Instagram", username: "@AllenFB", color: "Blue", estado: "ACTIVO" },
-        ];
-        setPerfiles(mockPerfiles); // Establece los perfiles simulados
+        const accounts: Perfil[] = await getLinkedAccounts(19);
+
+        console.log(accounts);
+        setPerfiles(accounts); // Establece los perfiles simulados
         setLoading(false); // Finaliza la carga
-      }, 2000); // Simula un retraso de 2 segundos
+
     };
 
     fetchPerfiles();
@@ -110,7 +109,7 @@ const SocialMediaCard: React.FC = () => {
                   </td>
 
                   <td className="px-5 pb-2">
-                    <EstadoLabel estado={perfil.estado} />
+                    <EstadoLabel estado="ACTIVO" />
                   </td>
                   <td className="pb-2">
                     <X />
