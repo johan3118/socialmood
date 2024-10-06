@@ -49,24 +49,25 @@ export const getSocialPlatforms = async () => {
 export const insertSocialAccount = async (values: InsertSocialAccount) => {
   try {
     const socialAccount = await db
-    .insert(cuentasRedesSocialesTable)
-    .values({
-      llave_acceso: values.llave_acceso,
-      usuario_cuenta: values.usuario_cuenta,
-      codigo_cuenta: values.codigo_cuenta,
-      fecha_vencimiento_acceso: values.fecha_vencimiento_acceso,
-      id_subscripcion: values.id_subscripcion,
-      id_red_social: values.id_red_social,
-      id_color: values.id_color,
-    });
+      .insert(cuentasRedesSocialesTable)
+      .values({
+        llave_acceso: values.llave_acceso,
+        usuario_cuenta: values.usuario_cuenta,
+        codigo_cuenta: values.codigo_cuenta,
+        fecha_vencimiento_acceso: values.fecha_vencimiento_acceso,
+        id_subscripcion: values.id_subscripcion,
+        id_red_social: values.id_red_social,
+        id_color: values.id_color,
+      });
 
-    return JSON.parse(JSON.stringify(socialAccount)); 
+    return { success: true, data: JSON.parse(JSON.stringify(socialAccount)) };
 
   } catch (error) {
     console.error('Error inserting social account:', error);
-    return { success: false};
+    return { success: false, message: 'Error al insertar la cuenta en la base de datos' };
   }
 };
+
 
 export const getLinkedAccounts = async (idSubcripcion: number) => {
   const linkedAccounts = await db

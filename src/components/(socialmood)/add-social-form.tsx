@@ -25,6 +25,7 @@ type AddSocialFormValues = z.infer<typeof AddSocialSchema>;
 
 interface AddSocialFormProps {
   onClose: () => void;
+  onFormSubmit: () => void;
 }
 
 interface SocialPlatform {
@@ -46,7 +47,7 @@ interface Account {
   access_token: string;
 }
 
-const AddSocialForm: React.FC<AddSocialFormProps> = ({ onClose }) => {
+const AddSocialForm: React.FC<AddSocialFormProps> = ({ onClose, onFormSubmit }) => {
   const [platforms, setPlatforms] = useState<SocialPlatform[]>([]);
   const [colors, setColors] = useState<ColorOption[]>([]);
 
@@ -147,13 +148,12 @@ const handleColorSelection = (colorValue: string) => {
   };
 
 // Guardar la cuenta seleccionada
-const handleAccountSave = async (account: Account, selectedPlatformId: string, selectedColorId: string) => {
+const handleAccountSave = async (account: Account, selectedPlatformId: string, selectedColorId: string): Promise<{ success: boolean, message?: string }> => {
   try {
     // Cambiar el short-lived access token por un long-lived access token y obtener también los segundos restantes
     const { access_token } = await exchangeForLongLivedToken(account.access_token);
-    const {data_access_expires_at} = await debugToken(access_token);
-    
-    
+    const { data_access_expires_at } = await debugToken(access_token);
+
     // Crear el objeto para el insert
     const socialAccount = {
       llave_acceso: access_token,             // El token de larga duración obtenido
@@ -165,46 +165,74 @@ const handleAccountSave = async (account: Account, selectedPlatformId: string, s
       id_color: parseInt(selectedColorId),              // El ID del color seleccionado
     };
 
-    console.log(socialAccount);
-
     // Insertar la cuenta en la base de datos
-    const insertedAccount = await insertSocialAccount(socialAccount);
-    console.log(insertedAccount);
-    
-    console.log('Cuenta social guardada con éxito');
+    const result = await insertSocialAccount(socialAccount);
+
+    if (result.success) {
+      console.log('Cuenta social guardada con éxito');
+      return { success: true };
+    } else {
+      return { success: false, message: result.message };
+    }
+
   } catch (error) {
     console.error('Error al guardar la cuenta social:', error);
+    return { success: false, message: 'Error inesperado al guardar la cuenta social' };
   }
 };
+
 
 
 
  // Envío del formulario
-const onSubmit = async (values: AddSocialFormValues) => {
-  // Buscar la cuenta seleccionada
-  const selectedAccount = accounts.find(acc => acc.id === values.account);
-  
-  // Buscar la plataforma y color seleccionados por su valor
-  const selectedPlatform = platforms.find(plat => plat.value === values.platform);
-  const selectedColor = colors.find(col => col.value === values.color);
-  
-  if (selectedAccount && selectedPlatform && selectedColor) {
-    // Guardar la cuenta seleccionada pasando los IDs de plataforma y color
-    await handleAccountSave(selectedAccount, selectedPlatform.id, selectedColor.id);
-
-    toast({
-      variant: "default",
-      description: `Red social agregada: Plataforma ${values.platform}, Cuenta ${selectedAccount.name}, Color ${values.color}`,
-    });
-
-    form.reset();
-  } else {
+ const onSubmit = async (values: AddSocialFormValues) => {
+  try {
+    // Buscar la cuenta seleccionada
+    const selectedAccount = accounts.find(acc => acc.id === values.account);
+    
+    // Buscar la plataforma y color seleccionados por su valor
+    const selectedPlatform = platforms.find(plat => plat.value === values.platform);
+    const selectedColor = colors.find(col => col.value === values.color);
+    
+    if (selectedAccount && selectedPlatform && selectedColor) {
+      // Guardar la cuenta seleccionada pasando los IDs de plataforma y color
+      const result = await handleAccountSave(selectedAccount, selectedPlatform.id, selectedColor.id);
+      
+      if (result.success) {
+        toast({
+          variant: "default",
+          description: `Red social agregada: Plataforma ${values.platform}, Cuenta ${selectedAccount.name}, Color ${values.color}`,
+        });
+        
+        // Restablecer el formulario y realizar acciones adicionales
+        form.reset();
+        onFormSubmit();  // Llamar a la función de recarga de perfiles
+        onClose();       // Cerrar el modal
+      } else {
+        // Mostrar un error si la inserción falla
+        toast({
+          variant: "destructive",
+          description: `Error al guardar la cuenta social: ${result.message}`,
+        });
+      }
+    } else {
+      // Error en la selección de la cuenta, plataforma o color
+      toast({
+        variant: "destructive",
+        description: "Error al seleccionar plataforma, cuenta o color. Verifica tu selección.",
+      });
+    }
+  } catch (error) {
+    // Error inesperado al procesar el formulario
+    console.error('Error inesperado en el proceso de guardado:', error);
     toast({
       variant: "destructive",
-      description: "Error al seleccionar plataforma o color.",
+      description: "Ocurrió un error inesperado al procesar la solicitud.",
     });
   }
 };
+
+
 
 
   return (
