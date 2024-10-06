@@ -1,3 +1,9 @@
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: ".env.local",
+});
+
 declare global {
   interface Window {
     fbAsyncInit: () => void;
@@ -87,7 +93,16 @@ export const loginWithFacebook = (callback: (authResponse: any | null) => void) 
   });
 };
 
-// facebookApi.ts
+export const getFB = () => {
+  if (typeof window.FB !== 'undefined') {
+    return window.FB;
+  } else {
+    console.error("Facebook SDK is not fully loaded yet.");
+    return null;
+  }
+};
+
+
 export const getFacebookAccounts = (): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     if (typeof window.FB !== 'undefined') {
@@ -110,8 +125,8 @@ export const getFacebookAccounts = (): Promise<any[]> => {
 };
 
 export const exchangeForLongLivedToken = async (shortLivedToken: string): Promise<LongLivedTokenResponse> => {
-  const appId = '857764283115548'; // Reemplaza con tu App ID de Facebook
-  const appSecret = '12300232b52736bc6b9821dd7ef3dcc2'; // Reemplaza con tu App Secret de Facebook
+  const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID; 
+  const appSecret = process.env.NEXT_PUBLIC_FACEBOOK_APP_SECRET; 
 
   // URL para intercambiar el short-lived token por el long-lived token
   const url = `https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${appId}&client_secret=${appSecret}&fb_exchange_token=${shortLivedToken}`;
@@ -133,8 +148,8 @@ export const exchangeForLongLivedToken = async (shortLivedToken: string): Promis
 
 // 1. Obtener el App Access Token
 const getAppAccessToken = async () => {
-  const appId = '857764283115548'; // Reemplaza con tu App ID de Facebook
-  const appSecret = '12300232b52736bc6b9821dd7ef3dcc2'; // Reemplaza con tu App Secret de Facebook
+  const appId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID; 
+  const appSecret = process.env.NEXT_PUBLIC_FACEBOOK_APP_SECRET;
   const response = await fetch(`https://graph.facebook.com/oauth/access_token?client_id=${appId}&client_secret=${appSecret}&grant_type=client_credentials`);
   const data = await response.json();
   return data.access_token;
@@ -142,20 +157,9 @@ const getAppAccessToken = async () => {
 
 // 2. Depurar el User Access Token usando /debug_token
 export const debugToken = async (userAccessToken:string) => {
-  const appId = '857764283115548'; // Reemplaza con tu App ID de Facebook
-  const appSecret = '12300232b52736bc6b9821dd7ef3dcc2'; // Reemplaza con tu App Secret de Facebook
   const appAccessToken = await getAppAccessToken();
   const response = await fetch(`https://graph.facebook.com/debug_token?input_token=${userAccessToken}&access_token=${appAccessToken}`);
   const data = await response.json();
   return data.data
   
-};
-
-export const getFB = () => {
-  if (typeof window.FB !== 'undefined') {
-    return window.FB;
-  } else {
-    console.error("Facebook SDK is not fully loaded yet.");
-    return null;
-  }
 };
