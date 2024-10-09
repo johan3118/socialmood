@@ -10,6 +10,8 @@ import { and } from "drizzle-orm";
 import * as bcrypt from "bcryptjs"; // Import bcrypt
 import { google } from "@/lib/lucia/oauth";
 import { generateState, generateCodeVerifier } from "arctic";
+import { planesTable, subscripcionesTable, facturasTable } from "@/db/schema/socialMood";
+
 
 export const signUp = async (values: {
   nombre: string;
@@ -206,4 +208,30 @@ export const createGoogleAuthotizationURL = async () => {
       error: error?.message
     }
   }
+}
+
+export async function getSubscription(userId : number) {
+  const result = await db
+    .select({id: subscripcionesTable.id})
+    .from(subscripcionesTable)
+    .where(eq(subscripcionesTable.id_propietario, userId))
+    .limit(1);
+    if(result.length === 0){
+      return null;
+    }
+    return result[0].id;
+}
+
+export async function hasSubscription(userId: number) {
+  console.log(userId);
+  const result = await db
+    .select()
+    .from(subscripcionesTable)
+    .where(eq(subscripcionesTable.id_propietario, userId));
+  return result.length > 0;
+}
+
+export async function getActiveUserId() {
+  const { user } = await validateRequest();
+  return user?.id.toString();
 }

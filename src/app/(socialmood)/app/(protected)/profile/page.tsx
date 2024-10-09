@@ -9,14 +9,7 @@ export default async function ProfilePage() {
   if (!user) {
     return redirect("/");
   }
-
-  const activeSub = await hasSubscription(user.id)
-  console.log(activeSub)
-
-  if (!activeSub) {
-    return redirect("/app/get-sub")
-  }
-
+  
   return (
     <main className="flex min-h-screen flex-col items-center justify-center space-y-8">
       <div className="bg-white px-2 py-1 rounded-lg flex items-center">
