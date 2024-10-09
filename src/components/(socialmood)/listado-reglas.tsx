@@ -7,11 +7,14 @@ import { cn } from "@/lib/utils"; // Importación de la función 'cn'
 import CreateRule from "@/components/(socialmood)/create-rule";
 import EditRule from "@/components/(socialmood)/edit-rule";
 import DeleteRule from "@/components/(socialmood)/delete-rule";
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
 
 import {
     Dialog,
     DialogTrigger,
 } from "@/components/ui/dialog"
+
+import router, { useRouter } from "next/router";
 
 interface Perfil {
     red_social: string;
@@ -31,6 +34,9 @@ interface ListadoReglasTableProps {
 }
 
 const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
+
+    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
+
     const [Reglas, setReglas] = useState<Reglas[]>([]);
     const [Open, setOpen] = useState<boolean>(false);
 
@@ -53,7 +59,7 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
 
     const fetchReglas = async () => {
         try {
-            const reglas = await Promise.all(await getRules(20, filter));
+            const reglas = await Promise.all(await getRules(SubscriptionID, filter));
             setReglas(reglas);
         } catch (error) {
             console.error("Error al cargar las reglas:", error);
@@ -67,9 +73,25 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
         }
     };
 
+    const setSubscription = async () => {
+        const userID = await getActiveUserId();
+        if (userID) {
+            const subscription = await getSubscription(parseInt(userID));
+            if (subscription) {
+                setSubscriptionID(subscription);
+            }
+            else {
+                await router.push("/app/get-sub");
+            }
+
+        }
+        else {
+            await router.push("/app/sign-in");
+        }
+    }
+
     const handleRefreshTable = () => {
         fetchReglas();
-
     };
 
     const handleAddRule = () => {
@@ -86,16 +108,21 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
         setAction("Edit");
     }
 
-    const handleDeleteRule = (ruleID: number) => {
+    const handleDeleteRule = async (ruleID: number) => {
         setOpen(true);
         setRuleID(ruleID);
         setAction("");
         setAction("Delete");
     }
 
+    const updateData = async () => {
+        await setSubscription();
+        await fetchReglas();
+    }
+
     useEffect(() => {
-        fetchReglas();
-    }, [filter]);
+        updateData();
+    }, [filter, SubscriptionID]);
 
     return (
         <Dialog open={Open}>
@@ -121,82 +148,84 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
 
                     </div>
                     <hr className="border-[#FFF] mb-6" />
-                    <table className="min-w-full table-auto ">
-                        <thead>
-                            <tr className="text-[16px] md:text-[18px]">
-                                <th className="py-2 px-3 text-left">Perfil</th>
-                                <th className="py-2 px-3 text-left w-1/4">Alias</th>
-                                <th className="py-2 px-3 text-left">Subcategorías</th>
-                                <th className="py-2 px-3 text-left hidden sm:table-cell"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Reglas.map((regla) => (
-                                <tr key={regla.alias}>
-                                    <td className="py-1 px-3">
-                                        <div className="flex items-center justify-center space-x-2 w-full">
-                                            <span
-                                                className={cn(
-                                                    buttonVariants({
-                                                        variant: regla.perfil.red_social === "Instagram" ? "blue" : regla.perfil.red_social === "Facebook" ? "orange" : "default",
-                                                        size: "smBold",
-                                                    }),
-                                                    "w-full flex justify-start items-center py-2"
-                                                )}
-                                            >
-                                                <img
-                                                    src={socialIconMap[regla.perfil.red_social] || "/default.svg"}
-                                                    alt={`${regla.perfil.red_social} Icon`}
-                                                    className="flex justify-left mr-2"
-                                                />
-                                                {regla.perfil.username}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="py-1 px-3 text-left">{regla.alias}</td>
-
-
-                                    <td className="py-1 font-bold text-left">
-                                        <div className="flex flex-wrap">
-                                            {regla.subcategorias.map((subcategoria, index) => (
+                    <div className="max-h-60 overflow-y-auto">
+                        <table className="min-w-full table-auto ">
+                            <thead>
+                                <tr className="text-[16px] md:text-[18px]">
+                                    <th className="py-2 px-3 text-left">Perfil</th>
+                                    <th className="py-2 px-3 text-left w-1/4">Alias</th>
+                                    <th className="py-2 px-3 text-left">Subcategorías</th>
+                                    <th className="py-2 px-3 text-left hidden sm:table-cell"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Reglas.map((regla) => (
+                                    <tr key={regla.alias}>
+                                        <td className="py-1 px-3">
+                                            <div className="flex items-center justify-center space-x-2 w-full">
                                                 <span
-                                                    key={index}
-                                                    className={cn(buttonVariants({ variant: "angry", size: "smBold" }))}
-                                                    style={{ width: "auto", justifyContent: "center", marginLeft: "5px", marginTop: "5px" }}
+                                                    className={cn(
+                                                        buttonVariants({
+                                                            variant: regla.perfil.red_social === "Instagram" ? "blue" : regla.perfil.red_social === "Facebook" ? "orange" : "default",
+                                                            size: "smBold",
+                                                        }),
+                                                        "w-full flex justify-start items-center py-2"
+                                                    )}
                                                 >
                                                     <img
-                                                        src={emojimap[subcategoria] || "/default.svg"}
-                                                        alt="Emoji Icon"
-                                                        className="w-6 md:w-8 h-6 md:h-8 "
+                                                        src={socialIconMap[regla.perfil.red_social] || "/default.svg"}
+                                                        alt={`${regla.perfil.red_social} Icon`}
+                                                        className="flex justify-left mr-2"
                                                     />
-                                                    {subcategoria}
+                                                    {regla.perfil.username}
                                                 </span>
-                                            ))}
-                                        </div>
-                                    </td>
-                                    <td className="py-1 px-3 font-bold text-left">
-                                        <div className="flex items-center justify-center space-x-2">
-                                            <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => handleEditRule(regla.id)}>
+                                            </div>
+                                        </td>
+                                        <td className="py-1 px-3 text-left">{regla.alias}</td>
 
-                                                <img
-                                                    src="/edit.svg"
-                                                    alt="Edit"
-                                                    className=" w-6 h-6"
-                                                />
-                                            </DialogTrigger>
-                                            <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => handleDeleteRule(regla.id)}>
-                                                <img
-                                                    src="/delete.svg"
-                                                    alt="Delete"
-                                                    className=" w-6 h-6"
-                                                />
-                                            </DialogTrigger>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+
+                                        <td className="py-1 font-bold text-left">
+                                            <div className="flex flex-wrap">
+                                                {regla.subcategorias.map((subcategoria, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className={cn(buttonVariants({ variant: "angry", size: "smBold" }))}
+                                                        style={{ width: "auto", justifyContent: "center", marginLeft: "5px", marginTop: "5px" }}
+                                                    >
+                                                        <img
+                                                            src={emojimap[subcategoria] || "/default.svg"}
+                                                            alt="Emoji Icon"
+                                                            className="w-6 md:w-8 h-6 md:h-8 "
+                                                        />
+                                                        {subcategoria}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </td>
+                                        <td className="py-1 px-3 font-bold text-left">
+                                            <div className="flex items-center justify-center space-x-2">
+                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => handleEditRule(regla.id)}>
+
+                                                    <img
+                                                        src="/edit.svg"
+                                                        alt="Edit"
+                                                        className=" w-6 h-6"
+                                                    />
+                                                </DialogTrigger>
+                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => handleDeleteRule(regla.id)}>
+                                                    <img
+                                                        src="/delete.svg"
+                                                        alt="Delete"
+                                                        className=" w-6 h-6"
+                                                    />
+                                                </DialogTrigger>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             {

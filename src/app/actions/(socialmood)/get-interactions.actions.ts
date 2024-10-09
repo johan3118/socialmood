@@ -22,24 +22,36 @@ export async function getInteractions() {
 
     const interactions = await db.collection("Interacciones").find().toArray();
 
+
     let formattedInteractions = new Array<Interacciones>();
 
     interactions.forEach(interaction => {
+        const date = new Date(interaction.fecha_recepcion);
+        const formattedDate = date.toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        }).replace(',', '');
+
         const formattedInteraction = {
             perfil: {
-                red_social: interaction.nombre_red_social_receptor,
-                username: interaction.usuario_cuenta_receptor,
-                color: "#FF0000"
+            red_social: interaction.nombre_red_social_receptor,
+            username: interaction.usuario_cuenta_receptor,
+            color: "#FF0000"
             },
             mensaje: interaction.mensaje,
             emisor: interaction.usuario_cuenta_emisor,
             categoria: interaction.categoria,
             subcategoria: interaction.subcategoria,
-            fecha: interaction.fecha_recepcion
+            fecha: formattedDate
         }
         formattedInteractions.push(formattedInteraction);
     });
     
+    console.log(formattedInteractions);
 
     return formattedInteractions;
 
