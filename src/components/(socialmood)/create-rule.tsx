@@ -92,10 +92,10 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                 variant: "default",
                 description: "Rule created successfully",
             });
+            form.reset();
             onOpenChange(false);
         }
         setIsPending(false);
-
     }
 
     async function onClose() {
