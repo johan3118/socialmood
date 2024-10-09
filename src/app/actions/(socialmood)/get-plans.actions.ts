@@ -1,6 +1,6 @@
 'use server'
 import db from "@/db";
-import { planesTable, subscripcionesTable, facturasTable } from "@/db/schema/socialMood";
+import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTable } from "@/db/schema/socialMood";
 import { eq } from "drizzle-orm";
 
 export async function getSubscriptionPlans() {
@@ -109,3 +109,15 @@ export async function handleNewSubscription({
 
   return { success: true };
 }
+
+export const obtenerCuentasRedesSociales = async () => {
+  const cuentas = await db
+    .select({
+      llave_acceso: cuentasRedesSocialesTable.llave_acceso,
+      codigo_cuenta: cuentasRedesSocialesTable.codigo_cuenta,
+      usuario_cuenta: cuentasRedesSocialesTable.usuario_cuenta,
+    })
+    .from(cuentasRedesSocialesTable);
+  
+  return cuentas;
+};
