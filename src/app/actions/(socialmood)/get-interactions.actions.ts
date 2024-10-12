@@ -1,5 +1,6 @@
 'use server'
 import clientPromise from "@/utils/startMongo"
+import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
 
 interface Perfil {
     red_social: string;
@@ -17,40 +18,64 @@ interface Interacciones {
 }
 
 export async function getInteractions() {
-    const client = await clientPromise;
-    const db = client.db("socialMood");
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
 
-    const interactions = await db.collection("Interacciones").find().toArray();
+        const userid = await getActiveUserId();
 
-
-    let formattedInteractions = new Array<Interacciones>();
-
-    interactions.forEach(interaction => {
-        const date = new Date(interaction.fecha_recepcion);
-        const formattedDate = date.toLocaleString('en-GB', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        }).replace(',', '');
-
-        const formattedInteraction = {
-            perfil: {
-            red_social: interaction.nombre_red_social_receptor,
-            username: interaction.usuario_cuenta_receptor,
-            color: "#FF0000"
-            },
-            mensaje: interaction.mensaje,
-            emisor: interaction.usuario_cuenta_emisor,
-            categoria: interaction.categoria,
-            subcategoria: interaction.subcategoria,
-            fecha: formattedDate
+        if (!userid) {
+            throw new Error("User ID is undefined");
         }
-        formattedInteractions.push(formattedInteraction);
-    });
-    
-    return formattedInteractions;
+
+        const subscription = await getSubscription(parseInt(userid));
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+        
+
+        const interactions = await db.collection("Interacciones").find({
+            codigo_cuenta_receptor: { $in: socialMediasAccounts }
+        }).toArray();
+
+        let formattedInteractions = new Array<Interacciones>();
+
+        interactions.forEach(interaction => {
+            const date = new Date(interaction.fecha_recepcion);
+            const formattedDate = date.toLocaleString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }).replace(',', '');
+
+            const formattedInteraction = {
+                perfil: {
+                    red_social: interaction.nombre_red_social_receptor,
+                    username: interaction.usuario_cuenta_receptor,
+                    color: "#FF0000"
+                },
+                mensaje: interaction.mensaje,
+                emisor: interaction.usuario_cuenta_emisor,
+                categoria: interaction.categoria,
+                subcategoria: interaction.subcategoria,
+                fecha: formattedDate
+            }
+            formattedInteractions.push(formattedInteraction);
+        });
+
+        return formattedInteractions;
+
+    }
+    catch (error) {
+        console.error("Error al cargar las interacciones:", error);
+        return [];
+    }
+
 
 }
