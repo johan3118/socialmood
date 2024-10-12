@@ -34,7 +34,7 @@ const menuItems: MenuItem[] = [
     icon: <span className="text-xl">💬</span>,
     subItems: [
       { id: 'interactions', label: 'Interacciones', route: '/app/listado-interacciones', color: '#F59E0B' },
-      { id: 'responses', label: 'Respuestas', route: '/app/listado-interacciones', color: '#10B981' },
+      { id: 'responses', label: 'Respuestas', route: '/app/respuestas', color: '#10B981' },
       { id: 'rules', label: 'Reglas', route: '/app/reglas', color: '#F59E0B' },
       
     ],
