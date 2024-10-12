@@ -51,8 +51,6 @@ export async function getInteractions() {
         formattedInteractions.push(formattedInteraction);
     });
     
-    console.log(formattedInteractions);
-
     return formattedInteractions;
 
 }

@@ -24,6 +24,9 @@ import {
 import { Input } from "@/components/ui/input";
 import SocialButton from "./social-button";
 
+import router, { useRouter } from "next/router";
+
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
 
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
@@ -37,8 +40,6 @@ interface CreateRuleChildProps {
 export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleChildProps) {
 
     const [isPending, setIsPending] = useState(false);
-
-    const subscription = 20
 
     const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
 
@@ -115,7 +116,7 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
     };
 
     async function fetchSocialMediaAccounts() {
-        const accounts = await getSocialMediaAccounts(subscription);
+        const accounts = await getSocialMediaAccounts(SubscriptionID);
         setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
     }
 
@@ -131,19 +132,36 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
 
     }
 
+    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
+
+    const setSubscription = async () => {
+        const userID = await getActiveUserId();
+        if (userID) {
+            const subscription = await getSubscription(parseInt(userID));
+            if (subscription) {
+                setSubscriptionID(subscription);
+            }
+            else {
+                await router.push("/app/get-sub");
+            }
+
+        }
+        else {
+            await router.push("/app/sign-in");
+        }
+    }
+
+
     const updateData = async () => {
-
-
-        setTimeout(async () => {
-            await fetchSubcategorias();
-            await fetchSocialMediaAccounts();
-            await fetchSocialMedia();
-        }, 1000)
+        await setSubscription();
+        await fetchSubcategorias();
+        await fetchSocialMediaAccounts();
+        await fetchSocialMedia();
     }
 
     useEffect(() => {
         updateData();
-    }, []);
+    }, [SubscriptionID, parentID]);
 
     return (
         <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">
@@ -207,7 +225,7 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
                             bg-white text-[#2C2436] ">
-                                                            <SelectValue/>
+                                                            <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
                                                             {socialMedias.map((socialMedia) => (
