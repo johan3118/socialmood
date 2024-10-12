@@ -41,9 +41,6 @@ export async function getInteractions() {
             codigo_cuenta_receptor: { $in: socialMediasAccounts }
         }).toArray();
 
-        console.log(interactions);
-
-
         let formattedInteractions = new Array<Interacciones>();
 
         interactions.forEach(interaction => {
