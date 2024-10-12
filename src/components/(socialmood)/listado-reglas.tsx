@@ -59,6 +59,7 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
 
     const fetchReglas = async () => {
         try {
+
             const reglas = await Promise.all(await getRules(SubscriptionID, filter));
             setReglas(reglas);
         } catch (error) {
@@ -74,11 +75,14 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
     };
 
     const setSubscription = async () => {
+
         const userID = await getActiveUserId();
+        console.log(userID);
         if (userID) {
             const subscription = await getSubscription(parseInt(userID));
             if (subscription) {
                 setSubscriptionID(subscription);
+                console.log(subscription);
             }
             else {
                 await router.push("/app/get-sub");
@@ -91,7 +95,7 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
     }
 
     const handleRefreshTable = () => {
-        fetchReglas();
+        updateData();
     };
 
     const handleAddRule = () => {

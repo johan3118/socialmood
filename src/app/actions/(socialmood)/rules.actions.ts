@@ -473,5 +473,6 @@ export async function getRuleSubcategories(ruleID: number) {
     .from(subcategoriasTable)
     .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_subcategoria, subcategoriasTable.id))
     .where(eq(subcategoriasReglasTable.id_regla, ruleID));
+    console.log(subcategories);
   return subcategories;
 }
