@@ -2,7 +2,7 @@
 import { SignInSchema, SignUpSchema } from "@/types";
 import { generateId } from "lucia";
 import db from "@/db";
-import { usuariosTable } from "@/db/schema/socialMood";
+import { cuentasRedesSocialesTable, usuariosTable } from "@/db/schema/socialMood";
 import { lucia, validateRequest } from "@/lib/lucia/lucia";
 import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
@@ -11,6 +11,7 @@ import * as bcrypt from "bcryptjs"; // Import bcrypt
 import { google } from "@/lib/lucia/oauth";
 import { generateState, generateCodeVerifier } from "arctic";
 import { planesTable, subscripcionesTable, facturasTable } from "@/db/schema/socialMood";
+import { CodeIcon } from "lucide-react";
 
 
 export const signUp = async (values: {
@@ -220,6 +221,16 @@ export async function getSubscription(userId : number) {
       return null;
     }
     return result[0].id;
+}
+
+export async function getSocialMediaSubscription(subscriptionId: number) {
+  
+  const result = await db
+    .select({codigo: cuentasRedesSocialesTable.codigo_cuenta})
+    .from(cuentasRedesSocialesTable)
+    .where(eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId))
+
+    return result.map((account) => account.codigo);
 }
 
 export async function hasSubscription(userId: number) {
