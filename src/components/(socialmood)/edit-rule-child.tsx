@@ -19,6 +19,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
+
+import router, { useRouter } from "next/router";
+
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import {
@@ -40,6 +45,7 @@ import { Label } from "../ui/label";
 
 interface EditRuleChildProps {
     ruleID: number;
+    parentId: number;
     onOpenChange: (newOpenValue: boolean) => void;
 
 }
@@ -55,7 +61,7 @@ interface Reglas {
     alias: string;
     subcategorias: string[];
 }
-export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildProps) {
+export default function EditRuleChild({ ruleID, parentId, onOpenChange}: EditRuleChildProps) {
 
     const [open, setOpen] = useState(false);
 
@@ -63,26 +69,24 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
 
     const [reglaPadre, setReglaPadre] = useState<Reglas[]>([]);
 
-    const items = [
-        {
-            id: "1",
-            label: "Recomendación",
-        },
-        {
-            id: "2",
-            label: "Consulta",
-        },
-        {
-            id: "3",
-            label: "Queja",
-        },
-        {
-            id: "4",
-            label: "Elogio",
-        }
-    ] as const
+    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
 
-    const subscription = 20
+    const setSubscription = async () => {
+        const userID = await getActiveUserId();
+        if (userID) {
+            const subscription = await getSubscription(parseInt(userID));
+            if (subscription) {
+                setSubscriptionID(subscription);
+            }
+            else {
+                await router.push("/app/get-sub");
+            }
+
+        }
+        else {
+            await router.push("/app/sign-in");
+        }
+    }
 
 
     const [isPending, setIsPending] = useState(false);
@@ -156,7 +160,7 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
     }
 
     const fetchSubcategorias = async () => {
-        const subcategorias = await getRuleSubcategories(ruleID);
+        const subcategorias = await getRuleSubcategories(parentId);
         SetSubcategorias(subcategorias.map(subcategoria => ({
             ...subcategoria,
             id: subcategoria.id.toString()
@@ -164,7 +168,7 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
     };
 
     async function fetchSocialMediaAccounts() {
-        const accounts = await getSocialMediaAccounts(subscription);
+        const accounts = await getSocialMediaAccounts(SubscriptionID);
         setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
     }
 
@@ -188,6 +192,7 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
     }
 
     const updateData = async () => {
+        await setSubscription();
         await fetchSubcategorias();
         await fetchSocialMediaAccounts();
         await fetchSocialMedia();
@@ -197,13 +202,13 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
     useEffect(() => {
         form.reset({
             alias: "",
-            red_social: "1",
+            red_social: "",
             tipo: "1",
             instrucciones: "",
             subcategorias: [],
         });
         updateData();
-    }, []);
+    }, [SubscriptionID, ruleID]);
 
     return (
         <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">
@@ -288,7 +293,7 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                         render={() => (
                                             <FormItem>
                                                 <FormLabel className="block text-sm font-medium">Subcategorias</FormLabel>
-                                                {items.map((item) => (
+                                                {Subcategorias.map((item) => (
                                                     <FormField
                                                         key={item.id}
                                                         control={form.control}

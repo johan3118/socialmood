@@ -7,6 +7,8 @@ import {
     DialogTitle
 } from "@/components/ui/dialog"
 
+import router, { useRouter } from "next/router";
+
 import { useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -44,6 +46,8 @@ import SocialButton from "./social-button";
 import { Label } from "../ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { getSocialMediaAccounts, getRule, getChildRules, updateRule } from "@/app/actions/(socialmood)/rules.actions";
+
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
 
 interface EditRuleProps {
     ruleID: number;
@@ -99,6 +103,10 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
         setRuleID(ruleID);
         setOpen(true);
     }
+
+    const [redSocial, setRedSocial] = useState("");
+
+
     const items = [
         {
             id: "1",
@@ -124,28 +132,49 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
         resolver: zodResolver(CreateRuleSchema),
         defaultValues: {
             alias: "",
-            red_social: "1",
+            red_social: "",
             tipo: "1",
             instrucciones: "",
             subcategorias: [],
         },
     });
-    const subscription = 20
 
     const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
 
     async function fetchSocialMediaAccounts() {
-        const accounts = await getSocialMediaAccounts(subscription);
+        const accounts = await getSocialMediaAccounts(SubscriptionID);
         setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+    }
+
+    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
+
+    const setSubscription = async () => {
+        const userID = await getActiveUserId();
+        if (userID) {
+            const subscription = await getSubscription(parseInt(userID));
+            if (subscription) {
+                setSubscriptionID(subscription);
+            }
+            else {
+                await router.push("/app/get-sub");
+            }
+
+        }
+        else {
+            await router.push("/app/sign-in");
+        }
     }
 
     async function fetchRuleInfo() {
         const rule = await getRule(ruleID);
+        const cuenta = (rule?.perfil?.id_cuenta?.toString() || "");
+        setRedSocial(cuenta);
+        console.log(cuenta);
         form.reset(
             {
                 alias: rule?.alias,
-                red_social: rule?.perfil.id_cuenta?.toString() || "",
-                tipo: rule?.id_tipo_regla?.toString() || "",
+                red_social: cuenta,
+                tipo: "1",
                 instrucciones: rule?.instrucciones || "",
                 subcategorias: rule?.subcategorias,
             }
@@ -153,15 +182,17 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
     }
 
     const updateData = async () => {
+        await setSubscription();
         await fetchSocialMediaAccounts();
         await fetchRuleInfo();
         await fetchChildRules();
     }
 
     useEffect(() => {
-        console.log("useEffect");
         updateData();
-    }, []);
+
+
+    }, [ruleID, SubscriptionID]);
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
         form.trigger();
@@ -182,7 +213,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                 description: "Rule updated successfully",
             });
             onOpenChange(false);
-            
+
         }
         setIsPending(false);
     }
@@ -252,7 +283,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                             <FormItem>
                                                 <FormLabel className="block text-sm font-medium">Red Social</FormLabel>
                                                 <FormControl>
-                                                    <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value} value={redSocial}>
                                                         <SelectTrigger disabled className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
@@ -403,7 +434,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                                 </div>
                                                 {
                                                     action === "Create" ? <CreateRuleChild onOpenChange={handleOpenChild} parentID={ruleID} /> :
-                                                        action === "Edit" ? <EditRuleChild ruleID={RuleID} onOpenChange={handleOpenChild} /> :
+                                                        action === "Edit" ? <EditRuleChild ruleID={RuleID} parentId={ruleID} onOpenChange={handleOpenChild} /> :
                                                             action === "Delete" ? <DeleteRuleChild ruleID={RuleID} onOpenChange={handleOpenChild} /> : null
                                                 }
 
