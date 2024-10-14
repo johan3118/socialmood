@@ -35,7 +35,6 @@ export async function getSocialMediaAccounts(subscriptionId: number) {
     .from(cuentasRedesSocialesTable)
     .innerJoin(redesSocialesTable, eq(redesSocialesTable.id, cuentasRedesSocialesTable.id_red_social))
     .where(eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId))
-    .limit(1);
 
   return accounts;
 }
