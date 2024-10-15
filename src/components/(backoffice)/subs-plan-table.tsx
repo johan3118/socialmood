@@ -73,8 +73,9 @@ const PlanesSubscripcionTable: React.FC = () => {
           <span className="text-white text-2xl">+</span>
         </button>
       </div>
+      
 
-      <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+      <table className="min-w-full bg-white rounded-lg overflow-hidden border-t">
         <thead className="bg-[#422EA3] text-white">
           <tr>
             <th className="py-3 px-4 text-left">Plan</th>
@@ -88,8 +89,8 @@ const PlanesSubscripcionTable: React.FC = () => {
         </thead>
         <tbody>
           {planesSubscripcion.map((plan) => (
-            <tr key={plan.planId} className="border-t">
-              <td className="py-3 px-4">{plan.planNombre}</td>
+            <tr key={plan.planId} className="">
+              <td className="py-6 px-4">{plan.planNombre}</td>
               <td className="py-3 px-4 text-center">{plan.cantidad_usuarios_permitidos}</td>
               <td className="py-3 px-4 text-center">{plan.cantidad_cuentas_permitidas}</td>
               <td className="py-3 px-4 text-center">{plan.cantidad_interacciones_mes}</td>

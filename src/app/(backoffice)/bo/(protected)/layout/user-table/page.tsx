@@ -1,10 +1,9 @@
 import React from 'react'
-import PlanesSubscripcionTable from '@/components/(backoffice)/subs-plan-table'
 
 function ListadoSubscripcionesPage() {
   return (
     <div>
-        <PlanesSubscripcionTable/>
+        <h1> Listado de usuarios </h1>
     </div>
   )
 }
