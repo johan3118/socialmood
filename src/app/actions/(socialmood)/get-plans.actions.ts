@@ -1,6 +1,6 @@
 'use server'
 import db from "@/db";
-import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTable } from "@/db/schema/socialMood";
+import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTable, reglasTable } from "@/db/schema/socialMood";
 import { eq } from "drizzle-orm";
 
 export async function getSubscriptionPlans() {
@@ -113,6 +113,7 @@ export async function handleNewSubscription({
 export const obtenerCuentasRedesSociales = async () => {
   const cuentas = await db
     .select({
+      id: cuentasRedesSocialesTable.id_subscripcion,
       llave_acceso: cuentasRedesSocialesTable.llave_acceso,
       codigo_cuenta: cuentasRedesSocialesTable.codigo_cuenta,
       usuario_cuenta: cuentasRedesSocialesTable.usuario_cuenta,
@@ -120,4 +121,15 @@ export const obtenerCuentasRedesSociales = async () => {
     .from(cuentasRedesSocialesTable);
   
   return cuentas;
+};
+
+export const obtenerSoloReglasDeCuentas = async (id: number) => {
+  const regla = await db
+    .select({
+      regla: reglasTable.prompt, 
+    })
+    .from(reglasTable)
+    .where(eq(reglasTable.id_cuenta, id)); 
+
+  return regla[0]?.regla || '';  
 };
