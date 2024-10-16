@@ -43,7 +43,7 @@ const menuItems: MenuItem[] = [
 
 export default function Sidebar() {
   const [expandedItem, setExpandedItem] = useState<string | null>('interactions')
-  const [selectedItem, setSelectedItem] = useState<string>('responses')
+  const [selectedItem, setSelectedItem] = useState<string>('')
   const router = useRouter()
 
   const toggleExpand = (id: string) => {

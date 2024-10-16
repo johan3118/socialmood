@@ -37,7 +37,6 @@ function PantallaGestionRespuestasPage() {
           type="button" // Cambiado a 'button' para evitar enviar un formulario
           onClick={openFilterModal}
         />
-        <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
       </div>
 
       <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
