@@ -39,7 +39,7 @@ export default function Sidebar() {
 
   const handleSignOut = async () => {
     await signOut()
-    router.push('/nueva-ruta')  // Cambia '/nueva-ruta' por la ruta deseada
+    router.push('/bo/sign-in') 
   }
 
   return (

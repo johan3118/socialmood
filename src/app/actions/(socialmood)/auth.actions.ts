@@ -246,3 +246,37 @@ export async function getActiveUserId() {
   const { user } = await validateRequest();
   return user?.id.toString();
 }
+
+export async function getActiveUserName() {
+  const { user } = await validateRequest();
+  const userid = user?.id;
+  if (userid === undefined) {
+    return {
+      error: "User ID is undefined",
+    };
+  }
+  const result = await db
+    .select({nombre: usuariosTable.nombre, apellido: usuariosTable.apellido})
+    .from(usuariosTable)
+    .where(eq(usuariosTable.id, userid))
+    .limit(1);
+
+  return result[0].nombre.toString() + " " + result[0].apellido.toString();
+}
+
+export async function getActiveUserEmail() {
+  const { user } = await validateRequest();
+  const userid = user?.id;
+  if (userid === undefined) {
+    return {
+      error: "User ID is undefined",
+    };
+  }
+  const result = await db
+    .select({correo_electronico: usuariosTable.correo_electronico})
+    .from(usuariosTable)
+    .where(eq(usuariosTable.id, userid))
+    .limit(1);
+
+  return result[0].correo_electronico.toString();
+}
