@@ -29,7 +29,7 @@ const menuItems = [
 ]
 
 export default function Sidebar() {
-  const [selectedItem, setSelectedItem] = useState<string>('users')
+  const [selectedItem, setSelectedItem] = useState<string>()
   const router = useRouter()
 
   const handleRoute = (route: string) => {

@@ -27,7 +27,7 @@ const buttonVariants = cva(
         default: "h-9 px-14 py-4",
         defaultBold: "h-9 px-12 py-4 font-bold",
         sm: "h-8 rounded-md px-3 text-xs",
-        smBold: "h-8 rounded-md px-3 text-xs font-bold",
+        smBold: "h-8 rounded-md px-6 text-xs font-bold",
         lg: "h-10 rounded-md px-8",
         lgBold: "h-10 rounded-md px-8 font-bold",
         gg: "rounded-[20px] h-14 px-14 font-bold",
