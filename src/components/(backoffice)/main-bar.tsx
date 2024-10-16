@@ -11,7 +11,7 @@ export default function MainBar() {
     switch (pathname) {
       case '/bo/layout/sub-table':
         return {
-          title: 'Subscrippciones'
+          title: 'Subscripciones'
         };
       case '/bo/layout/user-table':
         return {
