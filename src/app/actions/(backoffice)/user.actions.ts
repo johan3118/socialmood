@@ -1,7 +1,7 @@
 "use server";
 import { CreateUserSchema } from "@/types";
 import db from "@/db";
-import { usuariosTable } from "@/db/schema/socialMood";
+import { usuariosTable, tiposUsuarioTable } from "@/db/schema/socialMood";
 import { lucia, validateRequest } from "@/lib/lucia/lucia";
 import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
@@ -76,3 +76,21 @@ export const createUser = async (values: {
       };
     }
   };  
+
+  export const selectAllUsers = async () => {
+    const allUsers = await db
+        .select({
+          userId: usuariosTable.id,
+          nombre: usuariosTable.nombre,
+          apellido: usuariosTable.apellido,
+          direccion: usuariosTable.direccion,
+          tipo_usuario: tiposUsuarioTable.nombre,
+          correo: usuariosTable.correo_electronico          
+        })
+        .from(usuariosTable)
+        .innerJoin(tiposUsuarioTable, eq(usuariosTable.id_tipo_usuario, tiposUsuarioTable.id))
+        .all();
+  
+  return JSON.parse(JSON.stringify(allUsers));
+    
+  }
