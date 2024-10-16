@@ -3,7 +3,7 @@ import { ArrowLeft, Edit, Plus, X } from "lucide-react"
 import { User } from "lucide-react"
 import BlurredContainer from "@/components/(socialmood)/blur-background"
 import React, { useEffect, useState } from 'react'
-import { getActiveUserName, getActiveUserEmail } from '@/app/actions/(socialmood)/auth.actions'
+import { getActiveUserName, getActiveUserEmail } from '@/app/actions/(backoffice)/auth.actions'
 
 function UserSettingsCard() {
 

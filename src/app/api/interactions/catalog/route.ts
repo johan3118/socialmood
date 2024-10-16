@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest) => {
         Las categorias disponibles son:
             * "Positivo": si el mensaje tiene un tono positivo.
             * "Negativo": si el mensaje tiene un tono negativo.
-            * "Neutro": si el mensaje no tiene un tono positivo o negativo.
+            * "Neutral": si el mensaje no tiene un tono positivo o negativo.
         
         A partir de la elección de la "categoría", se procede a asignar una "subcategoría" que representa la intención del mensaje.
         Las subcategorías disponibles son:
