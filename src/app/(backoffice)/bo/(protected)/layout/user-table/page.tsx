@@ -1,5 +1,6 @@
 "use client"
 import React from 'react'
+import UserTable from '@/components/(backoffice)/users-table'
 import {useRouter} from 'next/navigation';
 
 
@@ -11,11 +12,8 @@ function ListadoUsuariosPage() {
   };
 
   return (
-    <div>
-        <h1> Listado de usuarios </h1>
-        <button className="btn w-8 h-8 bg-[#D24EA6] rounded-lg" onClick={handleCrearSubscripcion}>
-          <span className="text-white text-2xl">+</span>
-        </button>
+    <div className='my-10 mx-8 border shadow-lg border-black rounded-lg shadow-3xl'>
+      <UserTable />
     </div>
   )
 }
