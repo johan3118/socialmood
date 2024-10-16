@@ -54,6 +54,26 @@ return JSON.parse(JSON.stringify(allPlans));
   
 }
 
+export const getPlanById = async (planId: number) => {
+  const allPlans = await db
+      .select({
+        planId: planesTable.id,
+        planNombre: planesTable.nombre,
+        costo: planesTable.costo,
+        cantidad_interacciones_mes: planesTable.cantidad_interacciones_mes,
+        cantidad_usuarios_permitidos: planesTable.cantidad_usuarios_permitidos,
+        cantidad_cuentas_permitidas: planesTable.cantidad_cuentas_permitidas,
+        tipo_facturacion_nombre: tiposFacturacionTable.nombre,
+        descripcion: planesTable.descripcion
+      })
+      .from(planesTable)
+      .innerJoin(tiposFacturacionTable, eq(planesTable.id_tipo_facturacion, tiposFacturacionTable.id))
+      .where(eq(planesTable.id, planId));
+
+return JSON.parse(JSON.stringify(allPlans));
+  
+}
+
 export const activatePlan = async (planId: number) => {
   try {
     // Actualizamos el id_estado_plan a 1 (activo)
@@ -91,4 +111,22 @@ export const deactivatePlan = async (planId: number) => {
     console.error("Error al activar el plan:", error);
   }
 }
+
+export const updatePlanById = async (planId: number, updateData: any) => {
+  // Eliminar los campos que están undefined
+  const filteredData = Object.fromEntries(
+    Object.entries(updateData).filter(([_, value]) => value !== undefined)
+  );
+
+  // Verifica si hay algún campo para actualizar
+  if (Object.keys(filteredData).length === 0) {
+    throw new Error("No hay campos para actualizar");
+  }
+
+  // Realizar la actualización en la base de datos solo con los campos proporcionados
+  await db
+    .update(planesTable)
+    .set(filteredData) // Solo actualizamos los campos que no son undefined
+    .where(eq(planesTable.id, planId));
+};
 

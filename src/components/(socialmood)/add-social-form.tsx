@@ -20,6 +20,8 @@ import { AddSocialSchema } from "@/types";
 import { getColors, getSocialPlatforms, insertSocialAccount } from "@/app/actions/(socialmood)/social.actions";
 import Image from "next/image";
 import { loginWithFacebook, getFacebookAccounts, exchangeForLongLivedToken, debugToken } from "@/app/api/meta/meta";
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
+import {useRouter} from 'next/navigation';
 
 type AddSocialFormValues = z.infer<typeof AddSocialSchema>;
 
@@ -54,6 +56,10 @@ const AddSocialForm: React.FC<AddSocialFormProps> = ({ onClose, onFormSubmit }) 
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null); // Estado para el color seleccionado
+
+  const [SubscriptionID, setSubscriptionID] = useState<number>(0);
+
+  const router = useRouter();
 
   
 
@@ -147,39 +153,62 @@ const handleColorSelection = (colorValue: string) => {
     }
   };
 
+  const setSubscription = async () => {
+    const userID = await getActiveUserId();
+    if (userID) {
+      const subscription = await getSubscription(parseInt(userID));
+      if (subscription) {
+        setSubscriptionID(subscription);
+        return subscription; // Devuelve la suscripción
+      } else {
+        await router.push("/app/get-sub");
+        return null; // Si no hay suscripción, retorna null
+      }
+    } else {
+      await router.push("/app/sign-in");
+      return null; // Si no hay usuario, retorna null
+    }
+  };
+  
+
 // Guardar la cuenta seleccionada
 const handleAccountSave = async (account: Account, selectedPlatformId: string, selectedColorId: string): Promise<{ success: boolean, message?: string }> => {
   try {
+    const subscriptionID = await setSubscription(); // Espera a que setSubscription retorne el valor
+
+    if (!subscriptionID) {
+      return { success: false, message: "No se encontró una suscripción válida" };
+    }
+
     // Cambiar el short-lived access token por un long-lived access token y obtener también los segundos restantes
     const { access_token } = await exchangeForLongLivedToken(account.access_token);
     const { data_access_expires_at } = await debugToken(access_token);
 
     // Crear el objeto para el insert
     const socialAccount = {
-      llave_acceso: access_token,             // El token de larga duración obtenido
-      usuario_cuenta: account.name,           // El nombre de usuario de la cuenta
-      codigo_cuenta: account.id,              // El ID de la cuenta
-      fecha_vencimiento_acceso: data_access_expires_at, // Fecha de vencimiento en timestamp Unix (en segundos)
-      id_subscripcion: 19,                     // Suponiendo que ya tienes esta información
-      id_red_social: parseInt(selectedPlatformId),      // El ID de la plataforma seleccionada
-      id_color: parseInt(selectedColorId),              // El ID del color seleccionado
+      llave_acceso: access_token,
+      usuario_cuenta: account.name,
+      codigo_cuenta: account.id,
+      fecha_vencimiento_acceso: data_access_expires_at,
+      id_subscripcion: subscriptionID, // Usar el ID de suscripción retornado
+      id_red_social: parseInt(selectedPlatformId),
+      id_color: parseInt(selectedColorId),
     };
 
     // Insertar la cuenta en la base de datos
     const result = await insertSocialAccount(socialAccount);
 
     if (result.success) {
-      console.log('Cuenta social guardada con éxito');
       return { success: true };
     } else {
       return { success: false, message: result.message };
     }
-
   } catch (error) {
     console.error('Error al guardar la cuenta social:', error);
     return { success: false, message: 'Error inesperado al guardar la cuenta social' };
   }
 };
+
 
 
 
