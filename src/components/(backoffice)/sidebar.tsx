@@ -29,7 +29,7 @@ const menuItems = [
 ]
 
 export default function Sidebar() {
-  const [selectedItem, setSelectedItem] = useState<string>('users')
+  const [selectedItem, setSelectedItem] = useState<string>()
   const router = useRouter()
 
   const handleRoute = (route: string) => {
@@ -39,7 +39,7 @@ export default function Sidebar() {
 
   const handleSignOut = async () => {
     await signOut()
-    router.push('/nueva-ruta')  // Cambia '/nueva-ruta' por la ruta deseada
+    router.push('/bo/sign-in') 
   }
 
   return (

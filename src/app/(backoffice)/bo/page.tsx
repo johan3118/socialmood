@@ -7,7 +7,10 @@ import SocialButton from "@/components/(backoffice)/social-button";
 export default async function Home() {
   const { user } = await validateRequest();
   if (user) {
-    return redirect("/app/profile");
+    return redirect("/bo/layout/subtable");
+  }
+  else{
+    return redirect("/bo/sign-in");
   }
 
   return (

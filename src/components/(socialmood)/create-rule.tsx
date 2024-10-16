@@ -8,6 +8,9 @@ import {
     DialogClose,
 } from "@/components/ui/dialog"
 
+import router, { useRouter } from "next/router";
+
+
 import { useEffect } from "react";
 
 import { createRule, getSocialMediaAccounts } from "@/app/actions/(socialmood)/rules.actions";
@@ -37,6 +40,8 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
 
 import SocialButton from "./social-button";
 
@@ -71,7 +76,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
         resolver: zodResolver(CreateRuleSchema),
         defaultValues: {
             alias: "",
-            red_social: "1",
+            red_social: "",
             tipo: "1",
             instrucciones: "",
             subcategorias: [],
@@ -103,17 +108,38 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
         onOpenChange(false);
     }
 
-    const subscription = 20
+    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
+
+    const setSubscription = async () => {
+        const userID = await getActiveUserId();
+        console.log("UserID ", userID);
+        if (userID) {
+            const subscription = await getSubscription(parseInt(userID));
+            if (subscription) {
+                setSubscriptionID(subscription);
+                console.log("Subscription ", subscription);
+            }
+            else {
+                await router.push("/app/get-sub");
+            }
+
+        }
+        else {
+            await router.push("/app/sign-in");
+        }
+    }
 
     const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
 
+    async function fetchSocialMediaAccounts() {
+        const accounts = await getSocialMediaAccounts(SubscriptionID);
+        setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+    }
+
     useEffect(() => {
-        async function fetchSocialMediaAccounts() {
-            const accounts = await getSocialMediaAccounts(subscription);
-            setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
-        }
+        setSubscription();
         fetchSocialMediaAccounts();
-    }, []);
+    }, [SubscriptionID]);
 
     return (
         <DialogContent className="flex items-start md:w-[90%]">

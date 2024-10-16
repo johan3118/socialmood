@@ -1,7 +1,7 @@
  "use client"
 import React, { useState } from 'react'
 import UserCard from '@/components/(backoffice)/user-card'
-import ProfileSettings from '@/components/(socialmood)/profile-settings'
+import ProfileSettings from './profile-settings'
 
 export default function UserProfile() {
   const [showSettings, setShowSettings] = useState(false)

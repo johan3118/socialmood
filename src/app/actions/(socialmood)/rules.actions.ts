@@ -35,7 +35,6 @@ export async function getSocialMediaAccounts(subscriptionId: number) {
     .from(cuentasRedesSocialesTable)
     .innerJoin(redesSocialesTable, eq(redesSocialesTable.id, cuentasRedesSocialesTable.id_red_social))
     .where(eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId))
-    .limit(1);
 
   return accounts;
 }
@@ -473,5 +472,6 @@ export async function getRuleSubcategories(ruleID: number) {
     .from(subcategoriasTable)
     .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_subcategoria, subcategoriasTable.id))
     .where(eq(subcategoriasReglasTable.id_regla, ruleID));
+    console.log(subcategories);
   return subcategories;
 }

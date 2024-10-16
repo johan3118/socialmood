@@ -1,11 +1,11 @@
 "use client"
 import React, { useState } from "react";
-import ListadoReglasTable from '@/components/(socialmood)/listado-reglas'
+import ListadoRespuestasTable from '@/components/(socialmood)/listado-respuestas'
 import FilterModal from '@/components/(socialmood)/filter-modal'
 import SocialButton from '@/components/(socialmood)/social-button'
 import SearchBar from '@/components/(socialmood)/searchbar'
 
-function PantallaGestionReglasPage() {
+function PantallaGestionRespuestasPage() {
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Controla la visibilidad del modal
 
@@ -37,15 +37,14 @@ function PantallaGestionReglasPage() {
           type="button" // Cambiado a 'button' para evitar enviar un formulario
           onClick={openFilterModal}
         />
-        <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
-
       </div>
 
-      <ListadoReglasTable
+      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
+      <ListadoRespuestasTable
         filter={selectedFilters}
       />
     </div>
   )
 }
 
-export default PantallaGestionReglasPage
+export default PantallaGestionRespuestasPage
