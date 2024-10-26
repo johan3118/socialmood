@@ -26,7 +26,7 @@ export const POST = async (req: NextRequest) => {
             * "Recomendación": si el mensaje tiene una sugerencia. Solo aplica para categoria "Positiva".
             * "Elogio": si el mensaje tiene un elogio. Solo aplica para categoria "Positiva".
         
-        A partir del contenido del mensaje necesito que identifique un mínimo de 1 emocion o un máximo de 3 emociones que se encuentren presentes en el mensaje.
+        A partir del contenido del mensaje necesito que identifiques OBLIGATORIAMENTE DEBE EXISTIR COMO MINIMO 1 O UN MÁXIMO DE 3 EMOCIONES que se encuentren presentes en el mensaje. 
         Las emociones disponibles son:
             * "Alegría": Estado emocional que se experimenta cuando una situación concreta es interpretada como positiva, nos proporciona placer o satisface alguna necesidad.
             * "Enfado": Estado emocional que se manifiesta ante la frustración, las injusticias o cuando algo se interpone en nuestras metas u objetivos..
