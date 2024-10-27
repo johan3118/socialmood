@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { getRespuestas } from "@/app/actions/(socialmood)/get-interactions.actions";
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils"; // Importación de la función 'cn'
+import { cn } from "@/lib/utils";
 import CreateRule from "@/components/(socialmood)/create-rule";
+import EditForm from "@/components/(socialmood)/edit-response"; // Import the EditForm component
 import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
 
 import {
@@ -24,6 +25,10 @@ interface Respuestas {
     unique_code: string;
     perfil: Perfil;
     respuesta: string;
+    username_emisor: string;
+    categoria: string;
+    subcategoria: string;
+    fecha: string;
 }
 
 interface ListadoRespuestasTableProps {
@@ -31,28 +36,18 @@ interface ListadoRespuestasTableProps {
 }
 
 const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter }) => {
-
     const [SubscriptionID, setSubscriptionID] = useState<number>(0);
-
     const [Respuestas, setRespuestas] = useState<Respuestas[]>([]);
     const [Open, setOpen] = useState<boolean>(false);
-
     const [action, setAction] = useState<string>("Create");
     const [respuestaID, setRespuestaID] = useState<string>("");
+    const [selectedResponse, setSelectedResponse] = useState<Respuestas | null>(null); // To store the selected response
 
     const socialIconMap: { [key: string]: string } = {
         Instagram: "/instagram.svg",
         Facebook: "/facebook.svg"
     };
-
-    const emojimap: Record<string, string> = {
-        "Queja": "/angry.svg",
-        "Elogio": "/happy.svg",
-        "Recomendación": "/happy.svg",
-        "Consulta": "/neutral-face.svg",
-        // categorías y subcategorias con sus respectivos emojis
-    };
-
+    
 
     const fetchRespuestas = async () => {
         try {
@@ -71,19 +66,15 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
     };
 
     const setSubscription = async () => {
-
         const userID = await getActiveUserId();
-        console.log(userID);
         if (userID) {
             const subscription = await getSubscription(parseInt(userID));
             if (subscription) {
                 setSubscriptionID(subscription);
-                console.log(subscription);
             }
             else {
                 await router.push("/app/get-sub");
             }
-
         }
         else {
             await router.push("/app/sign-in");
@@ -94,18 +85,18 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
         updateData();
     };
 
-
     const handleEditRespuesta = (respuestaID: string) => {
         setOpen(true);
         setRespuestaID(respuestaID);
-        setAction("");
         setAction("Edit");
+
+        // Find the selected response by ID
+        const selected = Respuestas.find((respuesta) => respuesta.unique_code === respuestaID);
+        setSelectedResponse(selected || null);
     }
 
     const handleApproveRespuesta = async (respuestaID: string) => {
-        setOpen(true);
         setRespuestaID(respuestaID);
-        setAction("");
         setAction("Approve");
     }
 
@@ -124,34 +115,27 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
                 <div className="container mx-auto p-6">
                     <div className="flex justify-between mb-6">
                         <h1 className="text-[24px] text-white font-bold">Respuestas</h1>
-                        <div className="flex items-center space-x-1">
-                            <button
-                                className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center"
-                                onClick={handleRefreshTable}
-                            >
-                                <img
-                                    src="/refresh.svg"
-                                    alt="Refresh"
-                                    className=" w-6 h-6"
-                                />
-                            </button>
-                        </div>
-
+                        <button
+                            className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center"
+                            onClick={handleRefreshTable}
+                        >
+                            <img src="/refresh.svg" alt="Refresh" className=" w-6 h-6" />
+                        </button>
                     </div>
                     <hr className="border-[#FFF] mb-6" />
                     <div className="max-h-60 overflow-y-auto">
-                        <table className="min-w-full table-auto ">
+                        <table className="min-w-full table-auto">
                             <thead>
                                 <tr className="text-[16px] md:text-[18px]">
-                                    <th className="py-2 px-3 text-left">Perfil</th>
-                                    <th className="py-2 px-3 text-left w-1/4">Respuesta automática</th>
-                                    <th className="py-2 px-3 text-left hidden sm:table-cell"></th>
+                                    <th className="py-2 px-3 text-left w-1/6">Perfil</th>
+                                    <th className="py-2 px-3 text-left w-1/2">Respuesta automática</th>
+                                    <th className="py-2 px-3 text-left w-1/6 hidden sm:table-cell"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {Respuestas.map((respuesta) => (
-                                    <tr key={respuesta.unique_code}>
-                                        <td className="py-1 px-3">
+                                    <tr key={respuesta.unique_code} className="">
+                                        <td className="px-2 py-2">
                                             <div className="flex items-center justify-center space-x-2 w-full">
                                                 <span
                                                     className={cn(
@@ -171,24 +155,16 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="py-1 px-3 text-left">{respuesta.respuesta}</td>
-
-                                        <td className="py-1 px-3 font-bold text-left">
+                                        <td className="py-4 px-4 text-sm text-left w-1/2">
+                                            {respuesta.respuesta}
+                                        </td>
+                                        <td className="py-4 px-3 font-bold text-left">
                                             <div className="flex items-center justify-center space-x-2">
                                                 <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => handleEditRespuesta(respuesta.unique_code)}>
-
-                                                    <img
-                                                        src="/edit.svg"
-                                                        alt="Edit"
-                                                        className=" w-6 h-6"
-                                                    />
+                                                    <img src="/edit.svg" alt="Edit" className=" w-6 h-6" />
                                                 </DialogTrigger>
                                                 <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => handleApproveRespuesta(respuesta.unique_code)}>
-                                                    <img
-                                                        src="/delete.svg"
-                                                        alt="Delete"
-                                                        className=" w-6 h-6"
-                                                    />
+                                                    <input type="checkbox" className="bg-transparent rounded-md w-5 h-5 border-white border-solid border-1"/>
                                                 </DialogTrigger>
                                             </div>
                                         </td>
@@ -201,9 +177,21 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
             </div>
             {
                 action === "Approve" ? <CreateRule onOpenChange={handleOpenChange} /> :
-                    action === "Edit" ? <CreateRule onOpenChange={handleOpenChange} /> :
-                        null
-
+                    action === "Edit" && selectedResponse ? (
+                        <EditForm
+                            onClose={() => setOpen(false)}
+                            defaultValues={{
+                                red_social: selectedResponse.perfil.red_social,
+                                red_social_username: selectedResponse.perfil.red_social,
+                                categoria: selectedResponse.categoria, // Example, you might need to adjust based on actual response data
+                                subcategoria: selectedResponse.subcategoria,  // Example
+                                emisor: selectedResponse.username_emisor,
+                                respuesta: selectedResponse.respuesta,
+                                unique_code: selectedResponse.unique_code,
+                                fecha: selectedResponse.fecha
+                            }}
+                        />
+                    ) : null
             }
         </Dialog>
     );

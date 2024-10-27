@@ -48,6 +48,7 @@ const ListadoInteraccionesTable: React.FC = () => {
   const fetchInteracciones = async () => {
     try {
       const interacciones = await getInteractions(); // Llamada a la función para obtener todos las interacciones de la subscripcion
+      console.log(interacciones);
       setInteracciones(interacciones);
     } catch (error) {
       console.error("Error al cargar las interacciones:", error);

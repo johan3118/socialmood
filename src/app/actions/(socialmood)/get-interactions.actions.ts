@@ -20,7 +20,16 @@ interface Interacciones {
 interface Respuestas {
     perfil: Perfil;
     respuesta: string;
+    username_emisor: string;
     unique_code: string;
+    categoria: string;
+    subcategoria: string;
+    fecha: string;
+}
+
+interface UpdateResult {
+    success: boolean;
+    message: string;
 }
 
 export async function getInteractions() {
@@ -134,7 +143,11 @@ export async function getRespuestas() {
                     color: "#FF0000"
                 },
                 respuesta: respuesta.respuesta,
-                unique_code: respuesta.unique_code
+                username_emisor: respuesta.usuario_cuenta_emisor,
+                categoria: respuesta.categoria,
+                subcategoria: respuesta.subcategoria,
+                unique_code: respuesta.unique_code,
+                fecha: formattedDate
             }
             formattedRespuestas.push(formattedInteraction);
         });
@@ -150,3 +163,24 @@ export async function getRespuestas() {
 
 }
 
+
+export async function updateRespuesta(uniqueCode: string, newRespuesta: string): Promise<UpdateResult> {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const result = await db.collection("Interacciones").updateOne(
+            { unique_code: uniqueCode },
+            { $set: { respuesta: newRespuesta } }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new Error("No document found with the specified unique code");
+        }
+
+        return { success: true, message: "Respuesta updated successfully" };
+    } catch (error) {
+        console.error("Error updating respuesta:", error);
+        return { success: false, message: error instanceof Error ? error.message : "Unknown error" };
+    }
+}
