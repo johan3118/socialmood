@@ -4,6 +4,8 @@ import GraficoInteracciones from "@/components/(socialmood)/interactions-graph";
 import SeguidoresChart from "@/components/(socialmood)/followers-chart";
 import InteraccionesDashboard from "@/components/(socialmood)/interactions-dashboard";
 import { useRouter } from 'next/navigation';
+import EmotionsChart from "@/components/(socialmood)/emotions-chart";
+
 
 
 function dashboard() {
@@ -19,6 +21,8 @@ function dashboard() {
       <div className='flex space-x-6'>
         <GraficoInteracciones />
         <SeguidoresChart />
+        <EmotionsChart />
+
       </div>
       <div className='w-full flex space-x-16'>
       <div className="w-full space-y-3">

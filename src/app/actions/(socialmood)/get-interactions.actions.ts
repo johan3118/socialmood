@@ -41,13 +41,13 @@ export async function getInteractions() {
         }
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
-        
+
 
         const interactions = await db.collection("Interacciones").find({
             codigo_cuenta_receptor: { $in: socialMediasAccounts }
         }).toArray();
 
-        
+
 
         let formattedInteractions = new Array<Interacciones>();
 
@@ -107,11 +107,11 @@ export async function getRespuestas() {
         }
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
-        
+
 
         const respuestas = await db.collection("Interacciones").find({
             codigo_cuenta_receptor: { $in: socialMediasAccounts },
-            respondida : false
+            respondida: false
         }).toArray();
 
         let formattedRespuestas = new Array<Respuestas>();
@@ -150,3 +150,53 @@ export async function getRespuestas() {
 
 }
 
+// get the four most repeated emotions in the interactions and its frequency
+
+export async function getEmotions() {
+    try {
+
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const userid = await getActiveUserId();
+
+        if (!userid) {
+            throw new Error("User ID is undefined");
+        }
+
+        const subscription = await getSubscription(parseInt(userid));
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+        
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+        const interactions = await db.collection("Interacciones").find({
+            codigo_cuenta_receptor: { $in: socialMediasAccounts }
+        }).toArray();
+
+        let emotions = new Map<string, number>();
+
+        interactions.forEach(interaction => {
+            const emocion = interaction.emociones_predominantes
+            if (emocion != "") {
+                if (emotions.has(emocion)) {
+                    emotions.set(emocion, emotions.get(emocion)! + 1);
+                } else {
+                    emotions.set(emocion, 1);
+                }
+            }
+
+        });
+
+        const sortedEmotions = Array.from(emotions.entries()).sort((a, b) => b[1] - a[1]).slice(0, 4);
+        
+        return sortedEmotions;
+
+    }
+    catch (error) {
+        console.error("Error al cargar las emociones:", error);
+        return [];
+    }
+}

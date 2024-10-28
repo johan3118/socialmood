@@ -71,6 +71,7 @@ export default function CreateSubPage() {
           formData={formData}
           handleInputChange={handleInputChange}
           handleSelectChange={handleSelectChange}
+          isForUpdate={false}
         />
       </div>
 

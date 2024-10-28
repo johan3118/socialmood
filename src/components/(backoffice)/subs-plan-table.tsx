@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch"; // Importa el switch de shadcn
 import { selectAllPlans, activatePlan, deactivatePlan } from "@/app/actions/(backoffice)/subscriptions.actions";
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface PlanSubscripcion {
   planId: string;
@@ -16,11 +16,9 @@ interface PlanSubscripcion {
 }
 
 const PlanesSubscripcionTable: React.FC = () => {
-  // Estado para manejar los planes obtenidos de la base de datos
   const [planesSubscripcion, setPlanesSubscripcion] = useState<PlanSubscripcion[]>([]);
   const router = useRouter();
 
-  // Efecto para cargar los planes al montar el componente
   useEffect(() => {
     const fetchPlanes = async () => {
       try {
@@ -38,21 +36,16 @@ const PlanesSubscripcionTable: React.FC = () => {
   // Manejar el cambio de estado del switch
   const handleSwitchChange = async (id: number, isActive: boolean) => {
     try {
-      // Actualiza el estado del plan en la base de datos
       if (isActive) {
-        await activatePlan(id); // Activa el plan si el switch está encendido
+        await activatePlan(id);
       } else {
-        await deactivatePlan(id); // Desactiva el plan si el switch está apagado
+        await deactivatePlan(id);
       }
 
-      // Actualiza el estado local para reflejar el cambio
       setPlanesSubscripcion((prevPlanesSubscripcion) =>
         prevPlanesSubscripcion.map((plan) =>
           parseInt(plan.planId) === id
-            ? {
-                ...plan,
-                estado_plan_nombre: isActive ? "ACTIVO" : "INACTIVO", // Actualiza el estado visualmente
-              }
+            ? { ...plan, estado_plan_nombre: isActive ? "ACTIVO" : "INACTIVO" }
             : plan
         )
       );
@@ -65,6 +58,11 @@ const PlanesSubscripcionTable: React.FC = () => {
     router.push("/bo/create-sub");
   };
 
+  // Función para manejar la edición del plan
+  const handleEditPlan = (planId: string) => {
+    router.push(`/bo/edit-sub/${planId}`);
+  };
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between mb-6">
@@ -73,7 +71,6 @@ const PlanesSubscripcionTable: React.FC = () => {
           <span className="text-white text-2xl">+</span>
         </button>
       </div>
-      
 
       <table className="min-w-full bg-white rounded-lg overflow-hidden border-t">
         <thead className="bg-[#422EA3] text-white">
@@ -112,8 +109,11 @@ const PlanesSubscripcionTable: React.FC = () => {
                   checked={plan.estado_plan_nombre === "ACTIVO"}
                   onCheckedChange={(checked) => handleSwitchChange(parseInt(plan.planId), checked)}
                 />
-                {/* Icono de edición */}
-                <button className="ml-4 text-gray-500 hover:text-gray-800">
+                {/* Botón para editar el plan */}
+                <button
+                  className="ml-4 text-gray-500 hover:text-gray-800"
+                  onClick={() => handleEditPlan(plan.planId)} // Redirige a la página de edición con el planId
+                >
                   ✏️
                 </button>
               </td>
