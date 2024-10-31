@@ -152,4 +152,5 @@ export type Interacciones = {
   usuario_cuenta_receptor: string;
   usuario_cuenta_emisor: string;
   unique_code: string;
+  comment_id: string;
 };
