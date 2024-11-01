@@ -1,12 +1,11 @@
 "use client"
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import {
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button";
@@ -25,10 +24,11 @@ import {
 } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { updateRespuesta } from "@/app/actions/(socialmood)/get-interactions.actions";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface EditFormProps {
     onClose: () => void;
+    onUpdate: () => void;
     defaultValues: {
         red_social: string;
         red_social_username: string;
@@ -41,18 +41,21 @@ interface EditFormProps {
     };
 }
 
-const EditResponse: React.FC<EditFormProps> = ({ onClose, defaultValues }) => {
-
+const EditResponse: React.FC<EditFormProps> = ({ onClose, onUpdate, defaultValues }) => {
     const router = useRouter();
-
     const [isPending, setIsPending] = useState(false);
 
     const form = useForm<z.infer<typeof EditResponseSchema>>({
         resolver: zodResolver(EditResponseSchema),
+        defaultValues: defaultValues // Initial default values
     });
 
-    async function onSubmit(values: z.infer<typeof EditResponseSchema>) {
+    // Reset the form when defaultValues change
+    useEffect(() => {
+        form.reset(defaultValues);
+    }, [defaultValues, form]);
 
+    async function onSubmit(values: z.infer<typeof EditResponseSchema>) {
         const res = await updateRespuesta(defaultValues.unique_code, values.respuesta);
         setIsPending(true);
 
@@ -66,6 +69,7 @@ const EditResponse: React.FC<EditFormProps> = ({ onClose, defaultValues }) => {
                 setIsPending(false);
             }, 5000);
             onClose();
+            onUpdate();
         } 
     }
 
@@ -107,8 +111,7 @@ const EditResponse: React.FC<EditFormProps> = ({ onClose, defaultValues }) => {
                         <div>
                             <p className="text-md text-white mb-2">Perfil de red social</p>
                             <div className="flex items-center justify-center space-x-2 w-full">
-                                <span
-                                    className="bg-white -full flex justify-start items-center rounded-lg w-full" >
+                                <span className="bg-white -full flex justify-start items-center rounded-lg w-full" >
                                     <img
                                         src={socialIconMap[defaultValues.red_social] || "/default.svg"}
                                         alt={`${defaultValues.red_social} Icon`}
@@ -136,7 +139,6 @@ const EditResponse: React.FC<EditFormProps> = ({ onClose, defaultValues }) => {
                                         {defaultValues.categoria}
                                     </span>
                                 </div>
-
                             </div>
                             <div className="flex-1">
                                 <p className="text-md text-white mb-2">Subcategoría</p>
@@ -153,7 +155,6 @@ const EditResponse: React.FC<EditFormProps> = ({ onClose, defaultValues }) => {
                                         {defaultValues.subcategoria}
                                     </span>
                                 </div>
-
                             </div>
                         </div>
 
@@ -178,7 +179,6 @@ const EditResponse: React.FC<EditFormProps> = ({ onClose, defaultValues }) => {
                                         <FormControl>
                                             <Textarea
                                                 className="w-full h-64 mt-2 px-3 py-2 bg-white rounded-lg border"
-                                                defaultValue={defaultValues.respuesta}
                                                 autoComplete="respuesta" {...field}
                                             />
                                         </FormControl>
@@ -190,14 +190,8 @@ const EditResponse: React.FC<EditFormProps> = ({ onClose, defaultValues }) => {
                             <Button type="submit" className="w-full mt-4 bg-pink-500 hover:bg-pink-600 text-white">
                                 Actualizar
                             </Button>
-
                         </form>
-
-
-
-
                     </Form>
-
                 </div>
             </div>
 
@@ -205,8 +199,7 @@ const EditResponse: React.FC<EditFormProps> = ({ onClose, defaultValues }) => {
                 <img src="/delete.svg" alt="Close" className="w-6 h-6" />
             </button>
 
-
-        <DialogDescription></DialogDescription>
+            <DialogDescription></DialogDescription>
         </DialogContent>
     );
 };

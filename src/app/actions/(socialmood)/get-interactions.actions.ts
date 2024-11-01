@@ -184,3 +184,29 @@ export async function updateRespuesta(uniqueCode: string, newRespuesta: string):
         return { success: false, message: error instanceof Error ? error.message : "Unknown error" };
     }
 }
+
+
+export async function commentRepliedTrue(responses: { unique_code: string }[]): Promise<UpdateResult> {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        // Extrae los unique_codes del array responses
+        const uniqueCodes = responses.map(response => response.unique_code);
+
+        // Realiza la actualización en una sola operación
+        const result = await db.collection("Interacciones").updateMany(
+            { unique_code: { $in: uniqueCodes } },
+            { $set: { respondida: true } }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new Error("No documents found with the specified unique codes");
+        }
+
+        return { success: true, message: "Respuestas updated successfully" };
+    } catch (error) {
+        console.error("Error updating respuestas:", error);
+        return { success: false, message: error instanceof Error ? error.message : "Unknown error" };
+    }
+}
