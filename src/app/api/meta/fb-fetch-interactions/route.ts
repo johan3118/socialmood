@@ -170,8 +170,9 @@ const saveCommentsToMongo = async (
   pageId: string,
   pageName: string,
   PAGE_ACCESS_TOKEN: string,
-  regla: string
+  cuenta: number
 ) => {
+
   const client = await clientPromise;
   const db = client.db("socialMood");
   const collection = db.collection("Interacciones");
@@ -195,15 +196,31 @@ const saveCommentsToMongo = async (
         const categoriasResponse = await sendInteraction(sanitizedMessage);
         data = categoriasResponse?.interaction;
 
+        const regla = await obtenerSoloReglasDeCuentas(cuenta, data.subcategoria);
+
         const customizedMessage = createCustomMessage(
           sanitizedMessage,
-          data,
           regla
         );
-        responseMessage = await generateChatGPTResponse(
+
+        const response = await generateChatGPTResponse(
           customizedMessage,
-          regla
+          `
+          {
+            "entrada":
+              {
+                "message": "${sanitizedMessage}"
+              }
+          }
+          `
         );
+
+        const json = JSON.parse(response?.toString().substring(response?.toString().indexOf('{'), response?.toString().lastIndexOf('}') + 1) || '{}')
+
+
+        responseMessage = json.salida.response.toString();
+
+        
       } catch (error) {
         console.error(`Error generating ChatGPT response: ${error}`);
       }
@@ -221,7 +238,7 @@ const saveCommentsToMongo = async (
         categoria: data?.categoria || "",
         subcategoria: data?.subcategoria || "",
         emociones_predominantes: data?.emociones?.join(", ") || "",
-        respondida: responseMessage !== "",
+        respondida: false,
         respuesta: responseMessage,
         usuario_cuenta_receptor: pageName,
         usuario_cuenta_emisor: comment.from?.name || "Anonymous",
@@ -241,43 +258,61 @@ const saveCommentsToMongo = async (
 
 const createCustomMessage = (
   message: string,
-  interaction: any,
-  regla: string
+  regla: string[]
 ): string => {
-  let adjustedMessage = `${regla}\n\n${message}`;
+  let adjustedMessage =
+    `Eres el encargado de responder comentarios que reciben las publicaciones provenientes
+    de una cuenta de social. 
+    
+    A continuación, te proporciono una serie de reglas, que te servirán como instrucciones
+    que debes seguir para redactar la respuesta de manera correcta: 
+    """
+    ${regla.map((r) => "* " + r).join("\n")}
+    """
 
-  if (interaction) {
-    const emociones = interaction.emociones
-      ? interaction.emociones.join(", ")
-      : "";
-
-    switch (interaction.categoria) {
-      case "Positivo":
-        adjustedMessage = `${regla}\n\nComentario positivo identificado: "${message}". Apreciamos las recomendaciones y elogios. Emociones detectadas: ${emociones}.`;
-        if (interaction.subcategoria === "Recomendación") {
-          adjustedMessage += " Este mensaje parece una recomendación.";
-        } else if (interaction.subcategoria === "Elogio") {
-          adjustedMessage += " Este mensaje parece un elogio.";
+    A continuación, te proporciono los formatos de entrada y salida que debes seguir:
+    """
+    Recibirás los mensajes en formato JSON, por ejemplo:
+    
+    {
+      "entrada":
+        {
+          "message": "mensaje_del_comentario"
         }
-        break;
-
-      case "Negativo":
-        adjustedMessage = `${regla}\n\nMensaje negativo detectado: "${message}". Procediendo con atención a la queja. Emociones detectadas: ${emociones}.`;
-        if (interaction.subcategoria === "Queja") {
-          adjustedMessage += " Este mensaje es una queja.";
-        }
-        break;
-
-      case "Neutral":
-        if (interaction.subcategoria === "Consulta") {
-          adjustedMessage = `${regla}\n\nConsulta recibida: "${message}". Responderemos con la información solicitada. Emociones detectadas: ${emociones}.`;
-        }
-        break;
-
-      default:
-        break;
     }
-  }
+
+    Debes generar retornar una respuesta en formato JSON, por ejemplo:
+    {
+      "salida":
+        {
+          "response": "respuesta_generada"
+        }
+    }
+    
+    """
+
+    A continuación, te proporciono un ejemplo cómo debes realizar la tarea:
+    """
+    Recibirás este mensaje en formato JSON:
+    {
+      "entrada":
+        {
+          "message": "Excelente servicio"
+        }
+    }
+
+    Retornarás con la respuesta en formato JSON:
+    {
+      "salida":
+        {
+          "response": "¡Gracias por tu comentario! Estamos sumamente agredecidos por tu opinión."
+        }
+    }
+
+    Necesito que redactes una respuesta acorde a las reglas y formatos proporcionadas. Siempre respeta las 
+    reglas de ortografía y gramática. LIMITATE A OFRECER UNA RESPUESTA CORTA Y CONCISA, SIEMPRE SIENDO CORTÉS Y AMABLE.
+    
+    `;
 
   return adjustedMessage;
 };
@@ -307,10 +342,7 @@ export async function GET(request: Request) {
       const comments = await fetchAllPostCommentsBatch(
         postIds,
         PAGE_ACCESS_TOKEN,
-
       );
-
-      const regla = await obtenerSoloReglasDeCuentas(cuenta.id);
 
       await saveCommentsToMongo(
         comments,
@@ -318,7 +350,7 @@ export async function GET(request: Request) {
         pageId,
         pageName,
         PAGE_ACCESS_TOKEN,
-        regla
+        cuenta.id
       );
     }
 

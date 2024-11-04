@@ -1,7 +1,7 @@
 'use server'
 import db from "@/db";
-import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTable, reglasTable } from "@/db/schema/socialMood";
-import { eq } from "drizzle-orm";
+import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTable, reglasTable, subcategoriasReglasTable, subcategoriasTable } from "@/db/schema/socialMood";
+import { eq, inArray, and} from "drizzle-orm";
 
 export async function getSubscriptionPlans() {
   const plans = await db.select().from(planesTable).limit(3);
@@ -123,13 +123,15 @@ export const obtenerCuentasRedesSociales = async () => {
   return cuentas;
 };
 
-export const obtenerSoloReglasDeCuentas = async (id: number) => {
+export const obtenerSoloReglasDeCuentas = async (id: number, subcategorias: string) => {
   const regla = await db
     .select({
       regla: reglasTable.prompt, 
     })
     .from(reglasTable)
-    .where(eq(reglasTable.id_cuenta, id)); 
+    .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_regla, reglasTable.id))
+    .innerJoin(subcategoriasTable, eq(subcategoriasTable.id, subcategoriasReglasTable.id_subcategoria))
+    .where(and(eq(reglasTable.id_cuenta, id), eq(subcategoriasTable.nombre, subcategorias))); 
 
-  return regla[0]?.regla || '';  
+  return regla.map((r) => r.regla);  
 };
