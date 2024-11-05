@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
     DialogContent,
@@ -8,12 +8,56 @@ import {
 } from "@/components/ui/dialog"
 import SocialButton from "./social-button";
 
+import { useState } from "react";
+
+
+
+import { toast } from "@/components/ui/use-toast";
+
+import { deleteRule, ruleHasChildren } from "@/app/actions/(socialmood)/rules.actions";
+
 interface DeleteRuleProps {
     ruleID: number;
     onOpenChange: (newOpenValue: boolean) => void;
 }
 
+
 export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
+    const [isPending, setIsPending] = useState(false);
+
+    const [hasChildren, setHasChildren] = useState(false);
+
+
+    const handleDeleteRule = async () => {
+
+        const res = await deleteRule(ruleID);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule deleted successfully",
+            });
+            onOpenChange(false);
+        }
+        setIsPending(false);
+
+        
+    }
+
+    useEffect(() => {
+        const fetchHasChildren = async () => {
+            const hasChildren = await ruleHasChildren(ruleID);
+            setHasChildren(hasChildren);
+        };
+        fetchHasChildren();
+    }, [ruleID]);
+
+
     return (
         <DialogContent>
             <DialogHeader className="flex items-center justify-center">
@@ -23,7 +67,11 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
 
             <DialogDescription className="w-[70%]">
                 <hr className="my-3" />
-                <p className="text-[18px] text-center">¿Estás seguro de que quieres eliminar estar regla? Esta contiene reglas hijas asociadas</p>
+                <p className="text-[18px] text-center">
+                    {hasChildren
+                        ? '¿Estás seguro de que quieres eliminar esta regla? Esta contiene reglas hijas asociadas'
+                        : '¿Estás seguro de que quieres eliminar esta regla?'}
+                </p>
 
                 <div className="mt-12 flex items-center justify-center space-x-2 ">
                     <SocialButton
@@ -36,8 +84,10 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
                     <SocialButton
                         variant="default"
                         defaultText="Eliminar"
+                        pendingText="Eliminando..."
                         customStyle="text-[20px]"
-                        onClick={() => { onOpenChange(false) }}
+                        isPending={isPending}
+                        onClick={handleDeleteRule}
                     />
 
 

@@ -1,5 +1,6 @@
 'use server'
 import clientPromise from "@/utils/startMongo"
+import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
 
 interface Perfil {
     red_social: string;
@@ -16,31 +17,246 @@ interface Interacciones {
     fecha: string;
 }
 
+interface Respuestas {
+    perfil: Perfil;
+    respuesta: string;
+    username_emisor: string;
+    unique_code: string;
+    categoria: string;
+    subcategoria: string;
+    fecha: string;
+}
+
+interface UpdateResult {
+    success: boolean;
+    message: string;
+}
+
 export async function getInteractions() {
-    const client = await clientPromise;
-    const db = client.db("socialMood");
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
 
-    const interactions = await db.collection("Interacciones").find().toArray();
+        const userid = await getActiveUserId();
 
-    let formattedInteractions = new Array<Interacciones>();
-
-    interactions.forEach(interaction => {
-        const formattedInteraction = {
-            perfil: {
-                red_social: interaction.nombre_red_social_receptor,
-                username: interaction.usuario_cuenta_receptor,
-                color: "#FF0000"
-            },
-            mensaje: interaction.mensaje,
-            emisor: interaction.usuario_cuenta_emisor,
-            categoria: interaction.categoria,
-            subcategoria: interaction.subcategoria,
-            fecha: interaction.fecha_recepcion
+        if (!userid) {
+            throw new Error("User ID is undefined");
         }
-        formattedInteractions.push(formattedInteraction);
-    });
-    
 
-    return formattedInteractions;
+        const subscription = await getSubscription(parseInt(userid));
 
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+
+        const interactions = await db.collection("Interacciones").find({
+            codigo_cuenta_receptor: { $in: socialMediasAccounts }
+        }).toArray();
+
+
+
+        let formattedInteractions = new Array<Interacciones>();
+
+        interactions.forEach(interaction => {
+            const date = new Date(interaction.fecha_recepcion);
+            const formattedDate = date.toLocaleString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }).replace(',', '');
+
+            const formattedInteraction = {
+                perfil: {
+                    red_social: interaction.nombre_red_social_receptor,
+                    username: interaction.usuario_cuenta_receptor,
+                    color: "#FF0000"
+                },
+                mensaje: interaction.mensaje,
+                emisor: interaction.usuario_cuenta_emisor,
+                categoria: interaction.categoria,
+                subcategoria: interaction.subcategoria,
+                fecha: formattedDate
+            }
+            formattedInteractions.push(formattedInteraction);
+        });
+
+        return formattedInteractions;
+
+    }
+    catch (error) {
+        console.error("Error al cargar las interacciones:", error);
+        return [];
+    }
+
+
+}
+
+
+export async function getRespuestas() {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const userid = await getActiveUserId();
+
+        if (!userid) {
+            throw new Error("User ID is undefined");
+        }
+
+        const subscription = await getSubscription(parseInt(userid));
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+
+        const respuestas = await db.collection("Interacciones").find({
+            codigo_cuenta_receptor: { $in: socialMediasAccounts },
+            respondida: false
+        }).toArray();
+
+        let formattedRespuestas = new Array<Respuestas>();
+
+        respuestas.forEach(respuesta => {
+            const date = new Date(respuesta.fecha_recepcion);
+            const formattedDate = date.toLocaleString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }).replace(',', '');
+
+            const formattedInteraction = {
+                perfil: {
+                    red_social: respuesta.nombre_red_social_receptor,
+                    username: respuesta.usuario_cuenta_receptor,
+                    color: "#FF0000"
+                },
+                respuesta: respuesta.respuesta,
+                username_emisor: respuesta.usuario_cuenta_emisor,
+                categoria: respuesta.categoria,
+                subcategoria: respuesta.subcategoria,
+                unique_code: respuesta.unique_code,
+                fecha: formattedDate
+            }
+            formattedRespuestas.push(formattedInteraction);
+        });
+
+        return formattedRespuestas;
+
+    }
+    catch (error) {
+        console.error("Error al cargar las respuestas:", error);
+        return [];
+    }
+
+
+}
+
+// get the four most repeated emotions in the interactions and its frequency
+
+export async function getEmotions() {
+    try {
+
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const userid = await getActiveUserId();
+
+        if (!userid) {
+            throw new Error("User ID is undefined");
+        }
+
+        const subscription = await getSubscription(parseInt(userid));
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+        
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+        const interactions = await db.collection("Interacciones").find({
+            codigo_cuenta_receptor: { $in: socialMediasAccounts }
+        }).toArray();
+
+        let emotions = new Map<string, number>();
+
+        interactions.forEach(interaction => {
+            const emocion = interaction.emociones_predominantes
+            if (emocion != "") {
+                if (emotions.has(emocion)) {
+                    emotions.set(emocion, emotions.get(emocion)! + 1);
+                } else {
+                    emotions.set(emocion, 1);
+                }
+            }
+
+        });
+
+        const sortedEmotions = Array.from(emotions.entries()).sort((a, b) => b[1] - a[1]).slice(0, 4);
+        
+        return sortedEmotions;
+
+    }
+    catch (error) {
+        console.error("Error al cargar las emociones:", error);
+        return [];
+    }
+}
+
+export async function updateRespuesta(uniqueCode: string, newRespuesta: string): Promise<UpdateResult> {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const result = await db.collection("Interacciones").updateOne(
+            { unique_code: uniqueCode },
+            { $set: { respuesta: newRespuesta } }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new Error("No document found with the specified unique code");
+        }
+
+        return { success: true, message: "Respuesta updated successfully" };
+    } catch (error) {
+        console.error("Error updating respuesta:", error);
+        return { success: false, message: error instanceof Error ? error.message : "Unknown error" };
+    }
+}
+
+
+export async function commentRepliedTrue(responses: { unique_code: string }[]): Promise<UpdateResult> {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        // Extrae los unique_codes del array responses
+        const uniqueCodes = responses.map(response => response.unique_code);
+
+        // Realiza la actualización en una sola operación
+        const result = await db.collection("Interacciones").updateMany(
+            { unique_code: { $in: uniqueCodes } },
+            { $set: { respondida: true } }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new Error("No documents found with the specified unique codes");
+        }
+
+        return { success: true, message: "Respuestas updated successfully" };
+    } catch (error) {
+        console.error("Error updating respuestas:", error);
+        return { success: false, message: error instanceof Error ? error.message : "Unknown error" };
+    }
 }

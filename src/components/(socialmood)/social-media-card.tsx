@@ -1,12 +1,14 @@
+// SocialMediaCard.tsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
 import BlurredContainer from "@/components/(socialmood)/blur-background";
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils"; // Importación de la función 'cn'
+import { cn } from "@/lib/utils";
 import EstadoLabel from "@/components/(socialmood)/estado-label";
-import Modal from "@/components/(socialmood)/modal"; // Componente modal
-import AddSocialForm from "@/components/(socialmood)/add-social-form"; // El componente que quieres mostrar en el modal
+import Modal from "@/components/(socialmood)/modal";
+import AddSocialForm from "@/components/(socialmood)/add-social-form";
+import { getLinkedAccounts } from "@/app/actions/(socialmood)/social.actions";
 
 interface Perfil {
   red_social: string;
@@ -24,27 +26,18 @@ const socialIconMap: { [key: string]: string } = {
 const SocialMediaCard: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [perfiles, setPerfiles] = useState<Perfil[]>([]);
-  const [loading, setLoading] = useState(true); // Estado para controlar el estado de carga
+  const [loading, setLoading] = useState(true);
 
-  // fetch de perfiles
-  useEffect(() => {
-    const fetchPerfiles = async () => {
-      setLoading(true); // Comenzar a cargar
-      setTimeout(() => {
-        // Mock del fetch con setTimeout simulando retraso de red
-        const mockPerfiles: Perfil[] = [
-          { red_social: "Instagram", username: "@Allensilverioo", color: "Red", estado: "ACTIVO" },
-          { red_social: "Facebook", username: "@AllenFB", color: "Blue", estado: "INACTIVO" },
-          { red_social: "Instagram", username: "@AllenFB", color: "Blue", estado: "ACTIVO" },
-        ];
-        setPerfiles(mockPerfiles); // Establece los perfiles simulados
-        setLoading(false); // Finaliza la carga
-      }, 2000); // Simula un retraso de 2 segundos
-    };
-
-    fetchPerfiles();
-    
+  const fetchPerfiles = useCallback(async () => {
+    setLoading(true);
+    const accounts: Perfil[] = await getLinkedAccounts(19);
+    setPerfiles(accounts);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchPerfiles(); // Cargar los perfiles al inicio
+  }, [fetchPerfiles]);
 
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
@@ -54,7 +47,8 @@ const SocialMediaCard: React.FC = () => {
     <>
       {isModalOpen && (
         <Modal onClose={toggleModal}>
-          <AddSocialForm onClose={toggleModal} />
+          {/* Pasar la función fetchPerfiles a AddSocialForm para que la llame después de submit */}
+          <AddSocialForm onClose={toggleModal} onFormSubmit={fetchPerfiles} />
         </Modal>
       )}
       <BlurredContainer customStyle="h-[30vh] !m-0">
@@ -71,7 +65,7 @@ const SocialMediaCard: React.FC = () => {
         </div>
 
         {loading ? (
-          <p>Cargando perfiles...</p> // Mensaje mientras se cargan los perfiles
+          <p>Cargando perfiles...</p>
         ) : (
           <table className="w-full">
             <thead className="text-left">
@@ -110,7 +104,7 @@ const SocialMediaCard: React.FC = () => {
                   </td>
 
                   <td className="px-5 pb-2">
-                    <EstadoLabel estado={perfil.estado} />
+                    <EstadoLabel estado='ACTIVO' />
                   </td>
                   <td className="pb-2">
                     <X />

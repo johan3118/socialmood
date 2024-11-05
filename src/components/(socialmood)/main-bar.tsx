@@ -1,9 +1,27 @@
 "use client"
 import { usePathname } from 'next/navigation';
 import UserProfile from "@/components/(socialmood)/user-profile";
+import { getActiveUserName } from '@/app/actions/(socialmood)/auth.actions'
+import React, { useEffect, useState } from 'react'
 
 
 export default function MainBar() {
+
+  const [userName, setUserName] = useState<string>("")
+
+  const fetchUserName = async () => {
+    const result = await getActiveUserName()
+    if (typeof result === 'string') {
+      setUserName(result)
+    } else {
+      console.error(result.error)
+    }
+  }
+
+  useEffect(() => {
+    fetchUserName()
+  }, [])
+
   const pathname = usePathname();
 
   // Determina el título y la frase basados en la ruta actual
@@ -31,7 +49,7 @@ export default function MainBar() {
         };
       default:
         return {
-          title: 'Hola, Allen Silverio',
+          title: 'Hola, ' + userName,
           phrase: 'Supervisa los moods de todas tus redes sociales.'
         };
     }

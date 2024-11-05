@@ -8,7 +8,15 @@ import {
     DialogClose,
 } from "@/components/ui/dialog"
 
+import router, { useRouter } from "next/router";
+
+
+import { useEffect } from "react";
+
+import { createRule, getSocialMediaAccounts } from "@/app/actions/(socialmood)/rules.actions";
+
 import { useState } from "react";
+import { toast } from "@/components/ui/use-toast";
 
 
 import { CreateRuleSchema } from "../../types";
@@ -32,6 +40,8 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
 
 import SocialButton from "./social-button";
 
@@ -66,7 +76,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
         resolver: zodResolver(CreateRuleSchema),
         defaultValues: {
             alias: "",
-            red_social: "1",
+            red_social: "",
             tipo: "1",
             instrucciones: "",
             subcategorias: [],
@@ -75,16 +85,61 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
 
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
         setIsPending(true);
-        console.log(values);
-        form.reset();
+        const res = await createRule(values);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule created successfully",
+            });
+            form.reset();
+            onOpenChange(false);
+        }
         setIsPending(false);
-        onOpenChange(false);
     }
 
     async function onClose() {
         form.reset();
         onOpenChange(false);
     }
+
+    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
+
+    const setSubscription = async () => {
+        const userID = await getActiveUserId();
+        console.log("UserID ", userID);
+        if (userID) {
+            const subscription = await getSubscription(parseInt(userID));
+            if (subscription) {
+                setSubscriptionID(subscription);
+                console.log("Subscription ", subscription);
+            }
+            else {
+                await router.push("/app/get-sub");
+            }
+
+        }
+        else {
+            await router.push("/app/sign-in");
+        }
+    }
+
+    const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
+
+    async function fetchSocialMediaAccounts() {
+        const accounts = await getSocialMediaAccounts(SubscriptionID);
+        setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+    }
+
+    useEffect(() => {
+        setSubscription();
+        fetchSocialMediaAccounts();
+    }, [SubscriptionID]);
 
     return (
         <DialogContent className="flex items-start md:w-[90%]">
@@ -150,8 +205,11 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="1">@titobarbershop</SelectItem>
-                                                            <SelectItem value="2">@martasalon</SelectItem>
+                                                            {socialMedias.map((socialMedia) => (
+                                                                <SelectItem key={socialMedia.id} value={socialMedia.id}>
+                                                                    {socialMedia.label}
+                                                                </SelectItem>
+                                                            ))}
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>

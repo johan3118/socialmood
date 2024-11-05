@@ -2,7 +2,7 @@
 import { SignInSchema, SignUpSchema } from "@/types";
 import { generateId } from "lucia";
 import db from "@/db";
-import { usuariosTable } from "@/db/schema/socialMood";
+import { cuentasRedesSocialesTable, usuariosTable } from "@/db/schema/socialMood";
 import { lucia, validateRequest } from "@/lib/lucia/lucia";
 import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
@@ -10,6 +10,9 @@ import { and } from "drizzle-orm";
 import * as bcrypt from "bcryptjs"; // Import bcrypt
 import { google } from "@/lib/lucia/oauth";
 import { generateState, generateCodeVerifier } from "arctic";
+import { planesTable, subscripcionesTable, facturasTable } from "@/db/schema/socialMood";
+import { CodeIcon } from "lucide-react";
+
 
 export const signUp = async (values: {
   nombre: string;
@@ -206,4 +209,74 @@ export const createGoogleAuthotizationURL = async () => {
       error: error?.message
     }
   }
+}
+
+export async function getSubscription(userId : number) {
+  const result = await db
+    .select({id: subscripcionesTable.id})
+    .from(subscripcionesTable)
+    .where(eq(subscripcionesTable.id_propietario, userId))
+    .limit(1);
+    if(result.length === 0){
+      return null;
+    }
+    return result[0].id;
+}
+
+export async function getSocialMediaSubscription(subscriptionId: number) {
+  
+  const result = await db
+    .select({codigo: cuentasRedesSocialesTable.codigo_cuenta})
+    .from(cuentasRedesSocialesTable)
+    .where(eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId))
+
+    return result.map((account) => account.codigo);
+}
+
+export async function hasSubscription(userId: number) {
+  console.log(userId);
+  const result = await db
+    .select()
+    .from(subscripcionesTable)
+    .where(eq(subscripcionesTable.id_propietario, userId));
+  return result.length > 0;
+}
+
+export async function getActiveUserId() {
+  const { user } = await validateRequest();
+  return user?.id.toString();
+}
+
+export async function getActiveUserName() {
+  const { user } = await validateRequest();
+  const userid = user?.id;
+  if (userid === undefined) {
+    return {
+      error: "User ID is undefined",
+    };
+  }
+  const result = await db
+    .select({nombre: usuariosTable.nombre, apellido: usuariosTable.apellido})
+    .from(usuariosTable)
+    .where(eq(usuariosTable.id, userid))
+    .limit(1);
+
+  return result[0].nombre.toString() + " " + result[0].apellido.toString();
+}
+
+export async function getActiveUserEmail() {
+  const { user } = await validateRequest();
+  const userid = user?.id;
+  if (userid === undefined) {
+    return {
+      error: "User ID is undefined",
+    };
+  }
+  const result = await db
+    .select({correo_electronico: usuariosTable.correo_electronico})
+    .from(usuariosTable)
+    .where(eq(usuariosTable.id, userid))
+    .limit(1);
+
+  return result[0].correo_electronico.toString();
 }

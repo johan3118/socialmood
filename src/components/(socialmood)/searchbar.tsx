@@ -3,7 +3,8 @@ import React from "react";
 
 const SearchBar: React.FC = () => {
   return (
-    <div className="relative w-full mx-auto">
+    
+    <div className="relative w-full">
         
       <input
         type="text"

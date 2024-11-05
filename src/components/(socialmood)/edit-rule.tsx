@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
     DialogContent,
@@ -6,6 +6,8 @@ import {
     DialogHeader,
     DialogTitle
 } from "@/components/ui/dialog"
+
+import router, { useRouter } from "next/router";
 
 import { useState } from "react";
 
@@ -42,6 +44,10 @@ import { Input } from "@/components/ui/input";
 
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";
+import { toast } from "@/components/ui/use-toast";
+import { getSocialMediaAccounts, getRule, getChildRules, updateRule } from "@/app/actions/(socialmood)/rules.actions";
+
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
 
 interface EditRuleProps {
     ruleID: number;
@@ -49,23 +55,58 @@ interface EditRuleProps {
 
 }
 
+interface Perfil {
+    red_social: string;
+    username: string;
+    color: string;
+}
+
+interface Reglas {
+    id: number;
+    perfil: Perfil;
+    alias: string;
+    subcategorias: string[];
+}
+
 export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
 
     const [action, setAction] = useState<string>("Create");
 
     const [Open, setOpen] = useState<boolean>(false);
-    
+
+    const [RuleID, setRuleID] = useState<number>(0);
+
+    const [ChildReglas, setChildReglas] = useState<Reglas[]>([]);
+
+    const fetchChildRules = async () => {
+        try {
+            const reglas = await Promise.all(await getChildRules(ruleID));
+            setChildReglas(reglas);
+        } catch (error) {
+            console.error("Error al cargar las reglas:", error);
+        }
+    };
+
     const handleAddRule = () => {
         setAction("Create");
+        setOpen(true);
     };
 
     const handleEditRule = (ruleID: number) => {
         setAction("Edit");
+        setRuleID(ruleID);
+        setOpen(true);
     }
 
     const handleDeleteRule = (ruleID: number) => {
         setAction("Delete");
+        setRuleID(ruleID);
+        setOpen(true);
     }
+
+    const [redSocial, setRedSocial] = useState("");
+
+
     const items = [
         {
             id: "1",
@@ -91,27 +132,98 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
         resolver: zodResolver(CreateRuleSchema),
         defaultValues: {
             alias: "",
-            red_social: "1",
+            red_social: "",
             tipo: "1",
             instrucciones: "",
             subcategorias: [],
         },
     });
 
+    const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
+
+    async function fetchSocialMediaAccounts() {
+        const accounts = await getSocialMediaAccounts(SubscriptionID);
+        setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+    }
+
+    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
+
+    const setSubscription = async () => {
+        const userID = await getActiveUserId();
+        if (userID) {
+            const subscription = await getSubscription(parseInt(userID));
+            if (subscription) {
+                setSubscriptionID(subscription);
+            }
+            else {
+                await router.push("/app/get-sub");
+            }
+
+        }
+        else {
+            await router.push("/app/sign-in");
+        }
+    }
+
+    async function fetchRuleInfo() {
+        const rule = await getRule(ruleID);
+        const cuenta = (rule?.perfil?.id_cuenta?.toString() || "");
+        setRedSocial(cuenta);
+        console.log(cuenta);
+        form.reset(
+            {
+                alias: rule?.alias,
+                red_social: cuenta,
+                tipo: "1",
+                instrucciones: rule?.instrucciones || "",
+                subcategorias: rule?.subcategorias,
+            }
+        )
+    }
+
+    const updateData = async () => {
+        await setSubscription();
+        await fetchSocialMediaAccounts();
+        await fetchRuleInfo();
+        await fetchChildRules();
+    }
+
+    useEffect(() => {
+        updateData();
+
+
+    }, [ruleID, SubscriptionID]);
+
     async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
+        form.trigger();
+        if (!form.formState.isValid) {
+            return;
+        }
         setIsPending(true);
-        console.log(values);
-        form.reset();
+        const res = await updateRule(values, ruleID);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule updated successfully",
+            });
+            onOpenChange(false);
+
+        }
         setIsPending(false);
-        onOpenChange(false);
     }
 
     async function onClose() {
-        form.reset();
         onOpenChange(false);
     }
 
     const handleOpenChild = (newOpenValue: boolean) => {
+        fetchChildRules();
         setOpen(newOpenValue);
     }
 
@@ -171,16 +283,19 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                             <FormItem>
                                                 <FormLabel className="block text-sm font-medium">Red Social</FormLabel>
                                                 <FormControl>
-                                                    <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value}>
-                                                        <SelectTrigger className="w-full px-3 py-2 
+                                                    <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value} value={redSocial}>
+                                                        <SelectTrigger disabled className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
                             bg-white text-[#2C2436] ">
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="1">@titobarbershop</SelectItem>
-                                                            <SelectItem value="2">@martasalon</SelectItem>
+                                                            {socialMedias.map((socialMedia) => (
+                                                                <SelectItem key={socialMedia.id} value={socialMedia.id}>
+                                                                    {socialMedia.label}
+                                                                </SelectItem>
+                                                            ))}
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>
@@ -291,14 +406,14 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
 
 
                                                 <div className="space-y-2 mt-2">
-                                                    {[2, 3, 4].map((num) => (
-                                                        <div key={num} className="flex items-center space-x-2">
+                                                    {ChildReglas.map((regla, index) => (
+                                                        <div key={regla.id} className="flex items-center space-x-2">
                                                             <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                                                0{num}
+                                                                {index + 1}
                                                             </div>
-                                                            <span className="text-[16px]">Regla xxxxxxxxxxx</span>
+                                                            <span className="text-[16px]">{regla.alias}</span>
                                                             <div className="flex items-center space-x-2">
-                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleEditRule(1) }}>
+                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleEditRule(regla.id) }}>
 
                                                                     <img
                                                                         src="/edit.svg"
@@ -306,7 +421,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                                                         className=" w-6 h-6"
                                                                     />
                                                                 </DialogTrigger>
-                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleDeleteRule(1) }}>
+                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleDeleteRule(regla.id) }}>
                                                                     <img
                                                                         src="/delete.svg"
                                                                         alt="Delete"
@@ -319,8 +434,8 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                                 </div>
                                                 {
                                                     action === "Create" ? <CreateRuleChild onOpenChange={handleOpenChild} parentID={ruleID} /> :
-                                                        action === "Edit" ? <EditRuleChild ruleID={ruleID} onOpenChange={handleOpenChild} /> :
-                                                            action === "Delete" ? <DeleteRuleChild ruleID={ruleID} onOpenChange={handleOpenChild} /> : null
+                                                        action === "Edit" ? <EditRuleChild ruleID={RuleID} parentId={ruleID} onOpenChange={handleOpenChild} /> :
+                                                            action === "Delete" ? <DeleteRuleChild ruleID={RuleID} onOpenChange={handleOpenChild} /> : null
                                                 }
 
                                             </Dialog>

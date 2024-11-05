@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
     DialogContent,
@@ -19,6 +19,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 
+import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
+
+import router, { useRouter } from "next/router";
+
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import {
@@ -31,20 +36,101 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
+import { getRuleSubcategories, getSocialMediaAccounts, getRule, updateRule } from "@/app/actions/(socialmood)/rules.actions";
+
 
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";
 
 interface EditRuleChildProps {
     ruleID: number;
+    parentId: number;
     onOpenChange: (newOpenValue: boolean) => void;
 
 }
+interface Perfil {
+    red_social: string;
+    username: string;
+    color: string;
+}
 
-export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildProps) {
+interface Reglas {
+    id: number;
+    perfil: Perfil;
+    alias: string;
+    subcategorias: string[];
+}
+export default function EditRuleChild({ ruleID, parentId, onOpenChange}: EditRuleChildProps) {
+
+    const [open, setOpen] = useState(false);
+
+    const [redSocial, setRedSocial] = useState("");
+
+    const [reglaPadre, setReglaPadre] = useState<Reglas[]>([]);
+
+    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
+
+    const setSubscription = async () => {
+        const userID = await getActiveUserId();
+        if (userID) {
+            const subscription = await getSubscription(parseInt(userID));
+            if (subscription) {
+                setSubscriptionID(subscription);
+            }
+            else {
+                await router.push("/app/get-sub");
+            }
+
+        }
+        else {
+            await router.push("/app/sign-in");
+        }
+    }
 
 
-    const items = [
+    const [isPending, setIsPending] = useState(false);
+
+    const form = useForm<z.infer<typeof CreateRuleSchema>>({
+        resolver: zodResolver(CreateRuleSchema),
+        defaultValues: {
+            alias: "",
+            red_social: redSocial,
+            tipo: "1",
+            instrucciones: "",
+            subcategorias: [],
+        },
+    });
+
+    async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
+        form.trigger();
+        if (!form.formState.isValid) {
+            return;
+        }
+        setIsPending(true);
+        const res = await updateRule(values, ruleID);
+        if (res.error) {
+            toast({
+                variant: "destructive",
+                description: res.error,
+            });
+            setIsPending(false);
+        } else if (res.success) {
+            toast({
+                variant: "default",
+                description: "Rule updated successfully",
+            });
+            onOpenChange(false);
+        }
+        setIsPending(false);
+    }
+
+    async function onClose() {
+
+        onOpenChange(false);
+    }
+
+    const [Subcategorias, SetSubcategorias] = useState([
         {
             id: "1",
             label: "Recomendación",
@@ -61,38 +147,73 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
             id: "4",
             label: "Elogio",
         }
-    ] as const
+    ]);
 
-    const [isPending, setIsPending] = useState(false);
+    const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
 
-    const form = useForm<z.infer<typeof CreateRuleSchema>>({
-        resolver: zodResolver(CreateRuleSchema),
-        defaultValues: {
+
+    async function fetchSocialMedia() {
+        const socialMedia = await getRule(ruleID);
+        const cuenta = (socialMedia?.perfil?.id_cuenta?.toString() || "");
+        setRedSocial(cuenta);
+        form.setValue("red_social", cuenta);
+    }
+
+    const fetchSubcategorias = async () => {
+        const subcategorias = await getRuleSubcategories(parentId);
+        SetSubcategorias(subcategorias.map(subcategoria => ({
+            ...subcategoria,
+            id: subcategoria.id.toString()
+        })));
+    };
+
+    async function fetchSocialMediaAccounts() {
+        const accounts = await getSocialMediaAccounts(SubscriptionID);
+        setSocialMedias(accounts.map(account => ({ id: account.id.toString(), label: account.usuario_cuenta })));
+    }
+
+    async function fetchRuleInfo() {
+        const rule = await getRule(ruleID);
+        form.reset(
+            {
+                alias: rule?.alias,
+                red_social: rule?.perfil.id_cuenta?.toString() || "",
+                tipo: rule?.id_tipo_regla?.toString() || "",
+                instrucciones: rule?.instrucciones || "",
+                subcategorias: rule?.subcategorias,
+            }
+        )
+
+        if (rule?.id_regla_padre) {
+            const parentRule = await getRule(rule.id_regla_padre);
+            setReglaPadre([parentRule]);
+
+        }
+    }
+
+    const updateData = async () => {
+        await setSubscription();
+        await fetchSubcategorias();
+        await fetchSocialMediaAccounts();
+        await fetchSocialMedia();
+        await fetchRuleInfo();
+    }
+
+    useEffect(() => {
+        form.reset({
             alias: "",
-            red_social: "1",
+            red_social: "",
             tipo: "1",
             instrucciones: "",
             subcategorias: [],
-        },
-    });
-
-    async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
-        setIsPending(true);
-        console.log(values);
-        form.reset();
-        setIsPending(false);
-        onOpenChange(false);
-    }
-
-    async function onClose() {
-        form.reset();
-        onOpenChange(false);
-    }
+        });
+        updateData();
+    }, [SubscriptionID, ruleID]);
 
     return (
         <DialogContent className="flex items-start md:w-[90%] bg-[#2C2436]">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full py-5">
+                <form className="space-y-5 w-full py-5">
                     <DialogHeader className="w-full">
                         <DialogTitle className="flex justify-between w-full mt-6">
                             <div className="flex"><img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
@@ -104,7 +225,8 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                 defaultText="Guardar"
                                 customStyle="text-[20px]"
                                 pendingText="Guardando..."
-                                type="submit"
+                                type="button"
+                                onClick={() => { onSubmit(form.getValues()) }}
                             />
                         </DialogTitle>
                     </DialogHeader>
@@ -145,16 +267,19 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                             <FormItem>
                                                 <FormLabel className="block text-sm font-medium">Red Social</FormLabel>
                                                 <FormControl>
-                                                    <Select name="red_social" onValueChange={field.onChange} defaultValue={field.value}>
-                                                        <SelectTrigger className="w-full px-3 py-2 
+                                                    <Select name="red_social" onValueChange={field.onChange} value={redSocial}>
+                                                        <SelectTrigger disabled className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
                             bg-white text-[#2C2436] ">
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="1">@titobarbershop</SelectItem>
-                                                            <SelectItem value="2">@martasalon</SelectItem>
+                                                            {socialMedias.map((socialMedia) => (
+                                                                <SelectItem key={socialMedia.id} value={socialMedia.id}>
+                                                                    {socialMedia.label}
+                                                                </SelectItem>
+                                                            ))}
                                                         </SelectContent>
                                                     </Select>
                                                 </FormControl>
@@ -168,7 +293,7 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                         render={() => (
                                             <FormItem>
                                                 <FormLabel className="block text-sm font-medium">Subcategorias</FormLabel>
-                                                {items.map((item) => (
+                                                {Subcategorias.map((item) => (
                                                     <FormField
                                                         key={item.id}
                                                         control={form.control}
@@ -251,12 +376,12 @@ export default function EditRuleChild({ ruleID, onOpenChange }: EditRuleChildPro
                                         <hr className="my-3 border-2 bg-white bg-opacity-30" />
                                         <div className="mt-1">
                                             <div className="space-y-2 mt-2">
-                                                {[2, 3, 4].map((num) => (
-                                                    <div key={num} className="flex items-center space-x-2">
+                                                {reglaPadre.map((regla, index) => (
+                                                    <div key={index} className="flex items-center space-x-2">
                                                         <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                                            0{num}
+                                                            {index + 1}
                                                         </div>
-                                                        <span>Regla xxxxxxxxxxx</span>
+                                                        <span>{regla.alias}</span>
                                                     </div>
                                                 ))}
                                             </div>

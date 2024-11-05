@@ -151,6 +151,36 @@ export type Interacciones = {
   respuesta: string | null;
   usuario_cuenta_receptor: string;
   usuario_cuenta_emisor: string;
-  unique_code: string;
-  comment_id: string;
 };
+
+export const SubscriptionPlanSchema = z.object({
+  nombre: z
+    .string()
+    .min(1, "El nombre es obligatorio.")
+    .max(100, "El nombre no debe exceder los 100 caracteres."),
+  tipoFacturacion: z.enum(["MONTH", "YEAR"], {
+    errorMap: () => ({ message: "Tipo de facturación inválido." }),
+  }),
+  precio: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "El precio debe ser un número válido."),
+  interacciones: z
+    .string()
+    .regex(/^\d+$/, "Las interacciones deben ser un número entero."),
+  redesSociales: z
+    .string()
+    .regex(/^\d+$/, "Las redes sociales deben ser un número entero."),
+  usuarios: z
+    .string()
+    .regex(/^\d+$/, "Los usuarios deben ser un número entero."),
+  descripcion: z
+    .string()
+    .min(1, "La descripción es obligatoria.")
+    .max(500, "La descripción no debe exceder los 500 caracteres."),
+});
+
+export const EditResponseSchema = z.object({
+  respuesta: z
+  .string()
+  .min(1, "La respuesta es obligatoria")
+})

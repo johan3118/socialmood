@@ -48,7 +48,7 @@ export default function CreateSubPage() {
   };
 
   const handleBack = () => {
-    router.push("/bo/sub-table");
+    router.push("/bo/layout/sub-table");
 
   }
 
@@ -71,6 +71,7 @@ export default function CreateSubPage() {
           formData={formData}
           handleInputChange={handleInputChange}
           handleSelectChange={handleSelectChange}
+          isForUpdate={false}
         />
       </div>
 

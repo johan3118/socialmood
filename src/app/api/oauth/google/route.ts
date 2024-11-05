@@ -18,6 +18,7 @@ interface GoogleUser {
 }
 
 export const GET = async (req: NextRequest) => {
+    console.log("GET /api/oauth/google")
     const url = new URL(req.url)
     const searchParams = url.searchParams
 
