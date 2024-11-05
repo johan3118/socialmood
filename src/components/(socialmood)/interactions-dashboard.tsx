@@ -45,7 +45,7 @@ const InteraccionesDashboard: React.FC = () => {
     <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-6">
       <div className="grid grid-cols-1 gap-4 mt-4">
         {interacciones.slice(0, 3).map((interaccion, index) => (
-          <div key={index} className="flex items-center space-x-4 p-4 bg-white/10 rounded-lg">
+          <div key={index} className="flex items-center space-x-4 p-4 rounded-lg">
             <span
               className={cn(
                 buttonVariants({
@@ -67,8 +67,8 @@ const InteraccionesDashboard: React.FC = () => {
               <span className="ml-2">{interaccion.perfil.username}</span>
             </span>
             <div className="flex-1">
-              <p className="font-semibold">{interaccion.mensaje}</p>
-              <p className="text-sm text-gray-300">{interaccion.fecha}</p>
+              <p className="font-semibold text-[18px]">{interaccion.mensaje}</p>
+              <p className="font-semibold text-[16px] text-gray-300">{interaccion.fecha}</p>
             </div>
           </div>
         ))}
