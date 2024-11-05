@@ -5,6 +5,7 @@ import SeguidoresChart from "@/components/(socialmood)/followers-chart";
 import InteraccionesDashboard from "@/components/(socialmood)/interactions-dashboard";
 import { useRouter } from 'next/navigation';
 import EmotionsChart from "@/components/(socialmood)/emotions-chart";
+import CategoryChart from "@/components/(socialmood)/category-chart";
 
 
 
@@ -35,6 +36,11 @@ function dashboard() {
           </span>
         </div>
         <InteraccionesDashboard />
+      </div>
+      <div className="mt-10 w-full space-y-3">
+        <CategoryChart />
+        <CategoryChart />
+
       </div>
       </div>
 
