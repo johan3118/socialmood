@@ -5,7 +5,7 @@ import db from "@/db";
 import { cuentasRedesSocialesTable, usuariosTable } from "@/db/schema/socialMood";
 import { lucia, validateRequest } from "@/lib/lucia/lucia";
 import { cookies } from "next/headers";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { and } from "drizzle-orm";
 import * as bcrypt from "bcryptjs"; // Import bcrypt
 import { google } from "@/lib/lucia/oauth";
@@ -231,6 +231,22 @@ export async function getSocialMediaSubscription(subscriptionId: number) {
     .where(eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId))
 
     return result.map((account) => account.codigo);
+}
+
+export async function getSocialMediaToken(socialMediaAccount: string) {
+  const result = await db
+      .select({ token: cuentasRedesSocialesTable.llave_acceso })
+      .from(cuentasRedesSocialesTable)
+      .where(
+          or(
+              eq(cuentasRedesSocialesTable.usuario_cuenta, socialMediaAccount),
+              eq(cuentasRedesSocialesTable.codigo_cuenta, socialMediaAccount)
+          )
+      );
+
+  console.log(result);
+
+  return result[0]?.token.toString();
 }
 
 export async function hasSubscription(userId: number) {

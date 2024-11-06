@@ -1,6 +1,9 @@
 'use server'
 import clientPromise from "@/utils/startMongo"
 import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
+import { replyToComment } from "@/app/api/meta/fb-reply";
+import { getSocialMediaToken } from "@/app/actions/(socialmood)/auth.actions";
+
 
 interface Perfil {
     red_social: string;
@@ -24,6 +27,7 @@ interface Respuestas {
     unique_code: string;
     categoria: string;
     subcategoria: string;
+    comment_id: string;
     fecha: string;
 }
 
@@ -147,6 +151,7 @@ export async function getRespuestas() {
                 categoria: respuesta.categoria,
                 subcategoria: respuesta.subcategoria,
                 unique_code: respuesta.unique_code,
+                comment_id: respuesta.comment_id,
                 fecha: formattedDate
             }
             formattedRespuestas.push(formattedInteraction);
@@ -236,27 +241,41 @@ export async function updateRespuesta(uniqueCode: string, newRespuesta: string):
 }
 
 
-export async function commentRepliedTrue(responses: { unique_code: string }[]): Promise<UpdateResult> {
+export async function commentRepliedTrue(responses: { unique_code: string, comment_id: string, respuesta: string, perfil: { red_social: string, username: string } }[]): Promise<UpdateResult> {
     try {
         const client = await clientPromise;
         const db = client.db("socialMood");
 
-        // Extrae los unique_codes del array responses
-        const uniqueCodes = responses.map(response => response.unique_code);
+        const successfulResponses = [];
 
-        // Realiza la actualización en una sola operación
-        const result = await db.collection("Interacciones").updateMany(
-            { unique_code: { $in: uniqueCodes } },
-            { $set: { respondida: true } }
-        );
-
-        if (result.matchedCount === 0) {
-            throw new Error("No documents found with the specified unique codes");
+        for (const response of responses) {
+            // Obtener el token de acceso de la cuenta de red social asociada
+            const accessToken = await getSocialMediaToken(response.perfil.username);
+            
+            // Enviar la respuesta a Facebook usando replyToComment
+            try {
+                await replyToComment(response.comment_id, response.respuesta, accessToken);
+                successfulResponses.push(response.unique_code);
+            } catch (error) {
+                console.error("Error al enviar comentario a Facebook:", error);
+            }
         }
 
-        return { success: true, message: "Respuestas updated successfully" };
+        if (successfulResponses.length > 0) {
+            // Actualizar el campo respondida en MongoDB solo para los que fueron exitosamente enviados a Facebook
+            const result = await db.collection("Interacciones").updateMany(
+                { unique_code: { $in: successfulResponses } },
+                { $set: { respondida: true } }
+            );
+
+            if (result.matchedCount === 0) {
+                throw new Error("No se encontraron documentos con los códigos únicos especificados");
+            }
+        }
+
+        return { success: true, message: "Respuestas actualizadas exitosamente en MongoDB" };
     } catch (error) {
-        console.error("Error updating respuestas:", error);
-        return { success: false, message: error instanceof Error ? error.message : "Unknown error" };
+        console.error("Error actualizando respuestas en MongoDB:", error);
+        return { success: false, message: error instanceof Error ? error.message : "Error desconocido" };
     }
 }

@@ -10,6 +10,7 @@ import ApproveResponse from "@/components/(socialmood)/approve-response";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 
+
 interface Perfil {
     red_social: string;
     username: string;
@@ -23,6 +24,7 @@ interface Respuestas {
     username_emisor: string;
     categoria: string;
     subcategoria: string;
+    comment_id: string;
     fecha: string;
 }
 
@@ -55,6 +57,7 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
         try {
             const respuestas = await getRespuestas();
             setRespuestas(respuestas);
+            console.log(respuestas);
         } catch (error) {
             console.error("Error al cargar las respuestas:", error);
         }
@@ -79,17 +82,12 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
     };
 
     const confirmSendResponses = async () => {
-        sendToFacebook(selectedResponses);
         try {
             await commentRepliedTrue(selectedResponses);
-            console.log("Respuestas enviadas correctamente.");
+            console.log("Respuestas enviadas y actualizadas correctamente.");
         } catch (error) {
-            console.error("Error al actualizar en MongoDB:", error);
+            console.error("Error al enviar y actualizar respuestas:", error);
         }
-    };
-
-    const sendToFacebook = (responses: Respuestas[]) => {
-        console.log("Sending to Facebook:", responses);
     };
 
     const handleEditRespuesta = (respuestaID: string) => {

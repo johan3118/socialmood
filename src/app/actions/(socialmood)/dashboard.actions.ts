@@ -2,6 +2,7 @@ import { fetchFacebookFollowers } from "@/app/api/meta/fb-followers";
 import db from "@/db";
 import { eq, and, or, inArray, isNull, not } from "drizzle-orm";
 import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
+import { getSocialMediaToken } from "./auth.actions";
 
 export async function getSocialMediaAccounts() {
 
