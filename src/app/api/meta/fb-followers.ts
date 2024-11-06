@@ -1,31 +1,31 @@
-import { loadFacebookSDK, getFB } from './meta';
-
 /**
  * @param pageId 
  * @param accessToken 
  */
-export const fetchFacebookFollowers = async (pageId: string, accessToken: string): Promise<any> => {
-  await loadFacebookSDK();
+export const fetchFacebookFollowers = async (pageId: string, accessToken: string): Promise<{ name: string, followers_count: number }> => {
+  const url = `https://graph.facebook.com/v20.0/${pageId}?fields=name,followers_count&access_token=${accessToken}`;
 
-  const FB = getFB();
-  if (!FB) {
-    console.error("Facebook SDK is not loaded");
-    return;
-  }
+  try {
+      const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
 
-  return new Promise((resolve, reject) => {
-    FB.api(
-      `/${pageId}/posts`,
-      'GET',
-      { fields: 'followers_count', access_token: accessToken },
-      (response: any) => {
-        if (response && !response.error) {
-          resolve(response.data); 
-        } else {
-          console.error(`Error fetching Followers Count for page ${pageId}:`, response.error);
-          reject(response.error);
-        }
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+          console.error(`Error fetching Page Info for page ${pageId}:`, data.error);
+          throw new Error(data.error.message);
       }
-    );
-  });
+
+      return {
+          name: data.name,
+          followers_count: data.followers_count,
+      };
+  } catch (error) {
+      console.error("Error fetching data from Facebook Graph API:", error);
+      throw error;
+  }
 };

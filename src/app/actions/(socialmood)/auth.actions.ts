@@ -243,9 +243,6 @@ export async function getSocialMediaToken(socialMediaAccount: string) {
               eq(cuentasRedesSocialesTable.codigo_cuenta, socialMediaAccount)
           )
       );
-
-  console.log(result);
-
   return result[0]?.token.toString();
 }
 
