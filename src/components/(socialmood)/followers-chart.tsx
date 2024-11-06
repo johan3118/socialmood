@@ -59,16 +59,20 @@ const SeguidoresChart: React.FC = () => {
   }, []);
 
   const options = {
-    scales: {
-      x: {
-        ticks: { color: '#fff' },
-        grid: { display: false },
-      },
-      y: {
-        ticks: { color: '#fff' },
-        grid: { display: false },
-      },
+    plugins: {
+      title: {
+        display: true,
+        text: 'Seguidores', // Título del gráfico
+        font: {
+            size: 16, // Tamaño de la fuente del título
+            family: 'Montserrat', // Familia de la fuente
+            weight: 'bold',
+        },
+        color: '#FFFFFF', // Color del título
     },
+    }
+
+  
   };
 
   return (
