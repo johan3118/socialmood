@@ -16,6 +16,7 @@ const CategoryChart = () => {
     const fetchSentimentCounts = async () => {
         try {
             const data = await getSentimentCounts();
+            console.log("Sentiment data:", data); // Verifica los datos
             setSentimentData(data);
         } catch (error) {
             console.error("Error al cargar los conteos de sentimientos:", error);
@@ -25,6 +26,10 @@ const CategoryChart = () => {
     useEffect(() => {
         fetchSentimentCounts();
     }, []);
+
+    useEffect(() => {
+        console.log("Sentiment data after fetch:", sentimentData); // Asegúrate de que neutralCount tenga el valor correcto
+    }, [sentimentData]);
 
     const chartData = {
         labels: ["Positivo", "Negativo", "Neutro"],
@@ -66,18 +71,18 @@ const CategoryChart = () => {
     };
 
     return (
-        <div className="w-fit bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-6">
-            <div className="flex justify-between space-x-12 items-center text-center">
-                <h1 className="text-[24px] text-gray-300 font-bold">Categorías</h1>
+        <div className="w-full h-fit bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] py-6 px-10">
+            <div className="flex  items-start justify-between space-x-12 text-center">
+                <h1 className="text-[24px] text-white font-bold">Categorías</h1>
                 <div className="text-right">
-                <p className="text-white/50 text-lg font-bold">Total Interacciones</p>
+                <p className="text-white/50 text-[16px] font-medium">Total Interacciones</p>
                 <p className="text-white text-2xl font-bold">{sentimentData.totalInteractions.toLocaleString()}</p>
                 </div>
             </div>
             <div className="flex justify-center mb-4">
             </div>
             <div className="flex items-center justify-center">
-            <div className="w-50 h-50 flex justify-center m-3 p-6">
+            <div className="w-40 h-40 flex justify-center m-8 p-3">
                 <Pie data={chartData} options={options} />
             </div>
             <div className="mt-4 text-gray-400 text-md ml-4 space-y-4">

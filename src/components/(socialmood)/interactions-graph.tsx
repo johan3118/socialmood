@@ -54,10 +54,10 @@ const options = {
   plugins: {
     legend: {
       display: true,
-      position: 'top', // Puedes ajustar esta posición a 'bottom', 'left', 'right'
+      position: 'top', 
       labels: {
         color: '#fff',
-        usePointStyle: true, // Usa puntos en lugar de rectángulos
+        usePointStyle: true, 
       },
     },
     tooltip: {
@@ -89,7 +89,7 @@ const options = {
 
 const GraficoInteracciones: React.FC = () => {
   return (
-          <div  className="w-full h-64 bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-8" style={{ width: '48%', height: '200px' }}> {/* Ajusta el tamaño aquí */}
+          <div  className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-8" style={{ width: '48%', height: '200px' }}> {/* Ajusta el tamaño aquí */}
           <Line data={data} options={options} />
         </div>
   );
