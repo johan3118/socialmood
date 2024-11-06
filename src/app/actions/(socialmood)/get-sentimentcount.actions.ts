@@ -36,6 +36,8 @@ export async function getSentimentCounts() {
             }
         ]).toArray();
 
+        console.log("Sentiment counts result:", sentimentCounts); // Añadir esta línea
+
         // para obtener los conteos específicos
         let totalInteractions = 0;
         let positiveCount = 0;
@@ -43,10 +45,11 @@ export async function getSentimentCounts() {
         let neutralCount = 0;
 
         sentimentCounts.forEach(item => {
+            console.log("Sentiment category:", item._id, "Count:", item.count); // Verifica los datos exactos
             totalInteractions += item.count;
             if (item._id === "Positivo") positiveCount = item.count;
             if (item._id === "Negativo") negativeCount = item.count;
-            if (item._id === "Neutro") neutralCount = item.count;
+            if (item._id === "Neutral") neutralCount = item.count;
         });
 
         return {
