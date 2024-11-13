@@ -65,7 +65,7 @@ const SeguidoresChart: React.FC = () => {
         text: 'Seguidores', // Título del gráfico
         font: {
             size: 16, // Tamaño de la fuente del título
-            family: 'Montserrat', // Familia de la fuente
+            family: 'arial', // Familia de la fuente
             weight: 'bold',
         },
         color: '#FFFFFF', // Color del título
