@@ -36,7 +36,7 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center max-h-full">
       <div className="bg-white/10 backdrop-blur-lg p-12 rounded-xl shadow-lg m-40 w-full text-white relative">
         <button 
           onClick={onClose} 

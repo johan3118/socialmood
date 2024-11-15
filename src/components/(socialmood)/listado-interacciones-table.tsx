@@ -104,7 +104,6 @@ const ListadoInteraccionesTable: React.FC = () => {
               type="button" // Cambiado a 'button' para evitar enviar un formulario
               onClick={openFilterModal}
             />
-            <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
             <button
               className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center"
               onClick={handleRefreshTable}
@@ -198,6 +197,7 @@ const ListadoInteraccionesTable: React.FC = () => {
         </div>
 
       </div>
+      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
     </div>
   );
 };

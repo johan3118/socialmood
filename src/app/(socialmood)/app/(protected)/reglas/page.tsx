@@ -32,30 +32,34 @@ function PantallaGestionReglasPage() {
   }
 
   const setAlias = (text: string) => {
-      setSelectedFilters({ ...selectedFilters, alias: [text] });
-      console.log(selectedFilters);
+    setSelectedFilters({ ...selectedFilters, alias: [text] });
+    console.log(selectedFilters);
   }
 
   return (
 
-    <div className="space-y-4">
-      <div className="flex space-x-4 mx-12">
-        <SearchBar handleChange={setAlias} />
+    <div>
+      <div className="space-y-4">
+        <div className="flex space-x-4 mx-12">
+          <SearchBar handleChange={setAlias} />
 
-        <SocialButton
-          customStyle="w-32"
-          variant="default"
-          defaultText="Filtros"
-          type="button" // Cambiado a 'button' para evitar enviar un formulario
-          onClick={openFilterModal}
+          <SocialButton
+            customStyle="w-32"
+            variant="default"
+            defaultText="Filtros"
+            type="button" // Cambiado a 'button' para evitar enviar un formulario
+            onClick={openFilterModal}
+          />
+
+        </div>
+
+        <ListadoReglasTable
+          filter={selectedFilters}
         />
-        <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
-
       </div>
 
-      <ListadoReglasTable
-        filter={selectedFilters}
-      />
+      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
+
     </div>
   )
 }

@@ -104,28 +104,26 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-[24px] text-white font-bold">Respuestas</h1>
                         <div className="flex gap-x-4">
-                        <button
-    type="button"
-    className={`rounded-lg font-semibold px-4 flex items-center gap-x-2 
-        transition duration-300 ease-in-out transform group ${
-            selectedResponses.length === 0
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-white text-[#D24EA6] scale-105"
-        }`}
-    disabled={selectedResponses.length === 0}
-    onClick={handleSendResponses}
->
-    Enviar
-    <Image
-        width={20}
-        height={20}
-        src="/send-icon.svg"
-        alt="send icon"
-        className={`transition duration-300 ${
-            selectedResponses.length === 0 ? "filter grayscale opacity-50" : "group-active:animate-shake"
-        }`}
-    />
-</button>
+                            <button
+                                type="button"
+                                className={`rounded-lg font-semibold px-4 flex items-center gap-x-2 
+        transition duration-300 ease-in-out transform group ${selectedResponses.length === 0
+                                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                        : "bg-white text-[#D24EA6] scale-105"
+                                    }`}
+                                disabled={selectedResponses.length === 0}
+                                onClick={handleSendResponses}
+                            >
+                                Enviar
+                                <Image
+                                    width={20}
+                                    height={20}
+                                    src="/send-icon.svg"
+                                    alt="send icon"
+                                    className={`transition duration-300 ${selectedResponses.length === 0 ? "filter grayscale opacity-50" : "group-active:animate-shake"
+                                        }`}
+                                />
+                            </button>
 
 
 
