@@ -59,7 +59,6 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
 
     const fetchReglas = async () => {
         try {
-
             const reglas = await Promise.all(await getRules(SubscriptionID, filter));
             setReglas(reglas);
         } catch (error) {

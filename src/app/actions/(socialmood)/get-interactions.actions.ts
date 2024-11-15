@@ -101,6 +101,107 @@ export async function getInteractions() {
 
 }
 
+export async function getInteractionsFiltered(filter: any) {
+    try {
+
+        console.log(filter);
+
+        let categories = filter.category;
+        let subcategories = filter.subcategory;
+
+        let rules = [];
+
+        const isCategoryFilter = (categories?.length ?? 0) > 0;
+        const isSubcategoryFilter = (subcategories?.length ?? 0) > 0;
+
+
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const userid = await getActiveUserId();
+
+        if (!userid) {
+            throw new Error("User ID is undefined");
+        }
+
+        const subscription = await getSubscription(parseInt(userid));
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+
+        let interactions;
+
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+        if (isCategoryFilter == false && isSubcategoryFilter == false) {
+            interactions = await db.collection("Interacciones").find({
+                codigo_cuenta_receptor: { $in: socialMediasAccounts }
+            }).toArray();
+
+        }
+        else {
+            if (isCategoryFilter == true && isSubcategoryFilter == true) {
+
+                interactions = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    $or: [{ categoria: { $in: categories } },
+                    { subcategoria: { $in: subcategories } }]
+                }).toArray();
+            }
+            else if (isCategoryFilter == false && isSubcategoryFilter == true) {
+                interactions = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    subcategoria: { $in: subcategories }
+                }).toArray();
+            }
+            else if (isCategoryFilter == true && isSubcategoryFilter == false) {
+                interactions = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    categoria: { $in: categories }
+                }).toArray();
+            }
+        }
+        console.log(interactions);
+        let formattedInteractions = new Array<Interacciones>();
+
+        interactions?.forEach(interaction => {
+            const date = new Date(interaction.fecha_recepcion);
+            const formattedDate = date.toLocaleString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }).replace(',', '');
+
+            const formattedInteraction = {
+                perfil: {
+                    red_social: interaction.nombre_red_social_receptor,
+                    username: interaction.usuario_cuenta_receptor,
+                    color: "#FF0000"
+                },
+                mensaje: interaction.mensaje,
+                emisor: interaction.usuario_cuenta_emisor,
+                categoria: interaction.categoria,
+                subcategoria: interaction.subcategoria,
+                fecha: formattedDate
+            }
+            formattedInteractions.push(formattedInteraction);
+        });
+
+        return formattedInteractions;
+
+    }
+    catch (error) {
+        console.error("Error al cargar las interacciones:", error);
+        return [];
+    }
+
+
+}
+
 
 export async function getRespuestas() {
     try {
@@ -187,7 +288,7 @@ export async function getEmotions() {
         if (subscription === null) {
             throw new Error("Subscription is null");
         }
-        
+
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
         const interactions = await db.collection("Interacciones").find({
@@ -209,7 +310,7 @@ export async function getEmotions() {
         });
 
         const sortedEmotions = Array.from(emotions.entries()).sort((a, b) => b[1] - a[1]).slice(0, 4);
-        
+
         return sortedEmotions;
 
     }
@@ -251,7 +352,7 @@ export async function commentRepliedTrue(responses: { unique_code: string, comme
         for (const response of responses) {
             // Obtener el token de acceso de la cuenta de red social asociada
             const accessToken = await getSocialMediaToken(response.perfil.username);
-            
+
             // Enviar la respuesta a Facebook usando replyToComment
             try {
                 await replyToComment(response.comment_id, response.respuesta, accessToken);

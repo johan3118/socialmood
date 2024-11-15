@@ -1,7 +1,7 @@
 'use server'
 import db from "@/db";
 import { reglasTable, categoriasTable, tiposReglaTable, subcategoriasTable, subcategoriasReglasTable, cuentasRedesSocialesTable, redesSocialesTable } from "@/db/schema/socialMood";
-import { eq, and, or, inArray, isNull, not } from "drizzle-orm";
+import { eq, and, or, inArray, isNull, not, like } from "drizzle-orm";
 import { StyledString } from "next/dist/build/swc";
 import { PropagateToWorkersField } from "next/dist/server/lib/router-utils/types";
 import { CreateRuleSchema } from "@/types";
@@ -45,6 +45,7 @@ export async function getRules(subscriptionId: number, filter: any) {
   let subcategories = filter.subcategory;
   let networks = filter.network;
   let ruleTypes = filter.ruleType;
+  let alias = filter.alias;
 
   let rules = [];
 
@@ -52,6 +53,8 @@ export async function getRules(subscriptionId: number, filter: any) {
   const isSubcategoryFilter = (subcategories?.length ?? 0) > 0;
   const isNetworkFilter = (networks?.length ?? 0) > 0;
   const isRuleTypeFilter = (ruleTypes?.length ?? 0) > 0;
+  const isAliasFilter = (alias?.length ?? 0) > 0;
+
 
   if (!isCategoryFilter && !isSubcategoryFilter && !isNetworkFilter && !isRuleTypeFilter) {
 
@@ -72,7 +75,8 @@ export async function getRules(subscriptionId: number, filter: any) {
       .where(
         and(
           eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId),
-          isNull(reglasTable.id_regla_padre)
+          isNull(reglasTable.id_regla_padre),
+          isAliasFilter ? like(reglasTable.alias, `%${alias}%`) : undefined
         ))
   }
   else {
@@ -97,6 +101,7 @@ export async function getRules(subscriptionId: number, filter: any) {
       ruleTypes = ruleTypesResult.map(ruleType => ruleType.nombre);
     }
 
+
     rules = await db
       .select({
         id: reglasTable.id,
@@ -119,7 +124,8 @@ export async function getRules(subscriptionId: number, filter: any) {
             isCategoryFilter ? inArray(categoriasTable.nombre, categories) : undefined,
             isSubcategoryFilter ? inArray(subcategoriasTable.nombre, subcategories) : undefined,
             isNetworkFilter ? inArray(redesSocialesTable.nombre, networks) : undefined,
-            isRuleTypeFilter ? inArray(tiposReglaTable.nombre, ruleTypes) : undefined
+            isRuleTypeFilter ? inArray(tiposReglaTable.nombre, ruleTypes) : undefined,
+            isAliasFilter ? like(reglasTable.alias, `%${alias}%`) : undefined
           )
         ))
   }
@@ -420,7 +426,7 @@ export async function updateRule(rule: {
   instrucciones: string;
   alias: string;
   subcategorias: string[];
-},ruleId: number) {
+}, ruleId: number) {
 
   try {
 
@@ -436,7 +442,7 @@ export async function updateRule(rule: {
         error: "Rule with the same alias already exists",
       };
     }
-    
+
     await db.transaction(async (trx) => {
       await trx.delete(subcategoriasReglasTable).where(eq(subcategoriasReglasTable.id_regla, ruleId)).execute();
       await trx.update(reglasTable).set({
@@ -472,6 +478,6 @@ export async function getRuleSubcategories(ruleID: number) {
     .from(subcategoriasTable)
     .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_subcategoria, subcategoriasTable.id))
     .where(eq(subcategoriasReglasTable.id_regla, ruleID));
-    console.log(subcategories);
+  console.log(subcategories);
   return subcategories;
 }

@@ -86,25 +86,6 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
           </div>
         </div>
 
-        {/* Tipo de Regla */}
-        <div className="mb-4">
-          <h3 className="block text-lg font-medium">Tipo de Regla:</h3>
-          <hr className="border-[#FFF] my-4" />
-          <div className="flex space-x-4">
-            {["Padre", "Hijo"].map((ruleType) => (
-              <label key={ruleType} className="flex items-center text-black font-medium space-x-2 bg-white py-2 px-4 rounded-full">
-                <input
-                  type="checkbox"
-                  checked={selectedFilters.ruleType.includes(ruleType)}
-                  onChange={() => handleCheckboxChange("ruleType", ruleType)}
-                  className="form-checkbox  text-orange-500 rounded-full"
-                />
-                <span>{ruleType}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
         {/* Botón Aplicar Filtros */}
         <div className="flex justify-end">
         <SocialButton
