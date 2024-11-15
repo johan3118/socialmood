@@ -35,8 +35,6 @@ interface ListadoReglasTableProps {
 
 const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
 
-    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
-
     const [Reglas, setReglas] = useState<Reglas[]>([]);
     const [Open, setOpen] = useState<boolean>(false);
 
@@ -59,7 +57,7 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
 
     const fetchReglas = async () => {
         try {
-            const reglas = await Promise.all(await getRules(SubscriptionID, filter));
+            const reglas = await Promise.all(await getRules(filter));
             setReglas(reglas);
         } catch (error) {
             console.error("Error al cargar las reglas:", error);
@@ -72,26 +70,6 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
             fetchReglas();
         }
     };
-
-    const setSubscription = async () => {
-
-        const userID = await getActiveUserId();
-        console.log(userID);
-        if (userID) {
-            const subscription = await getSubscription(parseInt(userID));
-            if (subscription) {
-                setSubscriptionID(subscription);
-                console.log(subscription);
-            }
-            else {
-                await router.push("/app/get-sub");
-            }
-
-        }
-        else {
-            await router.push("/app/sign-in");
-        }
-    }
 
     const handleRefreshTable = () => {
         updateData();
@@ -119,13 +97,12 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
     }
 
     const updateData = async () => {
-        await setSubscription();
         await fetchReglas();
     }
 
     useEffect(() => {
         updateData();
-    }, [filter, SubscriptionID]);
+    }, [filter]);
 
     return (
         <Dialog open={Open}>
