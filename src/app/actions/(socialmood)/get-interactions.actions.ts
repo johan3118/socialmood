@@ -55,12 +55,10 @@ export async function getInteractions() {
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
-
+        // Agregamos el sort para ordenar por fecha_recepcion descendente
         const interactions = await db.collection("Interacciones").find({
             codigo_cuenta_receptor: { $in: socialMediasAccounts }
-        }).toArray();
-
-
+        }).sort({ fecha_recepcion: -1 }).toArray();
 
         let formattedInteractions = new Array<Interacciones>();
 
@@ -92,14 +90,12 @@ export async function getInteractions() {
 
         return formattedInteractions;
 
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error al cargar las interacciones:", error);
         return [];
     }
-
-
 }
+
 
 
 export async function getRespuestas() {
