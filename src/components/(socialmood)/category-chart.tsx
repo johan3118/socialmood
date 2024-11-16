@@ -71,34 +71,32 @@ const CategoryChart = () => {
     };
 
     return (
-        <div className="w-full h-fit bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] py-6 px-10">
-            <div className="flex  items-start justify-between space-x-12 text-center">
-                <h1 className="text-[24px] text-white font-bold">Categorías</h1>
-                <div className="text-right">
-                <p className="text-white/50 text-[16px] font-medium">Total Interacciones</p>
-                <p className="text-white text-2xl font-bold">{sentimentData.totalInteractions.toLocaleString()}</p>
-                </div>
-            </div>
-            <div className="flex justify-center mb-4">
-            </div>
-            <div className="flex items-center justify-center">
-            <div className="w-40 h-40 flex justify-center m-8 p-3">
-                <Pie data={chartData} options={options} />
-            </div>
-            <div className="mt-4 text-gray-400 text-md ml-4 space-y-4">
-                <div className="flex items-center">
-                    <span className="w-3 h-3 bg-[#2B4FE2] mr-2 rounded-full"></span> Positivo
-                </div>
-                <div className="flex items-center">
-                    <span className="w-3 h-3 bg-white mr-2 rounded-full"></span> Negativo
-                </div>
-                <div className="flex items-center">
-                    <span className="w-3 h-3 bg-[#414470] mr-2 rounded-full border border-gray-600"></span> Neutro
-                </div>
-            </div>
-            </div>
-
+        <div className="w-full h-fit bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] py-10 px-10">
+        <div className="flex justify-between mb-2">
+          <h1 className="text-[24px] font-bold">Sentimientos</h1>
+          <div className="text-right">
+            <p className="text-white/50 text-[16px] font-medium">Cantidad de interacciones</p>
+            <p className="text-white text-2xl font-bold">{sentimentData.totalInteractions.toLocaleString()}</p>
+          </div>
         </div>
+        <div className="flex items-center justify-center gap-x-10">
+          <div className="text-white text-md space-y-8">
+            <div className="flex items-center">
+              <span className="w-3 h-3 bg-[#2B4FE2] mr-2 rounded-full"></span> Positivo
+            </div>
+            <div className="flex items-center">
+              <span className="w-3 h-3 bg-[#414470] mr-2 rounded-full"></span> Negativo
+            </div>
+            <div className="flex items-center">
+              <span className="w-3 h-3 bg-white mr-2 rounded-full border border-gray-600"></span> Neutral
+            </div>
+          </div>
+          <div className="w-40 h-40">
+            <Pie data={chartData} options={options} />
+          </div>
+        </div>
+      </div>
+      
     );
 };
 
