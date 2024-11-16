@@ -12,8 +12,6 @@ import {
 } from "chart.js";
 import { getInteractionsByMonthAndUsername } from "@/app/actions/(socialmood)/get-interactions.actions"; // Ajusta la ruta al action
 
-
-
 // Definir el tipo de datos del gráfico
 type ChartData = {
   labels: string[];
@@ -26,6 +24,13 @@ type ChartData = {
     borderWidth: number;
     fill: boolean;
   }[];
+};
+
+// Definir el tipo para los últimos 6 meses
+type Last6Month = {
+  label: string; // Mes y año en formato "Ene 2024"
+  month: number; // Número del mes (1-12)
+  year: number; // Año
 };
 
 // Registrar componentes de Chart.js
@@ -78,8 +83,32 @@ const GraficoInteracciones: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: ChartData = await getInteractionsByMonthAndUsername(); // Llamada al action
-        setData(response); // Actualizamos el estado con los datos obtenidos
+        // Obtener los últimos 6 meses con año
+        const now = new Date();
+        const last6Months: Last6Month[] = [];
+
+        for (let i = 5; i >= 0; i--) {
+          const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          last6Months.push({
+            label: `${date.toLocaleString("default", { month: "short" })} ${date.getFullYear()}`,
+            month: date.getMonth() + 1,
+            year: date.getFullYear(),
+          });
+        }
+
+        // Llamada al action
+        const response = await getInteractionsByMonthAndUsername();
+
+        // Formatear los datos obtenidos del action para incluir los últimos 6 meses
+        const formattedLabels = last6Months.map(({ label }) => label);
+        const datasets = response.datasets.map((dataset) => ({
+          ...dataset,
+          data: formattedLabels.map((label, index) =>
+            response.labels.includes(label) ? dataset.data[index] : 0
+          ),
+        }));
+
+        setData({ labels: formattedLabels, datasets });
       } catch (error) {
         console.error("Error al cargar los datos del gráfico:", error);
         setData({ labels: [], datasets: [] }); // Manejo de errores

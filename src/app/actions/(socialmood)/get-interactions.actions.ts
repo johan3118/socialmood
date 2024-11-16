@@ -298,7 +298,19 @@ export async function getInteractionsByMonthAndUsername() {
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
-        // Agrupamos por username de red social y mes
+        // Define los últimos 6 meses con su año correspondiente
+        const now = new Date();
+        const last6Months = [];
+        for (let i = 5; i >= 0; i--) { // Cambiado de 11 a 5 para los últimos 6 meses
+            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            last6Months.push({
+                label: `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`,
+                month: date.getMonth() + 1, // Mes en formato 1-12
+                year: date.getFullYear(),
+            });
+        }
+
+        // Agrupamos por username de red social, mes y año
         const interactions = await db.collection("Interacciones").aggregate([
             {
                 $match: {
@@ -310,6 +322,7 @@ export async function getInteractionsByMonthAndUsername() {
                     _id: {
                         username: "$usuario_cuenta_receptor",
                         mes: { $month: { $toDate: "$fecha_recepcion" } },
+                        año: { $year: { $toDate: "$fecha_recepcion" } },
                     },
                     total_interacciones: { $sum: 1 },
                 },
@@ -318,26 +331,36 @@ export async function getInteractionsByMonthAndUsername() {
                 $project: {
                     username: "$_id.username",
                     mes: "$_id.mes",
+                    año: "$_id.año",
                     total_interacciones: 1,
                     _id: 0,
                 },
             },
             {
-                $sort: { mes: 1 }, // Ordena por mes
+                $sort: { año: 1, mes: 1 }, // Ordena por año y mes
             },
         ]).toArray();
 
         // Formateamos los datos para el gráfico
         const formattedData: { [key: string]: number[] } = {};
-        const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        last6Months.forEach(({ month, year }) => {
+            Object.keys(formattedData).forEach(username => {
+                formattedData[username] = new Array(6).fill(0); // Cambiado a 6
+            });
 
-        // Inicializa el conteo de interacciones por mes para cada username
-        for (const interaction of interactions) {
-            if (!formattedData[interaction.username]) {
-                formattedData[interaction.username] = new Array(12).fill(0);
-            }
-            formattedData[interaction.username][interaction.mes - 1] = interaction.total_interacciones;
-        }
+            interactions.forEach(interaction => {
+                if (!formattedData[interaction.username]) {
+                    formattedData[interaction.username] = new Array(6).fill(0); // Cambiado a 6
+                }
+
+                const index = last6Months.findIndex(
+                    date => date.month === interaction.mes && date.year === interaction.año
+                );
+                if (index !== -1) {
+                    formattedData[interaction.username][index] = interaction.total_interacciones;
+                }
+            });
+        });
 
         // Obtén el color de cada cuenta y construye los datasets
         const datasets = await Promise.all(
@@ -359,7 +382,7 @@ export async function getInteractionsByMonthAndUsername() {
 
         // Retorna los datos en el formato para el gráfico
         return {
-            labels: meses,
+            labels: last6Months.map(date => date.label), // Cambiado a last6Months
             datasets,
         };
 
