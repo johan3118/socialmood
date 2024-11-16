@@ -71,7 +71,7 @@ const CategoryChart = () => {
     };
 
     return (
-        <div className="w-full h-fit bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] py-10 px-10">
+        <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-8 h-[300px]">
         <div className="flex justify-between mb-2">
           <h1 className="text-[24px] font-bold">Sentimientos</h1>
           <div className="text-right">

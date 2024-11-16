@@ -40,6 +40,16 @@ const options = {
   maintainAspectRatio: false,
   responsive: true,
   plugins: {
+    title: {
+      display: true,
+      text: 'Cantidad de Comentarios',
+      font: {
+        size: 18,
+        family: 'Arial',
+        weight: 'bold',
+      },
+      color: '#FFFFFF',
+    },
     legend: {
       display: true,
       position: "top",
@@ -120,8 +130,8 @@ const GraficoInteracciones: React.FC = () => {
 
   return (
     <div
-      className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-8"
-      style={{ width: "48%", height: "200px" }}
+      className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-6"
+      style={{ width: "100%", height: "250px" }}
     >
       <Line data={data} options={options} />
     </div>

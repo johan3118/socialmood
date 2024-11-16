@@ -43,7 +43,7 @@ const InteraccionesDashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-10">
+    <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-10 h-[300px]">
       <div className="grid grid-cols-1 gap-4">
         {interacciones.slice(0, 3).map((interaccion, index) => (
           <div key={index} className="flex items-center space-x-4 rounded-lg mb-4">
@@ -54,8 +54,8 @@ const InteraccionesDashboard: React.FC = () => {
                     interaccion.perfil.red_social === "Instagram"
                       ? "orange"
                       : interaccion.perfil.red_social === "Facebook"
-                      ? "blue"
-                      : "default",
+                        ? "blue"
+                        : "default",
                   size: "sm",
                 })
               )}
@@ -68,8 +68,13 @@ const InteraccionesDashboard: React.FC = () => {
               <span className="">{interaccion.perfil.username}</span>
             </span>
             <div className="flex-1">
-              <p className="font-semibold text-lg">{interaccion.mensaje}</p>
-              <p className="font-semibold text-sm text-gray-300">{interaccion.fecha} <span className="text-xs">@{interaccion.emisor}</span></p>
+              <p className="font-semibold text-md">{interaccion.mensaje}</p>
+              <div className="flex items-center">
+                <p className="font-medium text-sm text-gray-300 mr-4">{interaccion.fecha}</p>
+                <span className="text-xs font-bold">@{interaccion.emisor}</span>
+
+              </div>
+
             </div>
           </div>
         ))}
