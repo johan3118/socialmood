@@ -32,6 +32,7 @@ const InteraccionesDashboard: React.FC = () => {
     const fetchInteracciones = async () => {
       try {
         const data = await getInteractions();
+        console.log(data)
         setInteracciones(data);
       } catch (error) {
         console.error("Error al cargar las interacciones:", error);

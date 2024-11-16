@@ -3,6 +3,7 @@ import clientPromise from "@/utils/startMongo"
 import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
 import { replyToComment } from "@/app/api/meta/fb-reply";
 import { getSocialMediaToken } from "@/app/actions/(socialmood)/auth.actions";
+import { getAccountColor } from "./social.actions";
 
 
 interface Perfil {
@@ -54,6 +55,8 @@ export async function getInteractions() {
         }
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+        console.log(socialMediasAccounts)
 
         // Agregamos el sort para ordenar por fecha_recepcion descendente
         const interactions = await db.collection("Interacciones").find({
@@ -273,5 +276,95 @@ export async function commentRepliedTrue(responses: { unique_code: string, comme
     } catch (error) {
         console.error("Error actualizando respuestas en MongoDB:", error);
         return { success: false, message: error instanceof Error ? error.message : "Error desconocido" };
+    }
+}
+
+export async function getInteractionsByMonthAndUsername() {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const userid = await getActiveUserId(); // Obtén el usuario activo
+
+        if (!userid) {
+            throw new Error("User ID is undefined");
+        }
+
+        const subscription = await getSubscription(parseInt(userid)); // Valida la suscripción
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+        // Agrupamos por username de red social y mes
+        const interactions = await db.collection("Interacciones").aggregate([
+            {
+                $match: {
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        username: "$usuario_cuenta_receptor",
+                        mes: { $month: { $toDate: "$fecha_recepcion" } },
+                    },
+                    total_interacciones: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    username: "$_id.username",
+                    mes: "$_id.mes",
+                    total_interacciones: 1,
+                    _id: 0,
+                },
+            },
+            {
+                $sort: { mes: 1 }, // Ordena por mes
+            },
+        ]).toArray();
+
+        // Formateamos los datos para el gráfico
+        const formattedData: { [key: string]: number[] } = {};
+        const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+        // Inicializa el conteo de interacciones por mes para cada username
+        for (const interaction of interactions) {
+            if (!formattedData[interaction.username]) {
+                formattedData[interaction.username] = new Array(12).fill(0);
+            }
+            formattedData[interaction.username][interaction.mes - 1] = interaction.total_interacciones;
+        }
+
+        // Obtén el color de cada cuenta y construye los datasets
+        const datasets = await Promise.all(
+            Object.keys(formattedData).map(async (username) => {
+                const accountColor = await getAccountColor(username); // Llamamos al método para obtener el color
+                const color = accountColor[0]?.color || '#F86A3A'; // Usamos el color obtenido o un valor por defecto
+
+                return {
+                    label: username,
+                    data: formattedData[username],
+                    borderColor: '#fff',
+                    pointBackgroundColor: color,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    fill: true,
+                };
+            })
+        );
+
+        // Retorna los datos en el formato para el gráfico
+        return {
+            labels: meses,
+            datasets,
+        };
+
+    } catch (error) {
+        console.error("Error al cargar las interacciones por mes y username:", error);
+        return { labels: [], datasets: [] };
     }
 }

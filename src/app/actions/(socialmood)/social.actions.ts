@@ -124,3 +124,20 @@ export const deleteLinkedAccount = async (username: string): Promise<{ message: 
     throw new Error("An error occurred while deleting the account.");
   }
 };
+
+export const getAccountColor = async (username: string) => {
+
+  const accountColor = await db
+    .select({
+      color: coloresTable.codigo_hex,
+    })
+    .from(cuentasRedesSocialesTable)
+    .innerJoin(coloresTable, eq(coloresTable.id, cuentasRedesSocialesTable.id_color)) // Unión correcta con colores
+    .where(eq(cuentasRedesSocialesTable.usuario_cuenta, username)); // Filtro por id de suscripción
+  
+  return JSON.parse(JSON.stringify(accountColor));
+};
+
+
+
+
