@@ -405,14 +405,17 @@ export async function getEmotions() {
         let emotions = new Map<string, number>();
 
         interactions.forEach(interaction => {
-            const emocion = interaction.emociones_predominantes
-            if (emocion != "") {
-                if (emotions.has(emocion)) {
-                    emotions.set(emocion, emotions.get(emocion)! + 1);
-                } else {
-                    emotions.set(emocion, 1);
+            const emociones = interaction.emociones_predominantes.split(", ");
+            emociones.forEach((emocion: string) => {
+                if (emocion != "") {
+                    if (emotions.has(emocion)) {
+                        emotions.set(emocion, emotions.get(emocion)! + 1);
+                    } else {
+                        emotions.set(emocion, 1);
+                    }
                 }
-            }
+
+            });
 
         });
 

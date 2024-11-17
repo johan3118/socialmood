@@ -52,7 +52,7 @@ const EmotionsChart = () => {
     };
 
     const options = {
-        indexAxis: 'y', // Cambiar las barras a orientación horizontal
+        indexAxis: 'y' as const, // Cambiar las barras a orientación horizontal
         plugins: {
             legend: {
                 display: true,
@@ -66,7 +66,7 @@ const EmotionsChart = () => {
                 font: {
                     size: 18,
                     family: 'Arial',
-                    weight: 'bold',
+                    weight: 'bold' as const,
                 },
                 color: '#FFFFFF', // Color del título
             },
