@@ -55,10 +55,8 @@ const EmotionsChart = () => {
         indexAxis: 'y' as const, // Cambiar las barras a orientación horizontal
         plugins: {
             legend: {
-                display: true,
-                labels: {
-                    color: '#FFFFFF', // Color blanco para la leyenda
-                },
+                display: false,
+                
             },
             title: {
                 display: true,
