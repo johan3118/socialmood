@@ -18,22 +18,6 @@ function dashboard() {
     // Contenedor principal con scroll
 
     <div className="space-y-6">
-      <div className='flex items-center space-x-4 px-6'>
-        <div className=''>
-          <span
-            onClick={handleRedirect}
-            className="text-[16px] text-white hover:underline font-bold cursor-pointer">
-            Hoy
-          </span>
-        </div>
-        <div className='items-center'>
-          <span
-            onClick={handleRedirect}
-            className=" bg-blue rounded-lg text-[16px] text-white hover:underline font-semibold cursor-pointer">
-            Ultimos 7 dias
-          </span>
-        </div>
-      </div>
       <div className='space-y-6 h-screen overflow-y-auto p-4'>
         <div className='flex space-x-6'>
           <GraficoInteracciones />

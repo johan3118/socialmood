@@ -56,7 +56,7 @@ const CategoryChart = () => {
             },
             tooltip: {
                 callbacks: {
-                    label: (tooltipItem) => {
+                    label: (tooltipItem: any) => {
                         const label = chartData.labels[tooltipItem.dataIndex];
                         const value = chartData.datasets[0].data[tooltipItem.dataIndex];
                         return `${label}: ${value}`;
