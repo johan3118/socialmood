@@ -90,14 +90,12 @@ const SeguidoresChart: React.FC = () => {
         font: {
           size: 18,
           family: 'Arial',
-          weight: 'bold',
+          weight: 'bold' as 'bold',
         },
         color: '#FFFFFF',
       },
       legend: {
-        labels: {
-          color: '#FFFFFF',
-        },
+        display: false,
       },
       tooltip: {
         callbacks: {

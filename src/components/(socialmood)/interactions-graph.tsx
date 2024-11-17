@@ -46,21 +46,23 @@ const options = {
       font: {
         size: 18,
         family: 'Arial',
-        weight: 'bold',
+        weight: 'bold' as const,
       },
       color: '#FFFFFF',
     },
     legend: {
       display: true,
-      position: "top",
+      position: "top" as const,
       labels: {
         color: "#fff",
         usePointStyle: true,
       },
+      onClick: () => {}, // Disable legend click events
+
     },
     tooltip: {
       enabled: true,
-      mode: "index",
+      mode: "index" as const,
       intersect: false,
     },
   },
