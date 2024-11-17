@@ -1,9 +1,11 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { getInteractions } from "@/app/actions/(socialmood)/get-interactions.actions";
+import { getInteractionsFiltered } from "@/app/actions/(socialmood)/get-interactions.actions";
 import { useRouter } from 'next/navigation';
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import SocialButton from '@/components/(socialmood)/social-button';
+import FilterModal from "@/components/(socialmood)/filter-modal-interaction";
 
 
 interface Perfil {
@@ -22,6 +24,24 @@ interface Interacciones {
 }
 
 const ListadoInteraccionesTable: React.FC = () => {
+
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Controla la visibilidad del modal
+
+  const openFilterModal = () => setIsFilterModalOpen(true);
+  const closeFilterModal = () => setIsFilterModalOpen(false);
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    category: [],
+    subcategory: []
+  });
+
+  const onSaveFilters = (filter: any) => {
+    setSelectedFilters(filter);
+    console.log(filter);
+  }
+
+
+
   // Estado para manejar los planes obtenidos de la base de datos
   const [Interacciones, setInteracciones] = useState<Interacciones[]>([]);
   const router = useRouter();
@@ -47,7 +67,7 @@ const ListadoInteraccionesTable: React.FC = () => {
 
   const fetchInteracciones = async () => {
     try {
-      const interacciones = await getInteractions(); // Llamada a la función para obtener todos las interacciones de la subscripcion
+      const interacciones = await getInteractionsFiltered(selectedFilters); // Llamada a la función para obtener todos las interacciones de la subscripcion
       console.log(interacciones);
       setInteracciones(interacciones);
     } catch (error) {
@@ -58,7 +78,7 @@ const ListadoInteraccionesTable: React.FC = () => {
   // Llamar fetchPlanes al montar el componente
   useEffect(() => {
     fetchInteracciones();
-  }, []);
+  }, [selectedFilters]);
 
 
   const handleRefreshTable = () => {
@@ -70,20 +90,33 @@ const ListadoInteraccionesTable: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-4 mx-10 py-8">
+
+
       <div className="container mx-auto p-6 ">
         <div className="flex justify-between mb-6">
           <h1 className="text-[24px] text-white font-bold">Interacciones Capturadas</h1>
 
-          <button
-            className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center"
-            onClick={handleRefreshTable}
-          >
-            <img
-              src="/refresh.svg"
-              alt="Refresh"
-              className=" w-6 h-6"
+          <div className="flex space-x-4">
+            <SocialButton
+              customStyle="w-32"
+              variant="default"
+              defaultText="Filtros"
+              type="button" // Cambiado a 'button' para evitar enviar un formulario
+              onClick={openFilterModal}
             />
-          </button>
+            <button
+              className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center"
+              onClick={handleRefreshTable}
+            >
+              <img
+                src="/refresh.svg"
+                alt="Refresh"
+                className=" w-6 h-6"
+              />
+            </button>
+
+          </div>
+
         </div>
         <hr className="border-[#FFF] mb-6" />
         <div className="max-h-80 overflow-y-auto">
@@ -117,9 +150,9 @@ const ListadoInteraccionesTable: React.FC = () => {
                           alt={`${interacciones.perfil.red_social} Icon`}
                           className="w-5 h-5"
                         />
-                        
-            <span className="text-left">{interacciones.perfil.username}</span>
-            </span>
+
+                        <span className="text-left">{interacciones.perfil.username}</span>
+                      </span>
                     </div>
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 lg:px-8">{interacciones.mensaje}</td>
@@ -164,6 +197,7 @@ const ListadoInteraccionesTable: React.FC = () => {
         </div>
 
       </div>
+      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
     </div>
   );
 };
