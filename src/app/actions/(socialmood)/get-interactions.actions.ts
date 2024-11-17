@@ -3,6 +3,7 @@ import clientPromise from "@/utils/startMongo"
 import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
 import { replyToComment } from "@/app/api/meta/fb-reply";
 import { getSocialMediaToken } from "@/app/actions/(socialmood)/auth.actions";
+import { getAccountColor } from "./social.actions";
 
 
 interface Perfil {
@@ -55,12 +56,12 @@ export async function getInteractions() {
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
+        console.log(socialMediasAccounts)
 
+        // Agregamos el sort para ordenar por fecha_recepcion descendente
         const interactions = await db.collection("Interacciones").find({
             codigo_cuenta_receptor: { $in: socialMediasAccounts }
-        }).toArray();
-
-
+        }).sort({ fecha_recepcion: -1 }).toArray();
 
         let formattedInteractions = new Array<Interacciones>();
 
@@ -92,13 +93,10 @@ export async function getInteractions() {
 
         return formattedInteractions;
 
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error al cargar las interacciones:", error);
         return [];
     }
-
-
 }
 
 export async function getInteractionsFiltered(filter: any) {
@@ -201,6 +199,7 @@ export async function getInteractionsFiltered(filter: any) {
 
 
 }
+
 
 
 export async function getRespuestas() {
@@ -486,5 +485,118 @@ export async function commentRepliedTrue(responses: { unique_code: string, comme
     } catch (error) {
         console.error("Error actualizando respuestas en MongoDB:", error);
         return { success: false, message: error instanceof Error ? error.message : "Error desconocido" };
+    }
+}
+
+export async function getInteractionsByMonthAndUsername() {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const userid = await getActiveUserId(); // Obtén el usuario activo
+
+        if (!userid) {
+            throw new Error("User ID is undefined");
+        }
+
+        const subscription = await getSubscription(parseInt(userid)); // Valida la suscripción
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+        // Define los últimos 6 meses con su año correspondiente
+        const now = new Date();
+        const last6Months = [];
+        for (let i = 5; i >= 0; i--) { // Cambiado de 11 a 5 para los últimos 6 meses
+            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            last6Months.push({
+                label: `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`,
+                month: date.getMonth() + 1, // Mes en formato 1-12
+                year: date.getFullYear(),
+            });
+        }
+
+        // Agrupamos por username de red social, mes y año
+        const interactions = await db.collection("Interacciones").aggregate([
+            {
+                $match: {
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        username: "$usuario_cuenta_receptor",
+                        mes: { $month: { $toDate: "$fecha_recepcion" } },
+                        año: { $year: { $toDate: "$fecha_recepcion" } },
+                    },
+                    total_interacciones: { $sum: 1 },
+                },
+            },
+            {
+                $project: {
+                    username: "$_id.username",
+                    mes: "$_id.mes",
+                    año: "$_id.año",
+                    total_interacciones: 1,
+                    _id: 0,
+                },
+            },
+            {
+                $sort: { año: 1, mes: 1 }, // Ordena por año y mes
+            },
+        ]).toArray();
+
+        // Formateamos los datos para el gráfico
+        const formattedData: { [key: string]: number[] } = {};
+        last6Months.forEach(({ month, year }) => {
+            Object.keys(formattedData).forEach(username => {
+                formattedData[username] = new Array(6).fill(0); // Cambiado a 6
+            });
+
+            interactions.forEach(interaction => {
+                if (!formattedData[interaction.username]) {
+                    formattedData[interaction.username] = new Array(6).fill(0); // Cambiado a 6
+                }
+
+                const index = last6Months.findIndex(
+                    date => date.month === interaction.mes && date.year === interaction.año
+                );
+                if (index !== -1) {
+                    formattedData[interaction.username][index] = interaction.total_interacciones;
+                }
+            });
+        });
+
+        // Obtén el color de cada cuenta y construye los datasets
+        const datasets = await Promise.all(
+            Object.keys(formattedData).map(async (username) => {
+                const accountColor = await getAccountColor(username); // Llamamos al método para obtener el color
+                const color = accountColor[0]?.color || '#F86A3A'; // Usamos el color obtenido o un valor por defecto
+
+                return {
+                    label: username,
+                    data: formattedData[username],
+                    borderColor: '#fff',
+                    pointBackgroundColor: color,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    fill: true,
+                };
+            })
+        );
+
+        // Retorna los datos en el formato para el gráfico
+        return {
+            labels: last6Months.map(date => date.label), // Cambiado a last6Months
+            datasets,
+        };
+
+    } catch (error) {
+        console.error("Error al cargar las interacciones por mes y username:", error);
+        return { labels: [], datasets: [] };
     }
 }

@@ -32,6 +32,7 @@ const InteraccionesDashboard: React.FC = () => {
     const fetchInteracciones = async () => {
       try {
         const data = await getInteractions();
+        console.log(data)
         setInteracciones(data);
       } catch (error) {
         console.error("Error al cargar las interacciones:", error);
@@ -42,10 +43,10 @@ const InteraccionesDashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-6">
-      <div className="grid grid-cols-1 gap-4 mt-4">
+    <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-10 h-[300px]">
+      <div className="grid grid-cols-1 gap-4">
         {interacciones.slice(0, 3).map((interaccion, index) => (
-          <div key={index} className="flex items-center space-x-4 p-4 rounded-lg">
+          <div key={index} className="flex items-center space-x-4 rounded-lg mb-4">
             <span
               className={cn(
                 buttonVariants({
@@ -53,9 +54,9 @@ const InteraccionesDashboard: React.FC = () => {
                     interaccion.perfil.red_social === "Instagram"
                       ? "orange"
                       : interaccion.perfil.red_social === "Facebook"
-                      ? "blue"
-                      : "default",
-                  size: "smBold",
+                        ? "blue"
+                        : "default",
+                  size: "sm",
                 })
               )}
             >
@@ -64,11 +65,16 @@ const InteraccionesDashboard: React.FC = () => {
                 alt={`${interaccion.perfil.red_social} Icon`}
                 className="w-5 h-5"
               />
-              <span className="ml-2">{interaccion.perfil.username}</span>
+              <span className="">{interaccion.perfil.username}</span>
             </span>
             <div className="flex-1">
-              <p className="font-semibold text-[18px]">{interaccion.mensaje}</p>
-              <p className="font-semibold text-[16px] text-gray-300">{interaccion.fecha}</p>
+              <p className="font-semibold text-md">{interaccion.mensaje}</p>
+              <div className="flex items-center">
+                <p className="font-medium text-sm text-gray-300 mr-4">{interaccion.fecha}</p>
+                <span className="text-xs font-bold">@{interaccion.emisor}</span>
+
+              </div>
+
             </div>
           </div>
         ))}

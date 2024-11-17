@@ -1,6 +1,6 @@
 "use client";
-import React from 'react';
-import { Line } from 'react-chartjs-2';
+import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   LineElement,
@@ -9,76 +9,73 @@ import {
   PointElement,
   Tooltip,
   Legend,
-} from 'chart.js';
+} from "chart.js";
+import { getInteractionsByMonthAndUsername } from "@/app/actions/(socialmood)/get-interactions.actions"; // Ajusta la ruta al action
+
+// Definir el tipo de datos del gráfico
+type ChartData = {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    borderColor: string;
+    pointBackgroundColor: string;
+    tension: number;
+    borderWidth: number;
+    fill: boolean;
+  }[];
+};
+
+// Definir el tipo para los últimos 6 meses
+type Last6Month = {
+  label: string; // Mes y año en formato "Ene 2024"
+  month: number; // Número del mes (1-12)
+  year: number; // Año
+};
 
 // Registrar componentes de Chart.js
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
-// Datos de ejemplo para el gráfico
-const data = {
-  labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'], // Meses
-  datasets: [
-    {
-      label: '@socialmood',
-      data: [12, 19, 10, 5, 20, 15],
-      borderColor: '#fff',
-      backgroundColor: 'fade(#1DA1F2, 0.2)',
-      pointBackgroundColor: '#F86A3A',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#1DA1F2',
-      tension: 0.4,
-      borderWidth: 2,
-      fill: true,
-    },
-    {
-      label: '@paosq16',
-      data: [12, 19, 10, 20, 10, 15],
-      borderColor: '#fff',
-      backgroundColor: 'rgba(29, 161, 242, 0.2)',
-      pointBackgroundColor: '#1DA1F2',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#1DA1F2',
-      tension: 0.4,
-      borderWidth: 2,
-      fill: true,
-    },
-  ],
-};
-
-// Opciones simplificadas
 const options = {
   maintainAspectRatio: false,
   responsive: true,
   plugins: {
+    title: {
+      display: true,
+      text: 'Cantidad de Comentarios',
+      font: {
+        size: 18,
+        family: 'Arial',
+        weight: 'bold',
+      },
+      color: '#FFFFFF',
+    },
     legend: {
       display: true,
-      position: 'top', 
+      position: "top",
       labels: {
-        color: '#fff',
-        usePointStyle: true, 
+        color: "#fff",
+        usePointStyle: true,
       },
     },
     tooltip: {
       enabled: true,
-      mode: 'index',
+      mode: "index",
       intersect: false,
     },
   },
   scales: {
     x: {
       ticks: {
-        color: '#fff',
+        color: "#fff",
       },
       grid: {
         display: false,
-
       },
     },
     y: {
       ticks: {
-        color: '#fff',
+        color: "#fff",
       },
       grid: {
         display: false,
@@ -88,12 +85,57 @@ const options = {
 };
 
 const GraficoInteracciones: React.FC = () => {
+  const [data, setData] = useState<ChartData>({
+    labels: [],
+    datasets: [],
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Obtener los últimos 6 meses con año
+        const now = new Date();
+        const last6Months: Last6Month[] = [];
+
+        for (let i = 5; i >= 0; i--) {
+          const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          last6Months.push({
+            label: `${date.toLocaleString("default", { month: "short" })} ${date.getFullYear()}`,
+            month: date.getMonth() + 1,
+            year: date.getFullYear(),
+          });
+        }
+
+        // Llamada al action
+        const response = await getInteractionsByMonthAndUsername();
+
+        // Formatear los datos obtenidos del action para incluir los últimos 6 meses
+        const formattedLabels = last6Months.map(({ label }) => label);
+        const datasets = response.datasets.map((dataset) => ({
+          ...dataset,
+          data: formattedLabels.map((label, index) =>
+            response.labels.includes(label) ? dataset.data[index] : 0
+          ),
+        }));
+
+        setData({ labels: formattedLabels, datasets });
+      } catch (error) {
+        console.error("Error al cargar los datos del gráfico:", error);
+        setData({ labels: [], datasets: [] }); // Manejo de errores
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-          <div  className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-8" style={{ width: '48%', height: '200px' }}> {/* Ajusta el tamaño aquí */}
-          <Line data={data} options={options} />
-        </div>
+    <div
+      className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-6"
+      style={{ width: "100%", height: "250px" }}
+    >
+      <Line data={data} options={options} />
+    </div>
   );
 };
 
 export default GraficoInteracciones;
-
