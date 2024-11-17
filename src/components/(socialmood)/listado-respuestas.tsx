@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { getRespuestas, commentRepliedTrue } from "@/app/actions/(socialmood)/get-interactions.actions";
+import { getRespuestasFiltered, commentRepliedTrue } from "@/app/actions/(socialmood)/get-interactions.actions";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import EditForm from "@/components/(socialmood)/edit-response";
@@ -55,7 +55,7 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
 
     const fetchRespuestas = async () => {
         try {
-            const respuestas = await getRespuestas();
+            const respuestas = await getRespuestasFiltered(filter);
             setRespuestas(respuestas);
             console.log(respuestas);
         } catch (error) {
@@ -124,8 +124,6 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
                                         }`}
                                 />
                             </button>
-
-
 
                             <button className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center" onClick={updateData}>
                                 <img src="/refresh.svg" alt="Refresh" className="w-6 h-6" />

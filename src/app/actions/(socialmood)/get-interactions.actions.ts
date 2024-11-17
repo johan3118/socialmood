@@ -208,6 +208,8 @@ export async function getRespuestas() {
         const client = await clientPromise;
         const db = client.db("socialMood");
 
+
+
         const userid = await getActiveUserId();
 
         if (!userid) {
@@ -227,6 +229,7 @@ export async function getRespuestas() {
             codigo_cuenta_receptor: { $in: socialMediasAccounts },
             respondida: false
         }).toArray();
+
 
         let formattedRespuestas = new Array<Respuestas>();
 
@@ -268,6 +271,111 @@ export async function getRespuestas() {
 
 
 }
+
+export async function getRespuestasFiltered(filter: any) {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        let categories = filter.category;
+        let subcategories = filter.subcategory;
+
+        let rules = [];
+
+        const isCategoryFilter = (categories?.length ?? 0) > 0;
+        const isSubcategoryFilter = (subcategories?.length ?? 0) > 0;
+
+        const userid = await getActiveUserId();
+
+        if (!userid) {
+            throw new Error("User ID is undefined");
+        }
+
+        const subscription = await getSubscription(parseInt(userid));
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+
+        let respuestas;
+
+
+        if (isCategoryFilter == false && isSubcategoryFilter == false) {
+
+            respuestas = await db.collection("Interacciones").find({
+                codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                respondida: false
+            }).toArray();
+
+        } else {
+            if (isCategoryFilter == true && isSubcategoryFilter == true) {
+
+                respuestas = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    $or: [{ categoria: { $in: categories } },
+                    { subcategoria: { $in: subcategories } }]
+                }).toArray();
+            }
+            else if (isCategoryFilter == false && isSubcategoryFilter == true) {
+                respuestas = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    subcategoria: { $in: subcategories }
+                }).toArray();
+            }
+            else if (isCategoryFilter == true && isSubcategoryFilter == false) {
+                respuestas = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    categoria: { $in: categories }
+                }).toArray();
+            }
+        }
+
+
+        let formattedRespuestas = new Array<Respuestas>();
+
+        respuestas?.forEach(respuesta => {
+            const date = new Date(respuesta.fecha_recepcion);
+            const formattedDate = date.toLocaleString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }).replace(',', '');
+
+            const formattedInteraction = {
+                perfil: {
+                    red_social: respuesta.nombre_red_social_receptor,
+                    username: respuesta.usuario_cuenta_receptor,
+                    color: "#FF0000"
+                },
+                respuesta: respuesta.respuesta,
+                username_emisor: respuesta.usuario_cuenta_emisor,
+                categoria: respuesta.categoria,
+                subcategoria: respuesta.subcategoria,
+                unique_code: respuesta.unique_code,
+                comment_id: respuesta.comment_id,
+                fecha: formattedDate
+            }
+            formattedRespuestas.push(formattedInteraction);
+        });
+
+        return formattedRespuestas;
+
+    }
+    catch (error) {
+        console.error("Error al cargar las respuestas:", error);
+        return [];
+    }
+
+
+}
+
+
 
 // get the four most repeated emotions in the interactions and its frequency
 
