@@ -101,7 +101,6 @@ export async function getInteractions() {
 
 export async function getInteractionsFiltered(filter: any) {
     try {
-
         console.log(filter);
 
         let categories = filter.category;
@@ -109,12 +108,9 @@ export async function getInteractionsFiltered(filter: any) {
 
         let social_medias = filter.social_medias;
 
-        let rules = [];
-
         const isCategoryFilter = (categories?.length ?? 0) > 0;
         const isSubcategoryFilter = (subcategories?.length ?? 0) > 0;
         const isSocialMediasFilter = (social_medias?.length ?? 0) > 0;
-
 
         const client = await clientPromise;
         const db = client.db("socialMood");
@@ -135,37 +131,44 @@ export async function getInteractionsFiltered(filter: any) {
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
-        if (isCategoryFilter == false && isSubcategoryFilter == false) {
+        if (!isCategoryFilter && !isSubcategoryFilter) {
             interactions = await db.collection("Interacciones").find({
-                codigo_cuenta_receptor: { $in: socialMediasAccounts }
-            }).toArray();
-
+                codigo_cuenta_receptor: { $in: socialMediasAccounts },
+            })
+                .sort({ fecha_recepcion: -1 }) // Ordenar por fecha_recepcion descendente
+                .toArray();
+        } else {
+            if (isCategoryFilter && isSubcategoryFilter) {
+                interactions = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    $or: [
+                        { categoria: { $in: categories } },
+                        { subcategoria: { $in: subcategories } },
+                    ],
+                })
+                    .sort({ fecha_recepcion: -1 }) // Ordenar por fecha_recepcion descendente
+                    .toArray();
+            } else if (!isCategoryFilter && isSubcategoryFilter) {
+                interactions = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    subcategoria: { $in: subcategories },
+                })
+                    .sort({ fecha_recepcion: -1 }) // Ordenar por fecha_recepcion descendente
+                    .toArray();
+            } else if (isCategoryFilter && !isSubcategoryFilter) {
+                interactions = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    categoria: { $in: categories },
+                })
+                    .sort({ fecha_recepcion: -1 }) // Ordenar por fecha_recepcion descendente
+                    .toArray();
+            }
         }
-        else {
-            if (isCategoryFilter == true && isSubcategoryFilter == true) {
 
-                interactions = await db.collection("Interacciones").find({
-                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
-                    $or: [{ categoria: { $in: categories } },
-                    { subcategoria: { $in: subcategories } }]
-                }).toArray();
-            }
-            else if (isCategoryFilter == false && isSubcategoryFilter == true) {
-                interactions = await db.collection("Interacciones").find({
-                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
-                    subcategoria: { $in: subcategories }
-                }).toArray();
-            }
-            else if (isCategoryFilter == true && isSubcategoryFilter == false) {
-                interactions = await db.collection("Interacciones").find({
-                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
-                    categoria: { $in: categories }
-                }).toArray();
-            }
-        }
-
-        if (isSocialMediasFilter == true) {
-            interactions = interactions?.filter((interaction) => social_medias.includes(interaction.usuario_cuenta_receptor));
+        if (isSocialMediasFilter) {
+            interactions = interactions?.filter((interaction) =>
+                social_medias.includes(interaction.usuario_cuenta_receptor)
+            );
         }
 
         let formattedInteractions = new Array<Interacciones>();
@@ -178,34 +181,31 @@ export async function getInteractionsFiltered(filter: any) {
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-                hour12: true
+                hour12: true,
             }).replace(',', '');
 
             const formattedInteraction = {
                 perfil: {
                     red_social: interaction.nombre_red_social_receptor,
                     username: interaction.usuario_cuenta_receptor,
-                    color: "#FF0000"
+                    color: "#FF0000",
                 },
                 mensaje: interaction.mensaje,
                 emisor: interaction.usuario_cuenta_emisor,
                 categoria: interaction.categoria,
                 subcategoria: interaction.subcategoria,
-                fecha: formattedDate
-            }
+                fecha: formattedDate,
+            };
             formattedInteractions.push(formattedInteraction);
         });
 
         return formattedInteractions;
-
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error al cargar las interacciones:", error);
         return [];
     }
-
-
 }
+
 
 
 

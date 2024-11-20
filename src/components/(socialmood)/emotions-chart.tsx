@@ -37,9 +37,21 @@ const EmotionsChart: React.FC<EmotionsChartProps> = ({ filter = {} }) => {
         fetchEmotions();
     }, [filter]);
 
-    // Generar colores dinámicamente si hay más emociones de las previstas
-    const generateColors = (count: number) => {
-        return Array.from({ length: count }, (_, i) => `hsl(${(i * 360) / count}, 70%, 50%)`);
+    // Mapa de colores predefinidos para cada emoción
+    const emotionColors: { [key: string]: string } = {
+        Alegría: '#F86A3A',       // Dorado
+        Enfado: '#FF6961',       // Rojo anaranjado
+        Miedo: '#422EA3',        // Rojo oscuro
+        Tristeza: '#2046E1',     // Azul
+        Sorpresa: '#FCC327',     // Rosa
+        Asco: '#30BD92',         // Verde
+        Confianza: '#FFFFFF',    // Turquesa
+        Anticipación: '#D24EA6', // Naranja
+    };
+
+    // Obtener colores correspondientes para las etiquetas actuales
+    const getBackgroundColors = (labels: string[]) => {
+        return labels.map(label => emotionColors[label] || '#808080'); // Gris para emociones desconocidas
     };
 
     const data = {
@@ -48,7 +60,7 @@ const EmotionsChart: React.FC<EmotionsChartProps> = ({ filter = {} }) => {
             {
                 label: 'Emociones', // Título del dataset
                 data: emotions?.map(([_, frequency]) => frequency) ?? [], // Frecuencia de cada emoción
-                backgroundColor: generateColors(emotions?.length ?? 0), // Colores dinámicos
+                backgroundColor: getBackgroundColors(emotions?.map(([emotion]) => emotion) ?? []), // Colores predefinidos
                 borderRadius: 10, // Bordes redondeados para las barras
             },
         ],
@@ -59,7 +71,6 @@ const EmotionsChart: React.FC<EmotionsChartProps> = ({ filter = {} }) => {
         plugins: {
             legend: {
                 display: false,
-                
             },
             title: {
                 display: true,

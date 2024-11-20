@@ -129,6 +129,7 @@ const SeguidoresChart: React.FC<SeguidoresChartProps> = ({ social_medias = [] })
       y: {
         ticks: {
           color: '#FFFFFF',
+          stepSize: 1,
         },
         grid: {
           color: 'rgba(255, 255, 255, 0.2)',
