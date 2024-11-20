@@ -285,11 +285,15 @@ export async function getRespuestasFiltered(filter: any) {
 
         let categories = filter.category;
         let subcategories = filter.subcategory;
+        let social_medias = filter.social_medias;
+
 
         let rules = [];
 
         const isCategoryFilter = (categories?.length ?? 0) > 0;
         const isSubcategoryFilter = (subcategories?.length ?? 0) > 0;
+        const isSocialMediasFilter = (social_medias?.length ?? 0) > 0;
+
 
         const userid = await getActiveUserId();
 
@@ -337,6 +341,10 @@ export async function getRespuestasFiltered(filter: any) {
                     categoria: { $in: categories }
                 }).toArray();
             }
+        }
+
+        if (isSocialMediasFilter == true) {
+            respuestas = respuestas?.filter((respuesta) => social_medias.includes(respuesta.usuario_cuenta_receptor));
         }
 
 

@@ -1,18 +1,25 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SocialButton from "./social-button";
+import { getSocialMediaNameSubscription } from "@/app/actions/(socialmood)/auth.actions"
+
 
 export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boolean; onClose: () => void; onSave: (filter: any ) => void }) {
+  const [socialMedias, setSocialMedias] = useState<string[]>([]);
+
+  
   const [selectedFilters, setSelectedFilters] = useState<{
     category: string[];
     subcategory: string[];
     network: string[];
     ruleType: string[];
+    social_medias: string[];
   }>({
     category: [],
     subcategory: [],
     network: [],
     ruleType: [],
+    social_medias: [],
   });
 
   if (!isOpen) return null;
@@ -21,6 +28,19 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
     onSave(selectedFilters);
     onClose();
   }
+
+  const fetchSocialMedias = async () => {
+    try {
+      const socialMedias = await getSocialMediaNameSubscription();
+      setSocialMedias(socialMedias);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchSocialMedias();
+  }, []);
 
   const handleCheckboxChange = (type: string, value: string) => {
     setSelectedFilters((prevState) => {
@@ -85,6 +105,26 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
             ))}
           </div>
         </div>
+
+        {/* Social Medias */}
+        <div className="mb-4">
+          <h3 className="block text-lg font-medium">Cuentas de redes sociales:</h3>
+          <hr className="border-[#FFF] my-4" />
+          <div className="flex space-x-4">
+            {socialMedias.map((social) => (
+              <label key={social} className="flex items-center space-x-2 text-black font-medium space-x-2 bg-white py-2 px-4 rounded-full">
+                <input
+                  type="checkbox"
+                  checked={selectedFilters.social_medias.includes(social)}
+                  onChange={() => handleCheckboxChange("social_medias", social)}
+                  className="form-checkbox text-pink-500 rounded-full"
+                />
+                <span>{social}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
 
         {/* Botón Aplicar Filtros */}
         <div className="flex justify-end">
