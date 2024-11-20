@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getInteractions } from "@/app/actions/(socialmood)/get-interactions.actions";
+import { getInteractionsFiltered } from "@/app/actions/(socialmood)/get-interactions.actions";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +19,11 @@ interface Interacciones {
   fecha: string;
 }
 
-const InteraccionesDashboard: React.FC = () => {
+interface InteraccionesDashboardProps {
+  filter: any;
+}
+
+const InteraccionesDashboard: React.FC<InteraccionesDashboardProps> = ({ filter = {} }) => {
   const [interacciones, setInteracciones] = useState<Interacciones[]>([]);
 
   const socialIconMap: { [key: string]: string } = {
@@ -31,7 +35,7 @@ const InteraccionesDashboard: React.FC = () => {
   useEffect(() => {
     const fetchInteracciones = async () => {
       try {
-        const data = await getInteractions();
+        const data = await getInteractionsFiltered(filter);
         console.log(data)
         setInteracciones(data);
       } catch (error) {
@@ -40,7 +44,7 @@ const InteraccionesDashboard: React.FC = () => {
     };
 
     fetchInteracciones();
-  }, []);
+  }, [filter]);
 
   return (
     <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-10 h-[300px]">

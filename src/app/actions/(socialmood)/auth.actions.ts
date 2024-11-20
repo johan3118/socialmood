@@ -182,10 +182,10 @@ export const signOut = async () => {
 };
 
 export const createGoogleAuthotizationURL = async () => {
-  try{
+  try {
     const state = generateState();
     const codeVerifier = generateCodeVerifier();
-  
+
     cookies().set("codeVerifier", codeVerifier, {
       httpOnly: true,
     });
@@ -198,51 +198,74 @@ export const createGoogleAuthotizationURL = async () => {
     const scopes = ["openid", "profile", "email"]
 
     const authorizationURL = await google.createAuthorizationURL(state, codeVerifier, { scopes });
-  
+
     return {
       success: true,
       data: authorizationURL
     }
   }
-  catch(error: any){
+  catch (error: any) {
     return {
       error: error?.message
     }
   }
 }
 
-export async function getSubscription(userId : number) {
+export async function getSubscription(userId: number) {
   const result = await db
-    .select({id: subscripcionesTable.id})
+    .select({ id: subscripcionesTable.id })
     .from(subscripcionesTable)
     .where(eq(subscripcionesTable.id_propietario, userId))
     .limit(1);
-    if(result.length === 0){
-      return null;
-    }
-    return result[0].id;
+  if (result.length === 0) {
+    return null;
+  }
+  return result[0].id;
 }
 
 export async function getSocialMediaSubscription(subscriptionId: number) {
-  
+
   const result = await db
-    .select({codigo: cuentasRedesSocialesTable.codigo_cuenta})
+    .select({ codigo: cuentasRedesSocialesTable.codigo_cuenta })
     .from(cuentasRedesSocialesTable)
     .where(eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId))
 
-    return result.map((account) => account.codigo);
+  return result.map((account) => account.codigo);
+}
+
+export async function getSocialMediaNameSubscription() {
+
+
+  const userid = await getActiveUserId();
+
+  if (!userid) {
+    throw new Error("User ID is undefined");
+  }
+
+  const subscriptionId = await getSubscription(parseInt(userid));
+
+  if (subscriptionId === null) {
+    throw new Error("Subscription is null");
+  }
+
+  const result = await db
+    .select({ codigo: cuentasRedesSocialesTable.usuario_cuenta })
+    .from(cuentasRedesSocialesTable)
+    .where(eq(cuentasRedesSocialesTable.id_subscripcion, subscriptionId))
+
+  return result.map((account) => account.codigo);
 }
 
 export async function getSocialMediaToken(socialMediaAccount: string) {
   const result = await db
-      .select({ token: cuentasRedesSocialesTable.llave_acceso })
-      .from(cuentasRedesSocialesTable)
-      .where(
-          or(
-              eq(cuentasRedesSocialesTable.usuario_cuenta, socialMediaAccount),
-              eq(cuentasRedesSocialesTable.codigo_cuenta, socialMediaAccount)
-          )
-      );
+    .select({ token: cuentasRedesSocialesTable.llave_acceso })
+    .from(cuentasRedesSocialesTable)
+    .where(
+      or(
+        eq(cuentasRedesSocialesTable.usuario_cuenta, socialMediaAccount),
+        eq(cuentasRedesSocialesTable.codigo_cuenta, socialMediaAccount)
+      )
+    );
   return result[0]?.token.toString();
 }
 
@@ -269,7 +292,7 @@ export async function getActiveUserName() {
     };
   }
   const result = await db
-    .select({nombre: usuariosTable.nombre, apellido: usuariosTable.apellido})
+    .select({ nombre: usuariosTable.nombre, apellido: usuariosTable.apellido })
     .from(usuariosTable)
     .where(eq(usuariosTable.id, userid))
     .limit(1);
@@ -286,7 +309,7 @@ export async function getActiveUserEmail() {
     };
   }
   const result = await db
-    .select({correo_electronico: usuariosTable.correo_electronico})
+    .select({ correo_electronico: usuariosTable.correo_electronico })
     .from(usuariosTable)
     .where(eq(usuariosTable.id, userid))
     .limit(1);

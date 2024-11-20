@@ -2,10 +2,14 @@
 import clientPromise from "@/utils/startMongo";
 import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
 
-export async function getSentimentCounts() {
+export async function getSentimentCounts(filter: any) {
     try {
         const client = await clientPromise;
         const db = client.db("socialMood");
+
+        const social_medias = filter.social_medias;
+
+        const isSocialMediasFilter = (social_medias?.length ?? 0) > 0;
 
         const userid = await getActiveUserId();
 
@@ -22,21 +26,15 @@ export async function getSentimentCounts() {
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
         // consulta a la base de datos para obtener los conteos por sentimiento
-        const sentimentCounts = await db.collection("Interacciones").aggregate([
-            {
-                $match: {
-                    codigo_cuenta_receptor: { $in: socialMediasAccounts }
-                }
-            },
-            {
-                $group: {
-                    _id: "$categoria", // Agrupa por categoría de sentimiento
-                    count: { $sum: 1 } // para el número de documentos en cada grupo
-                }
-            }
-        ]).toArray();
+        let interactions = await db.collection("Interacciones").find({
+            codigo_cuenta_receptor: { $in: socialMediasAccounts }
+        }).toArray();
 
-        console.log("Sentiment counts result:", sentimentCounts); // Añadir esta línea
+
+        if (isSocialMediasFilter == true) {
+            interactions = interactions?.filter(interaction => social_medias.includes(interaction.usuario_cuenta_receptor));
+        }
+
 
         // para obtener los conteos específicos
         let totalInteractions = 0;
@@ -44,12 +42,14 @@ export async function getSentimentCounts() {
         let negativeCount = 0;
         let neutralCount = 0;
 
-        sentimentCounts.forEach(item => {
-            console.log("Sentiment category:", item._id, "Count:", item.count); // Verifica los datos exactos
-            totalInteractions += item.count;
-            if (item._id === "Positivo") positiveCount = item.count;
-            if (item._id === "Negativo") negativeCount = item.count;
-            if (item._id === "Neutral") neutralCount = item.count;
+
+        interactions.forEach(item => {
+
+
+            totalInteractions += 1;
+            if (item.categoria === "Positivo") positiveCount += 1;
+            if (item.categoria === "Negativo") negativeCount += 1;
+            if (item.categoria === "Neutral") neutralCount += 1;
         });
 
         return {
