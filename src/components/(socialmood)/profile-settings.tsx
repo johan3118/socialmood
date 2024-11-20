@@ -26,17 +26,13 @@ export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
           {/* User Card */}
           <UserSettingsCard/>
-          {/* User Card */}
 
-          {/* User Current Plan Card */}
+          <div className= "space-y-4">
           <UserCurrentPlanCard/>
-          {/* User Current Plan Card */}
-
-           {/* Social Media Card */}
           <SocialMediaCard/>
-           {/* Social Media Card */}
+          </div>
 
-          {/* <TeamCard/> */}
+
 
         </div>
       </div>
