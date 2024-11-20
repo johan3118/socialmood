@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/meta/fb-fetch-interactions",
+      "schedule": "*/1 * * * *"
+    }
+  ]
+}

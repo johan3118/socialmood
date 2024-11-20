@@ -12,11 +12,18 @@ function PantallaGestionReglasPage() {
   const openFilterModal = () => setIsFilterModalOpen(true);
   const closeFilterModal = () => setIsFilterModalOpen(false);
 
-  const [selectedFilters, setSelectedFilters] = useState({
+  const [selectedFilters, setSelectedFilters] = useState<{
+    category: string[],
+    subcategory: string[],
+    network: string[],
+    ruleType: string[],
+    alias: string[]
+  }>({
     category: [],
     subcategory: [],
     network: [],
     ruleType: [],
+    alias: []
   });
 
   const onSaveFilters = (filter: any) => {
@@ -24,26 +31,35 @@ function PantallaGestionReglasPage() {
     console.log(filter);
   }
 
+  const setAlias = (text: string) => {
+    setSelectedFilters({ ...selectedFilters, alias: [text] });
+    console.log(selectedFilters);
+  }
+
   return (
 
-    <div className="space-y-4">
-      <div className="flex space-x-4 mx-12">
-        <SearchBar />
+    <div>
+      <div className="space-y-4">
+        <div className="flex space-x-4 mx-12">
+          <SearchBar handleChange={setAlias} />
 
-        <SocialButton
-          customStyle="w-32"
-          variant="default"
-          defaultText="Filtros"
-          type="button" // Cambiado a 'button' para evitar enviar un formulario
-          onClick={openFilterModal}
+          <SocialButton
+            customStyle="w-32"
+            variant="default"
+            defaultText="Filtros"
+            type="button" // Cambiado a 'button' para evitar enviar un formulario
+            onClick={openFilterModal}
+          />
+
+        </div>
+
+        <ListadoReglasTable
+          filter={selectedFilters}
         />
-        <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
-
       </div>
 
-      <ListadoReglasTable
-        filter={selectedFilters}
-      />
+      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
+
     </div>
   )
 }

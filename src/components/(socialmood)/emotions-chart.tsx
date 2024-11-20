@@ -13,61 +13,97 @@ import {
 
 import { getEmotions } from '@/app/actions/(socialmood)/get-interactions.actions';
 
-// Register the necessary Chart.js components
+// Registrar los componentes necesarios de Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const EmotionsChart = () => {
+interface EmotionsChartProps {
+    filter: any;
+}
 
+const EmotionsChart: React.FC<EmotionsChartProps> = ({ filter = {} }) => {
     const [emotions, setEmotions] = React.useState<[string, number][] | null>(null);
 
+    // Obtener las emociones desde el backend
     const fetchEmotions = async () => {
-        const emotions = await getEmotions();
-        setEmotions(emotions);
-    }
+        try {
+            const emotionsData = await getEmotions(filter);
+            setEmotions(emotionsData);
+        } catch (error) {
+            console.error("Error fetching emotions:", error);
+        }
+    };
 
     useEffect(() => {
         fetchEmotions();
-    }, []);
+    }, [filter]);
+
+    // Generar colores dinámicamente si hay más emociones de las previstas
+    const generateColors = (count: number) => {
+        return Array.from({ length: count }, (_, i) => `hsl(${(i * 360) / count}, 70%, 50%)`);
+    };
 
     const data = {
-        labels: emotions?.map(([emotion, _]) => emotion) ?? [],
+        labels: emotions?.map(([emotion]) => emotion) ?? [], // Etiquetas de las emociones
         datasets: [
             {
-                label: 'Emociones', // Dataset label
-                data: emotions?.map(([_, frequency]) => frequency) ?? [], // Data for the chart
-                backgroundColor: [
-                    'rgba(210, 78, 166, 0.8)', // Background color for the first bar
-                    'rgba(248, 108, 58, 0.8)', // Background color for the second bar
-                    'rgba(66, 46, 156, 0.8)', // Background color for the third bar
-                    'rgba(120, 189, 146, 0.8)', // Background color for the fourth bar
-                ],
-                borderRadius: 10, // Border radius for rounded corners
+                label: 'Emociones', // Título del dataset
+                data: emotions?.map(([_, frequency]) => frequency) ?? [], // Frecuencia de cada emoción
+                backgroundColor: generateColors(emotions?.length ?? 0), // Colores dinámicos
+                borderRadius: 10, // Bordes redondeados para las barras
             },
         ],
     };
 
     const options = {
-        indexAxis: 'y', // Cambia el gráfico a barras horizontales
+        indexAxis: 'y' as const, // Cambiar las barras a orientación horizontal
         plugins: {
-
+            legend: {
+                display: false,
+                
+            },
             title: {
                 display: true,
-                text: 'Emociones', // Título del gráfico
+                text: 'Emociones',
                 font: {
-                    size: 16, // Tamaño de la fuente del título
-                    family: 'Montserrat', // Familia de la fuente
-                    weight: 'bold',
+                    size: 18,
+                    family: 'Arial',
+                    weight: 'bold' as const,
                 },
                 color: '#FFFFFF', // Color del título
             },
         },
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // El gráfico ocupa todo el contenedor
+        scales: {
+            x: {
+                ticks: {
+                    color: '#FFFFFF', // Color blanco para las etiquetas del eje X
+                    stepSize: 1,
+                },
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.2)', // Líneas de rejilla en el eje X
+                },
+            },
+            y: {
+                ticks: {
+                    color: '#FFFFFF', // Color blanco para las etiquetas del eje Y
+                },
+                grid: {
+                    display: false, // Ocultar las líneas de rejilla en el eje Y
+                },
+            },
+        },
     };
 
     return (
-        <div className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-4 overflow-auto" style={{height: '200px' }}>
-            <Bar data={data} options={options} />
+        <div className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-6 overflow-auto" style={{ height: '250px' }}>
+            {emotions ? (
+                <Bar data={data} options={options} />
+            ) : (
+                <div className="flex justify-center items-center h-full">
+                    <p className="text-white text-lg">Cargando...</p>
+                </div>
+            )}
         </div>
     );
 };

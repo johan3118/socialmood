@@ -1,7 +1,9 @@
 "use server";
 import db from "@/db";
 import { coloresTable, redesSocialesTable, cuentasRedesSocialesTable } from "@/db/schema/socialMood";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
+import { getActiveUserId, getSubscription} from "./auth.actions";
+
 
 interface InsertSocialAccount {
   llave_acceso: string;
@@ -69,7 +71,20 @@ export const insertSocialAccount = async (values: InsertSocialAccount) => {
 };
 
 
-export const getLinkedAccounts = async (idSubcripcion: number) => {
+export const getLinkedAccounts = async () => {
+
+  const userid = await getActiveUserId();
+
+    if (!userid) {
+        throw new Error("User ID is undefined");
+    }
+
+    const subscription = await getSubscription(parseInt(userid));
+
+    if (subscription === null) {
+        throw new Error("Subscription is null");
+    }
+
   const linkedAccounts = await db
     .select({
       red_social: redesSocialesTable.nombre,
@@ -79,9 +94,48 @@ export const getLinkedAccounts = async (idSubcripcion: number) => {
     .from(cuentasRedesSocialesTable)
     .innerJoin(redesSocialesTable, eq(redesSocialesTable.id, cuentasRedesSocialesTable.id_red_social)) // Unión correcta con redes sociales
     .innerJoin(coloresTable, eq(coloresTable.id, cuentasRedesSocialesTable.id_color)) // Unión correcta con colores
-    .where(eq(cuentasRedesSocialesTable.id_subscripcion, idSubcripcion)); // Filtro por id de suscripción
+    .where(eq(cuentasRedesSocialesTable.id_subscripcion, subscription)); // Filtro por id de suscripción
   
   return JSON.parse(JSON.stringify(linkedAccounts));
+};
+
+export const deleteLinkedAccount = async (username: string): Promise<{ message: string }> => {
+  try {
+    const userId = await getActiveUserId();
+    if (!userId) throw new Error("User ID is undefined");
+
+    const subscription = await getSubscription(parseInt(userId));
+    if (!subscription) throw new Error("Subscription is null");
+
+    // Intentar eliminar la cuenta de la base de datos directamente
+    await db
+      .delete(cuentasRedesSocialesTable)
+      .where(
+        and(
+          eq(cuentasRedesSocialesTable.id_subscripcion, subscription),
+          eq(cuentasRedesSocialesTable.usuario_cuenta, username)
+        )
+      )
+      .run();
+
+    return { message: "Account deleted successfully." };
+  } catch (error) {
+    console.error("Error deleting linked account:", error);
+    throw new Error("An error occurred while deleting the account.");
+  }
+};
+
+export const getAccountColor = async (username: string) => {
+
+  const accountColor = await db
+    .select({
+      color: coloresTable.codigo_hex,
+    })
+    .from(cuentasRedesSocialesTable)
+    .innerJoin(coloresTable, eq(coloresTable.id, cuentasRedesSocialesTable.id_color)) // Unión correcta con colores
+    .where(eq(cuentasRedesSocialesTable.usuario_cuenta, username)); // Filtro por id de suscripción
+  
+  return JSON.parse(JSON.stringify(accountColor));
 };
 
 

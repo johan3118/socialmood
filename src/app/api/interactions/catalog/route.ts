@@ -6,7 +6,7 @@ export const POST = async (req: NextRequest) => {
     try {
         const { message } = await req.json()
 
-        const simplifiedMessage = removeStopwords(message.split(' '), spa).join(' ')
+        const simplifiedMessage = message
 
         const context_message = `
         Eres un gestor de comunidad cuyo objetivo es catalogar las interacciones de los usuarios provenientes de las redes sociales de una compañía.  
@@ -15,9 +15,9 @@ export const POST = async (req: NextRequest) => {
         
         Las interacciones pueden tener una "categoria" que se asigna automáticamente según el contenido del mensaje.
         Las categorias disponibles son:
-            * "Positivo": si el mensaje tiene un tono positivo.
-            * "Negativo": si el mensaje tiene un tono negativo.
-            * "Neutral": si el mensaje no tiene un tono positivo o negativo.
+            * "Positivo": si el mensaje tiene un tono positivo. Se expresa satisfacción o agradecimiento.
+            * "Negativo": si el mensaje tiene un tono negativo. Se expresa una queja, reclamo o disgusto.
+            * "Neutral": si el mensaje no tiene un tono positivo ni negativo. Se expresa una consulta o comentario general.
         
         A partir de la elección de la "categoría", se procede a asignar una "subcategoría" que representa la intención del mensaje.
         Las subcategorías disponibles son:

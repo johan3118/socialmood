@@ -178,3 +178,9 @@ export const SubscriptionPlanSchema = z.object({
     .min(1, "La descripción es obligatoria.")
     .max(500, "La descripción no debe exceder los 500 caracteres."),
 });
+
+export const EditResponseSchema = z.object({
+  respuesta: z
+  .string()
+  .min(1, "La respuesta es obligatoria")
+})
