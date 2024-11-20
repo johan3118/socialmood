@@ -107,10 +107,13 @@ export async function getInteractionsFiltered(filter: any) {
         let categories = filter.category;
         let subcategories = filter.subcategory;
 
+        let social_medias = filter.social_medias;
+
         let rules = [];
 
         const isCategoryFilter = (categories?.length ?? 0) > 0;
         const isSubcategoryFilter = (subcategories?.length ?? 0) > 0;
+        const isSocialMediasFilter = (social_medias?.length ?? 0) > 0;
 
 
         const client = await clientPromise;
@@ -160,7 +163,11 @@ export async function getInteractionsFiltered(filter: any) {
                 }).toArray();
             }
         }
-        console.log(interactions);
+
+        if (isSocialMediasFilter == true) {
+            interactions = interactions?.filter((interaction) => social_medias.includes(interaction.usuario_cuenta_receptor));
+        }
+
         let formattedInteractions = new Array<Interacciones>();
 
         interactions?.forEach(interaction => {
@@ -378,7 +385,7 @@ export async function getRespuestasFiltered(filter: any) {
 
 // get the four most repeated emotions in the interactions and its frequency
 
-export async function getEmotions() {
+export async function getEmotions(filter: any = {}) {
     try {
 
         const client = await clientPromise;
@@ -398,9 +405,15 @@ export async function getEmotions() {
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
-        const interactions = await db.collection("Interacciones").find({
+        let interactions = await db.collection("Interacciones").find({
             codigo_cuenta_receptor: { $in: socialMediasAccounts }
         }).toArray();
+
+        if (filter?.social_medias) {
+            if (filter.social_medias.length > 0) {
+                interactions = interactions.filter((interaction) => filter.social_medias.includes(interaction.usuario_cuenta_receptor));
+            }
+        }
 
         let emotions = new Map<string, number>();
 
@@ -512,7 +525,7 @@ export async function getInteractionsByMonthAndUsername() {
 
         // Define los últimos 6 meses con su año correspondiente
         const now = new Date();
-        const last6Months = [];
+        const last6Months: { label: string, month: number, year: number }[] = [];
         for (let i = 5; i >= 0; i--) { // Cambiado de 11 a 5 para los últimos 6 meses
             const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
             last6Months.push({

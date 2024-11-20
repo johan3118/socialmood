@@ -16,14 +16,17 @@ import { getEmotions } from '@/app/actions/(socialmood)/get-interactions.actions
 // Registrar los componentes necesarios de Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const EmotionsChart = () => {
+interface EmotionsChartProps {
+    filter: any;
+}
+
+const EmotionsChart: React.FC<EmotionsChartProps> = ({ filter = {} }) => {
     const [emotions, setEmotions] = React.useState<[string, number][] | null>(null);
 
     // Obtener las emociones desde el backend
     const fetchEmotions = async () => {
         try {
-            const emotionsData = await getEmotions();
-            console.log(emotionsData);
+            const emotionsData = await getEmotions(filter);
             setEmotions(emotionsData);
         } catch (error) {
             console.error("Error fetching emotions:", error);
@@ -32,7 +35,7 @@ const EmotionsChart = () => {
 
     useEffect(() => {
         fetchEmotions();
-    }, []);
+    }, [filter]);
 
     // Generar colores dinámicamente si hay más emociones de las previstas
     const generateColors = (count: number) => {

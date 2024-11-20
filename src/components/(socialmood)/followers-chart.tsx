@@ -10,11 +10,17 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 // Interfaz para los datos de seguidores
 interface FollowerData {
-    name: string;
-    followers_count: number;
+  name: string;
+  followers_count: number;
 }
 
-const SeguidoresChart: React.FC = () => {
+
+
+interface SeguidoresChartProps {
+  social_medias: string[];
+}
+
+const SeguidoresChart: React.FC<SeguidoresChartProps> = ({ social_medias = [] }) => {
   const [chartData, setChartData] = useState<{
     labels: string[];
     datasets: {
@@ -36,12 +42,18 @@ const SeguidoresChart: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true); // Mostrar indicador de carga
-        const followersData: FollowerData[] = await getFacebookAccountFollowers();
+        let followersData: FollowerData[] = await getFacebookAccountFollowers();
 
         if (followersData.length === 0) {
           console.warn('No followers data received.');
           setLoading(false); // Ocultar carga si no hay datos
           return;
+        }
+        
+        if (social_medias) {
+          if (social_medias.length > 0) {
+            followersData = followersData.filter((account) => social_medias.includes(account.name));
+          }
         }
 
         // Obtener colores de todas las cuentas
@@ -78,7 +90,7 @@ const SeguidoresChart: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [social_medias]);
 
   const options = {
     responsive: true,

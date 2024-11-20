@@ -5,7 +5,11 @@ import { getSentimentCounts } from "@/app/actions/(socialmood)/get-sentimentcoun
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const CategoryChart = () => {
+interface CategoryChartProps {
+    filter: any;
+}
+
+const CategoryChart = ({ filter }: CategoryChartProps) => {
     const [sentimentData, setSentimentData] = useState({
         totalInteractions: 0,
         positiveCount: 0,
@@ -15,7 +19,7 @@ const CategoryChart = () => {
 
     const fetchSentimentCounts = async () => {
         try {
-            const data = await getSentimentCounts();
+            const data = await getSentimentCounts(filter);
             console.log("Sentiment data:", data); // Verifica los datos
             setSentimentData(data);
         } catch (error) {
@@ -25,7 +29,7 @@ const CategoryChart = () => {
 
     useEffect(() => {
         fetchSentimentCounts();
-    }, []);
+    }, [filter]);
 
     useEffect(() => {
         console.log("Sentiment data after fetch:", sentimentData); // Asegúrate de que neutralCount tenga el valor correcto
@@ -40,8 +44,8 @@ const CategoryChart = () => {
                     sentimentData.negativeCount,
                     sentimentData.neutralCount,
                 ],
-                backgroundColor: ["#2B4FE2", "#FFFFFF", "#414470"],
-                borderColor: ["#3b82f6", "#1e3a8a", "#e5e7eb"],
+                backgroundColor: ["#2B4FE2", "#414470", "#FFFFFF"],
+                borderColor: ["#2B4FE2", "#414470", "#FFFFFF"],
                 borderWidth: 1,
                 hoverOffset: 8,
             },

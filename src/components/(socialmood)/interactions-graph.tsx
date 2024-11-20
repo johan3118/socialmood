@@ -57,7 +57,7 @@ const options = {
         color: "#fff",
         usePointStyle: true,
       },
-      onClick: () => {}, // Disable legend click events
+      onClick: () => { }, // Disable legend click events
 
     },
     tooltip: {
@@ -86,7 +86,11 @@ const options = {
   },
 };
 
-const GraficoInteracciones: React.FC = () => {
+interface GraficoInteraccionesProps {
+  filter: any;
+}
+
+const GraficoInteracciones: React.FC<GraficoInteraccionesProps> = ({ filter = {} }) => {
   const [data, setData] = useState<ChartData>({
     labels: [],
     datasets: [],
@@ -109,7 +113,13 @@ const GraficoInteracciones: React.FC = () => {
         }
 
         // Llamada al action
-        const response = await getInteractionsByMonthAndUsername();
+        let response = await getInteractionsByMonthAndUsername();
+
+        if (filter?.social_medias) {
+          if (filter.social_medias.length > 0) {
+            response.datasets = response.datasets.filter((dataset) => filter.social_medias.includes(dataset.label));
+          }
+        }
 
         // Formatear los datos obtenidos del action para incluir los últimos 6 meses
         const formattedLabels = last6Months.map(({ label }) => label);
@@ -128,7 +138,7 @@ const GraficoInteracciones: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [filter]);
 
   return (
     <div
