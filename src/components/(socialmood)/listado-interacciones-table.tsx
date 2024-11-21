@@ -197,7 +197,11 @@ const ListadoInteraccionesTable: React.FC = () => {
         </div>
 
       </div>
-      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
+      {
+        isFilterModalOpen ?
+          <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} /> :
+          null
+      }
     </div>
   );
 };
