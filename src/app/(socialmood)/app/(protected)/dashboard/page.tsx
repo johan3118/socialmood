@@ -8,6 +8,8 @@ import EmotionsChart from "@/components/(socialmood)/emotions-chart";
 import CategoryChart from "@/components/(socialmood)/category-chart";
 import SocialButton from '@/components/(socialmood)/social-button';
 import FilterModal from "@/components/(socialmood)/filter-modal-dashboard";
+import { cn } from "@/lib/utils";
+
 
 
 function dashboard() {
@@ -26,7 +28,7 @@ function dashboard() {
     setSelectedFilters(filter);
     console.log(filter);
   }
-  
+
   const handleRedirect = () => {
     router.push('/app/listado-interacciones');
   };
@@ -35,14 +37,36 @@ function dashboard() {
     // Contenedor principal con scroll
 
     <div className="">
-      <div className="flex justify-end space-x-4">
-        <SocialButton
-          customStyle="w-32"
-          variant="default"
-          defaultText="Filtros"
-          type="button" // Cambiado a 'button' para evitar enviar un formulario
-          onClick={openFilterModal}
-        />
+      <div className='flex mb-2'>
+        <div className="w-full flex flex-wrap">
+          {
+            filter.social_medias.length > 0
+              ? filter.social_medias.map((social_media, index) => <span
+                className={cn(
+                  "bg-[linear-gradient(108.65deg,_#F0F0F0_-86.91%,_rgba(255,255,255,0)_584.25%)] text-black shadow gap-1",
+                  "flex items-center w-fit mr-2",
+                  "h-8 rounded-lg p-2 text-xs font-bold"
+                )}>
+                <input
+                  type="checkbox"
+                  checked={true}
+                  className="form-checkbox text-orange-500 rounded-full"
+                  disabled
+                />
+                {social_media}
+              </span>)
+              : null
+          }
+        </div>
+        <div className="flex justify-end space-x-4">
+          <SocialButton
+            customStyle="w-32"
+            variant="default"
+            defaultText="Filtros"
+            type="button" // Cambiado a 'button' para evitar enviar un formulario
+            onClick={openFilterModal}
+          />
+        </div>
       </div>
       <div className='space-y-6 h-screen overflow-y-auto p-4'>
         <div className='flex space-x-6'>

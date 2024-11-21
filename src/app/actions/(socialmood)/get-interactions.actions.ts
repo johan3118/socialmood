@@ -168,6 +168,8 @@ export async function getInteractionsFiltered(filter: any) {
             interactions = interactions?.filter((interaction) => social_medias.includes(interaction.usuario_cuenta_receptor));
         }
 
+        console.log(interactions);
+
         let formattedInteractions = new Array<Interacciones>();
 
         interactions?.forEach(interaction => {
