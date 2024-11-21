@@ -21,7 +21,11 @@ function dashboard() {
   const closeFilterModal = () => setIsFilterModalOpen(false);
 
   const [filter, setSelectedFilters] = React.useState({
-    social_medias: []
+    social_medias: [],
+    dates: [
+      new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString().split('T')[0],
+      new Date().toISOString().split('T')[0],
+    ],
   });
 
   const onSaveFilters = (filter: any) => {
@@ -40,6 +44,10 @@ function dashboard() {
       <div className='flex mb-2'>
         <div className="w-full flex flex-wrap">
           {
+            (filter.social_medias.length > 0 || filter.dates.length > 0) ?
+              <span className="text-white text-[16px] font-bold mr-2">Filtros seleccionados:</span> : null
+          }
+          {
             filter.social_medias.length > 0
               ? filter.social_medias.map((social_media, index) => <span
                 className={cn(
@@ -55,6 +63,19 @@ function dashboard() {
                 />
                 {social_media}
               </span>)
+              : null
+          }
+          {
+            filter.dates.length > 0
+              ? <span className="bg-[linear-gradient(108.65deg,_#F0F0F0_-86.91%,_rgba(255,255,255,0)_584.25%)] text-black shadow gap-1 flex items-center w-fit mr-2 h-8 rounded-lg p-2 text-xs font-bold">
+                <input
+                  type="checkbox"
+                  checked={true}
+                  className="form-checkbox text-orange-500 rounded-full"
+                  disabled
+                />
+                {filter.dates[0]} - {filter.dates[1]}
+              </span>
               : null
           }
         </div>

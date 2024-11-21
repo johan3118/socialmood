@@ -9,8 +9,13 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
 
   const [selectedFilters, setSelectedFilters] = useState<{
     social_medias: string[];
+    dates: string[];
   }>({
     social_medias: [],
+    dates: [
+      new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString().split('T')[0],
+      new Date().toISOString().split('T')[0],
+    ],
   });
 
 
@@ -32,6 +37,37 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
     fetchSocialMedias();
   }, []);
 
+  const handleDateChange = (value: string, type: string) => {
+    if (type === "final") {
+      if (new Date(value) < new Date(selectedFilters.dates[0])) {
+        alert("La fecha final no puede ser menor a la fecha inicial");
+        return;
+      }
+
+      if (new Date(value) > new Date()) {
+        alert("La fecha final no puede ser mayor a la fecha actual");
+        return;
+      }
+    }
+    else if (type === "inicial") {
+      if (new Date(value) > new Date(selectedFilters.dates[1])) {
+        alert("La fecha inicial no puede ser mayor a la fecha final");
+        return;
+      }
+    }
+    console.log(value, type);
+    setSelectedFilters((prevState) => {
+      const updatedDates = [...prevState.dates];
+      updatedDates[type === "inicial" ? 0 : 1] = value;
+
+      return {
+        ...prevState,
+        dates: updatedDates,
+      };
+    }
+    );
+  }
+
   const handleCheckboxChange = (type: string, value: string) => {
     setSelectedFilters((prevState) => {
       const updatedFilters = prevState[type as keyof typeof prevState].includes(value)
@@ -44,7 +80,7 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
       };
     });
   };
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center">
       <div className="bg-white/10 backdrop-blur-lg p-12 rounded-xl shadow-lg m-40 w-full text-white relative">
@@ -76,6 +112,27 @@ export default function FilterModal({ isOpen, onClose, onSave }: { isOpen: boole
           </div>
         </div>
 
+        {/* Fechas */}
+        <div className="mb-4">
+          <h3 className="block text-lg font-medium">Rango de fechas</h3>
+          <hr className="border-[#FFF] my-4" />
+          <div className="flex space-x-4">
+            <input
+              className="text-black"
+              type="date" id="start"
+              name="trip-start" value={selectedFilters.dates[0]} min={new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString().split('T')[0]}
+              max={new Date().toISOString().split('T')[0]}
+              onChange={(e) => handleDateChange(e.target.value, "inicial")}
+            />
+            <input
+              className="text-black"
+              type="date" id="start"
+              name="trip-finish" value={selectedFilters.dates[1]} min={new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString().split('T')[0]}
+              max={new Date().toISOString().split('T')[0]}
+              onChange={(e) => handleDateChange(e.target.value, "final")}
+            />
+          </div>
+        </div>
         {/* Botón Aplicar Filtros */}
         <div className="flex justify-end">
           <SocialButton
