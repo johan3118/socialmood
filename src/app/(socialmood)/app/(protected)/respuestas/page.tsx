@@ -16,12 +16,14 @@ function PantallaGestionRespuestasPage() {
     category: string[],
     subcategory: string[],
     ruleType: string[],
-    alias: string[]
+    alias: string[],
+    social_medias: string[]
   }>({
     category: [],
     subcategory: [],
     ruleType: [],
-    alias: []
+    alias: [],
+    social_medias: []
   });
 
   const onSaveFilters = (filter: any) => {
@@ -55,7 +57,11 @@ function PantallaGestionRespuestasPage() {
         />
 
       </div>
-      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
+      {
+        isFilterModalOpen ?
+          <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} /> :
+          null
+      }
     </div>
 
 
