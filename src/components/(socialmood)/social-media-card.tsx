@@ -1,4 +1,3 @@
-// SocialMediaCard.tsx
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
@@ -8,7 +7,9 @@ import { cn } from "@/lib/utils";
 import EstadoLabel from "@/components/(socialmood)/estado-label";
 import Modal from "@/components/(socialmood)/modal";
 import AddSocialForm from "@/components/(socialmood)/add-social-form";
-import { getLinkedAccounts } from "@/app/actions/(socialmood)/social.actions";
+import { deleteLinkedAccount, getLinkedAccounts } from "@/app/actions/(socialmood)/social.actions";
+import { Dialog } from "@/components/ui/dialog";
+import ApproveSocialDelete from "./approve-social-delete";
 
 interface Perfil {
   red_social: string;
@@ -27,31 +28,51 @@ const SocialMediaCard: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [perfiles, setPerfiles] = useState<Perfil[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
 
   const fetchPerfiles = useCallback(async () => {
     setLoading(true);
-    const accounts: Perfil[] = await getLinkedAccounts(19);
+    const accounts: Perfil[] = await getLinkedAccounts();
     setPerfiles(accounts);
     setLoading(false);
   }, []);
 
   useEffect(() => {
-    fetchPerfiles(); // Cargar los perfiles al inicio
+    fetchPerfiles();
   }, [fetchPerfiles]);
 
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
   };
 
+  const handleSocialAccountDelete = (username: string) => {
+    setSelectedUsername(username);
+    setOpenDialog(true);
+  };
+
+  const confirmUnlinkAccount = async () => {
+    if (selectedUsername) {
+      try {
+        await deleteLinkedAccount(selectedUsername);
+        console.log("Cuenta desvinculada y eliminada correctamente.");
+        fetchPerfiles(); // Actualiza la lista después de la eliminación
+      } catch (error) {
+        console.error("Error al desvincular y eliminar la cuenta:", error);
+      }
+      setOpenDialog(false); // Cierra el diálogo después de la operación
+    }
+  };
+
   return (
     <>
       {isModalOpen && (
         <Modal onClose={toggleModal}>
-          {/* Pasar la función fetchPerfiles a AddSocialForm para que la llame después de submit */}
           <AddSocialForm onClose={toggleModal} onFormSubmit={fetchPerfiles} />
         </Modal>
       )}
       <BlurredContainer customStyle="h-[30vh]">
+
         <div className="flex items-center justify-between w-full mb-3">
           <h2 className="text-2xl font-bold">Redes Sociales</h2>
           <div className="options flex items-center">
@@ -107,7 +128,7 @@ const SocialMediaCard: React.FC = () => {
                     <EstadoLabel estado='ACTIVO' />
                   </td>
                   <td className="pb-2">
-                    <X />
+                    <X onClick={() => handleSocialAccountDelete(perfil.username)} />
                   </td>
                 </tr>
               ))}
@@ -115,6 +136,15 @@ const SocialMediaCard: React.FC = () => {
           </table>
         )}
       </BlurredContainer>
+
+      {openDialog && (
+        <Dialog open={openDialog}>
+          <ApproveSocialDelete
+            onOpenChange={setOpenDialog}
+            onConfirm={confirmUnlinkAccount}
+          />
+        </Dialog>
+      )}
     </>
   );
 };

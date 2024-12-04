@@ -1,18 +1,15 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { getRespuestas } from "@/app/actions/(socialmood)/get-interactions.actions";
+import { getRespuestasFiltered, commentRepliedTrue } from "@/app/actions/(socialmood)/get-interactions.actions";
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils"; // Importación de la función 'cn'
-import CreateRule from "@/components/(socialmood)/create-rule";
-import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
+import { cn } from "@/lib/utils";
+import EditForm from "@/components/(socialmood)/edit-response";
+import Image from "next/image";
+import ApproveResponse from "@/components/(socialmood)/approve-response";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
-import {
-    Dialog,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 
-import router, { useRouter } from "next/router";
 
 interface Perfil {
     red_social: string;
@@ -24,6 +21,11 @@ interface Respuestas {
     unique_code: string;
     perfil: Perfil;
     respuesta: string;
+    username_emisor: string;
+    categoria: string;
+    subcategoria: string;
+    comment_id: string;
+    fecha: string;
 }
 
 interface ListadoRespuestasTableProps {
@@ -31,165 +33,135 @@ interface ListadoRespuestasTableProps {
 }
 
 const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter }) => {
-
-    const [SubscriptionID, setSubscriptionID] = useState<number>(0);
-
-    const [Respuestas, setRespuestas] = useState<Respuestas[]>([]);
-    const [Open, setOpen] = useState<boolean>(false);
-
-    const [action, setAction] = useState<string>("Create");
-    const [respuestaID, setRespuestaID] = useState<string>("");
+    const [subscriptionID, setSubscriptionID] = useState<number>(0);
+    const [respuestas, setRespuestas] = useState<Respuestas[]>([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [action, setAction] = useState<string>("");
+    const [selectedResponse, setSelectedResponse] = useState<Respuestas | null>(null);
+    const [selectedResponses, setSelectedResponses] = useState<Respuestas[]>([]);
 
     const socialIconMap: { [key: string]: string } = {
         Instagram: "/instagram.svg",
         Facebook: "/facebook.svg"
     };
 
-    const emojimap: Record<string, string> = {
-        "Queja": "/angry.svg",
-        "Elogio": "/happy.svg",
-        "Recomendación": "/happy.svg",
-        "Consulta": "/neutral-face.svg",
-        // categorías y subcategorias con sus respectivos emojis
-    };
+    useEffect(() => {
+        updateData();
+    }, [filter]);
 
+    const updateData = async () => {
+        await fetchRespuestas();
+    };
 
     const fetchRespuestas = async () => {
         try {
-            const Respuestas = await Promise.all(await getRespuestas());
-            setRespuestas(Respuestas);
+            const respuestas = await getRespuestasFiltered(filter);
+            setRespuestas(respuestas);
+            console.log(respuestas);
         } catch (error) {
-            console.error("Error al cargar las Respuestas:", error);
+            console.error("Error al cargar las respuestas:", error);
         }
     };
 
-    const handleOpenChange = (newOpenValue: boolean) => {
-        setOpen(newOpenValue);
-        if (newOpenValue === false) {
-            fetchRespuestas();
-        }
+    const toggleResponseSelection = (respuesta: Respuestas) => {
+        setSelectedResponses((prev) =>
+            prev.some((r) => r.unique_code === respuesta.unique_code)
+                ? prev.filter((r) => r.unique_code !== respuesta.unique_code)
+                : [...prev, respuesta]
+        );
     };
 
-    const setSubscription = async () => {
-
-        const userID = await getActiveUserId();
-        console.log(userID);
-        if (userID) {
-            const subscription = await getSubscription(parseInt(userID));
-            if (subscription) {
-                setSubscriptionID(subscription);
-                console.log(subscription);
-            }
-            else {
-                await router.push("/app/get-sub");
-            }
-
-        }
-        else {
-            await router.push("/app/sign-in");
-        }
-    }
-
-    const handleRefreshTable = () => {
-        updateData();
+    const handleOpenDialog = (newOpenValue: boolean) => {
+        setOpenDialog(newOpenValue);
+        if (!newOpenValue) fetchRespuestas();
     };
 
+    const handleSendResponses = () => {
+        setOpenDialog(true);
+        setAction("Approve");
+    };
+
+    const confirmSendResponses = async () => {
+        try {
+            await commentRepliedTrue(selectedResponses);
+            console.log("Respuestas enviadas y actualizadas correctamente.");
+        } catch (error) {
+            console.error("Error al enviar y actualizar respuestas:", error);
+        }
+    };
 
     const handleEditRespuesta = (respuestaID: string) => {
-        setOpen(true);
-        setRespuestaID(respuestaID);
-        setAction("");
+        const selected = respuestas.find((respuesta) => respuesta.unique_code === respuestaID);
+        setSelectedResponse(selected || null);
+        setOpenDialog(true);
         setAction("Edit");
-    }
-
-    const handleApproveRespuesta = async (respuestaID: string) => {
-        setOpen(true);
-        setRespuestaID(respuestaID);
-        setAction("");
-        setAction("Approve");
-    }
-
-    const updateData = async () => {
-        await setSubscription();
-        await fetchRespuestas();
-    }
-
-    useEffect(() => {
-        updateData();
-    }, [filter, SubscriptionID]);
+    };
 
     return (
-        <Dialog open={Open}>
+        <Dialog open={openDialog}>
             <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-10 mx-12 py-8">
                 <div className="container mx-auto p-6">
-                    <div className="flex justify-between mb-6">
+                    <div className="flex justify-between items-center mb-6">
                         <h1 className="text-[24px] text-white font-bold">Respuestas</h1>
-                        <div className="flex items-center space-x-1">
+                        <div className="flex gap-x-4">
                             <button
-                                className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center"
-                                onClick={handleRefreshTable}
+                                type="button"
+                                className={`rounded-lg font-semibold px-4 flex items-center gap-x-2 
+        transition duration-300 ease-in-out transform group ${selectedResponses.length === 0
+                                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                        : "bg-white text-[#D24EA6] scale-105"
+                                    }`}
+                                disabled={selectedResponses.length === 0}
+                                onClick={handleSendResponses}
                             >
-                                <img
-                                    src="/refresh.svg"
-                                    alt="Refresh"
-                                    className=" w-6 h-6"
+                                Enviar
+                                <Image
+                                    width={20}
+                                    height={20}
+                                    src="/send-icon.svg"
+                                    alt="send icon"
+                                    className={`transition duration-300 ${selectedResponses.length === 0 ? "filter grayscale opacity-50" : "group-active:animate-shake"
+                                        }`}
                                 />
                             </button>
-                        </div>
 
+                            <button className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center" onClick={updateData}>
+                                <img src="/refresh.svg" alt="Refresh" className="w-6 h-6" />
+                            </button>
+                        </div>
                     </div>
                     <hr className="border-[#FFF] mb-6" />
                     <div className="max-h-60 overflow-y-auto">
-                        <table className="min-w-full table-auto ">
+                        <table className="min-w-full table-auto">
                             <thead>
                                 <tr className="text-[16px] md:text-[18px]">
-                                    <th className="py-2 px-3 text-left">Perfil</th>
-                                    <th className="py-2 px-3 text-left w-1/4">Respuesta automática</th>
-                                    <th className="py-2 px-3 text-left hidden sm:table-cell"></th>
+                                    <th className="py-2 px-3 text-left w-1/6">Perfil</th>
+                                    <th className="py-2 px-3 text-left w-1/2">Respuesta automática</th>
+                                    <th className="py-2 px-3 text-left w-1/6 hidden sm:table-cell"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {Respuestas.map((respuesta) => (
+                                {respuestas.map((respuesta) => (
                                     <tr key={respuesta.unique_code}>
-                                        <td className="py-1 px-3">
+                                        <td className="px-2 py-2">
                                             <div className="flex items-center justify-center space-x-2 w-full">
-                                                <span
-                                                    className={cn(
-                                                        buttonVariants({
-                                                            variant: respuesta.perfil.red_social === "Instagram" ? "blue" : respuesta.perfil.red_social === "Facebook" ? "orange" : "default",
-                                                            size: "smBold",
-                                                        }),
-                                                        "w-full flex justify-start items-center py-2"
-                                                    )}
-                                                >
-                                                    <img
-                                                        src={socialIconMap[respuesta.perfil.red_social] || "/default.svg"}
-                                                        alt={`${respuesta.perfil.red_social} Icon`}
-                                                        className="flex justify-left mr-2"
-                                                    />
+                                                <span className={cn(buttonVariants({ variant: respuesta.perfil.red_social === "Instagram" ? "blue" : "orange", size: "smBold" }), "w-full flex justify-start items-center py-2")}>
+                                                    <img src={socialIconMap[respuesta.perfil.red_social] || "/default.svg"} alt={`${respuesta.perfil.red_social} Icon`} className="flex justify-left mr-2" />
                                                     {respuesta.perfil.username}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="py-1 px-3 text-left">{respuesta.respuesta}</td>
-
-                                        <td className="py-1 px-3 font-bold text-left">
+                                        <td className="py-4 px-4 text-sm text-left w-1/2">{respuesta.respuesta}</td>
+                                        <td className="py-4 px-3 font-bold text-left">
                                             <div className="flex items-center justify-center space-x-2">
                                                 <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => handleEditRespuesta(respuesta.unique_code)}>
-
-                                                    <img
-                                                        src="/edit.svg"
-                                                        alt="Edit"
-                                                        className=" w-6 h-6"
-                                                    />
+                                                    <img src="/edit.svg" alt="Edit" className="w-6 h-6" />
                                                 </DialogTrigger>
-                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => handleApproveRespuesta(respuesta.unique_code)}>
-                                                    <img
-                                                        src="/delete.svg"
-                                                        alt="Delete"
-                                                        className=" w-6 h-6"
-                                                    />
-                                                </DialogTrigger>
+                                                <input
+                                                    type="checkbox"
+                                                    className="bg-transparent rounded-md w-5 h-5 border-white"
+                                                    onChange={() => toggleResponseSelection(respuesta)}
+                                                />
                                             </div>
                                         </td>
                                     </tr>
@@ -199,12 +171,28 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({ filter 
                     </div>
                 </div>
             </div>
-            {
-                action === "Approve" ? <CreateRule onOpenChange={handleOpenChange} /> :
-                    action === "Edit" ? <CreateRule onOpenChange={handleOpenChange} /> :
-                        null
-
-            }
+            {action === "Approve" && (
+                <ApproveResponse
+                    onOpenChange={handleOpenDialog}
+                    onConfirm={confirmSendResponses}
+                />
+            )}
+            {action === "Edit" && selectedResponse && (
+                <EditForm
+                    onClose={() => setOpenDialog(false)}
+                    onUpdate={updateData}
+                    defaultValues={{
+                        red_social: selectedResponse.perfil.red_social,
+                        red_social_username: selectedResponse.perfil.username,
+                        categoria: selectedResponse.categoria,
+                        subcategoria: selectedResponse.subcategoria,
+                        emisor: selectedResponse.username_emisor,
+                        respuesta: selectedResponse.respuesta,
+                        unique_code: selectedResponse.unique_code,
+                        fecha: selectedResponse.fecha,
+                    }}
+                />
+            )}
         </Dialog>
     );
 };

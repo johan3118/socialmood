@@ -1,32 +1,33 @@
-import { loadFacebookSDK, getFB } from './meta';
-
 /**
  * @param commentId 
  * @param message 
  * @param accessToken 
  */
 export const replyToComment = async (commentId: string, message: string, accessToken: string): Promise<any> => {
-  await loadFacebookSDK();
+  const url = `https://graph.facebook.com/v20.0/${commentId}/comments`;
 
-  const FB = getFB();
-  if (!FB) {
-    console.error("Facebook SDK is not loaded");
-    return;
-  }
+  try {
+      const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              message: message,
+              access_token: accessToken,
+          }),
+      });
 
-  return new Promise((resolve, reject) => {
-    FB.api(
-      `/${commentId}/comments`,
-      'POST',
-      { message, access_token: accessToken },
-      (response: any) => {
-        if (response && !response.error) {
-          resolve(response);
-        } else {
-          console.error("Error replying to comment:", response.error);
-          reject(response.error);
-        }
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+          console.error("Error replying to comment:", data.error);
+          throw new Error(data.error.message);
       }
-    );
-  });
+
+      return data;
+  } catch (error) {
+      console.error("Error posting to Facebook Graph API:", error);
+      throw error;
+  }
 };
