@@ -28,40 +28,52 @@ export default function EditSubPage() {
     descripcion: "",
   });
 
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Estado de carga
+  const [error, setError] = useState<string>(""); // Estado de error
+
   const router = useRouter();
   const params = useParams<{ planId: string }>();
   const planId = parseInt(params.planId);
 
+  // Cargar los datos del plan al iniciar el componente
   useEffect(() => {
     const fetchPlanData = async () => {
+      setIsLoading(true);
       try {
         const [plan] = await getPlanById(planId);
-        console.log("Plan data:", plan); 
-;// Asegúrate de que los datos del plan se están obteniendo correctamente
-
-        setFormData({
-          nombre: plan.planNombre || "",
-          tipoFacturacion: plan.tipo_facturacion_nombre === "MENSUAL" ? "MONTH" : "YEAR",
-          precio: plan.costo ? plan.costo.toString() : "",
-          interacciones: plan.cantidad_interacciones_mes
-            ? plan.cantidad_interacciones_mes.toString()
-            : "",
-          redesSociales: plan.cantidad_cuentas_permitidas
-            ? plan.cantidad_cuentas_permitidas.toString()
-            : "",
-          usuarios: plan.cantidad_usuarios_permitidos
-            ? plan.cantidad_usuarios_permitidos.toString()
-            : "",
-          descripcion: plan.descripcion ? plan.descripcion.toString() : "",
-        });
+        if (plan) {
+          setFormData({
+            nombre: plan.planNombre || "",
+            tipoFacturacion: plan.tipo_facturacion_nombre === "MENSUAL" ? "MONTH" : "YEAR",
+            precio: plan.costo ? plan.costo.toString() : "",
+            interacciones: plan.cantidad_interacciones_mes
+              ? plan.cantidad_interacciones_mes.toString()
+              : "",
+            redesSociales: plan.cantidad_cuentas_permitidas
+              ? plan.cantidad_cuentas_permitidas.toString()
+              : "",
+            usuarios: plan.cantidad_usuarios_permitidos
+              ? plan.cantidad_usuarios_permitidos.toString()
+              : "",
+            descripcion: plan.descripcion || "",
+          });
+        } else {
+          setError("Plan no encontrado");
+        }
       } catch (error) {
-        console.error("Error al obtener los datos del plan:", error);
+        setError("Error al obtener los datos del plan");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchPlanData();
+    if (planId) {
+      fetchPlanData();
+    }
   }, [planId]);
 
+  // Manejo del cambio de inputs
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -72,6 +84,7 @@ export default function EditSubPage() {
     }));
   };
 
+  // Manejo del cambio de selects
   const handleSelectChange = (name: keyof FormData, value: string) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -79,6 +92,7 @@ export default function EditSubPage() {
     }));
   };
 
+  // Función para regresar a la vista anterior
   const handleBack = () => {
     router.push("/bo/layout/sub-table");
   };
@@ -95,13 +109,20 @@ export default function EditSubPage() {
           Ingrese los datos a editar del plan de subscripción
         </p>
 
-        {/* Asegúrate de que los datos están siendo pasados correctamente */}
-        <FormularioSubscripcion
-          formData={formData}
-          handleInputChange={handleInputChange}
-          handleSelectChange={handleSelectChange}
-          isForUpdate={true}
-        />
+        {/* Mostrar error si ocurre alguno */}
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        {/* Mostrar cargando si estamos esperando la respuesta */}
+        {isLoading ? (
+          <p>Cargando...</p>
+        ) : (
+          <FormularioSubscripcion
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSelectChange={handleSelectChange}
+            isForUpdate={true}
+          />
+        )}
       </div>
 
       <div className="flex-1 bg-backgroundPurple p-8 flex items-center justify-center">
