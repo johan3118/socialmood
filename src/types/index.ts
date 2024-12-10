@@ -21,14 +21,22 @@ export const SignUpSchema = z
     password: z
       .string()
       .min(8, { message: "La contraseña debe tener como mínimo 8 caracteres" })
-      .max(20, { message: "El máximo de caracteres es 20" }),
+      .max(20, { message: "El máximo de caracteres es 20" })
+      .regex(/[A-Z]/, { message: "Debe contener al menos una letra mayúscula" })
+      .regex(/[a-z]/, { message: "Debe contener al menos una letra minúscula" })
+      .regex(/\d/, { message: "Debe contener al menos un número" })
+      .regex(/[^a-zA-Z0-9]/, { message: "Debe contener al menos un carácter especial" }),
     confirmPassword: z
       .string()
       .min(8, { message: "La contraseña debe tener como mínimo 8 caracteres" })
-      .max(20, { message: "El máximo de caracteres es 20" }),
+      .max(20, { message: "El máximo de caracteres es 20" })
+      .regex(/[A-Z]/, { message: "Debe contener al menos una letra mayúscula" })
+      .regex(/[a-z]/, { message: "Debe contener al menos una letra minúscula" })
+      .regex(/\d/, { message: "Debe contener al menos un número" })
+      .regex(/[^a-zA-Z0-9]/, { message: "Debe contener al menos un carácter especial" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Las contraseñas con coinciden",
+    message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
   });
 
@@ -115,11 +123,19 @@ export const CreateUserSchema = z
     password: z
       .string()
       .min(8, { message: "La contraseña debe tener como mínimo 8 caracteres" })
-      .max(20, { message: "El máximo de caracteres es 20" }),
+      .max(20, { message: "El máximo de caracteres es 20" })
+      .regex(/[A-Z]/, { message: "Debe contener al menos una letra mayúscula" })
+      .regex(/[a-z]/, { message: "Debe contener al menos una letra minúscula" })
+      .regex(/\d/, { message: "Debe contener al menos un número" })
+      .regex(/[^a-zA-Z0-9]/, { message: "Debe contener al menos un carácter especial" }),
     confirmPassword: z
       .string()
       .min(8, { message: "La contraseña debe tener como mínimo 8 caracteres" })
-      .max(20, { message: "El máximo de caracteres es 20" }),
+      .max(20, { message: "El máximo de caracteres es 20" })
+      .regex(/[A-Z]/, { message: "Debe contener al menos una letra mayúscula" })
+      .regex(/[a-z]/, { message: "Debe contener al menos una letra minúscula" })
+      .regex(/\d/, { message: "Debe contener al menos un número" })
+      .regex(/[^a-zA-Z0-9]/, { message: "Debe contener al menos un carácter especial" }),
     tipoUsuario: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -181,6 +197,6 @@ export const SubscriptionPlanSchema = z.object({
 
 export const EditResponseSchema = z.object({
   respuesta: z
-  .string()
-  .min(1, "La respuesta es obligatoria")
+    .string()
+    .min(1, "La respuesta es obligatoria")
 })
