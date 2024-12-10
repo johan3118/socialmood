@@ -23,7 +23,7 @@ const UserTable: React.FC = () => {
       try {
         setIsLoading(true);
         const usuario = await selectAllUsers();
-        setUsuarios(usuario);
+        setUsuarios(usuario.map((u: any) => ({ ...u, userId: u.userId.toString() })));
       } catch (error: any) {
         console.error("Error al cargar los usuarios:", error);
         setError("No se pudo cargar la lista de usuarios. Intente nuevamente.");
@@ -47,7 +47,7 @@ const UserTable: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex justify-between mb-6">
+      <div className="flex justify-between mb-6 ">
         <h2 className="text-xl font-bold">Listado de Usuarios</h2>
         <button
           className="btn w-8 h-8 bg-[#D24EA6] rounded-lg flex items-center justify-center"
@@ -56,39 +56,42 @@ const UserTable: React.FC = () => {
           <span className="text-white text-2xl">+</span>
         </button>
       </div>
-      <table className="min-w-full bg-white rounded-lg overflow-hidden border-t">
-        <thead className="bg-[#422EA3] text-white">
-          <tr>
-            <th className="py-3 px-4 text-left">Id</th>
-            <th className="py-3 px-4 text-center">Nombre</th>
-            <th className="py-3 px-4 text-center">Apellido</th>
-            <th className="py-3 px-4 text-center">Dirección</th>
-            <th className="py-3 px-4 text-center">Tipo de Usuario</th>
-            <th className="py-3 px-4 text-center">Correo Electrónico</th>
-            <th className="py-3 px-4 text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {usuarios.map((usuario) => (
-            <tr key={usuario.userId}>
-              <td className="py-3 px-4">{usuario.userId}</td>
-              <td className="py-3 px-4 text-center">{usuario.nombre}</td>
-              <td className="py-3 px-4 text-center">{usuario.apellido}</td>
-              <td className="py-3 px-4 text-center">{usuario.direccion}</td>
-              <td className="py-3 px-4 text-center">{usuario.tipo_usuario}</td>
-              <td className="py-3 px-4 text-center">{usuario.correo}</td>
-              <td className="py-3 px-4 text-center">
-                <button
-                  className="text-gray-500 hover:text-gray-800"
-                  onClick={() => handleEditUser(usuario.userId)}
-                >
-                  ✏️
-                </button>
-              </td>
+      <div className="max-h-80 overflow-y-auto">
+        <table className="min-w-full bg-white rounded-lg border-t table-auto">
+          <thead className="bg-[#422EA3] text-white">
+            <tr>
+              <th className="py-3 px-4 text-left">Id</th>
+              <th className="py-3 px-4 text-center">Nombre</th>
+              <th className="py-3 px-4 text-center">Apellido</th>
+              <th className="py-3 px-4 text-center">Dirección</th>
+              <th className="py-3 px-4 text-center">Tipo de Usuario</th>
+              <th className="py-3 px-4 text-center">Correo Electrónico</th>
+              <th className="py-3 px-4 text-center">Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {usuarios.map((usuario) => (
+              <tr key={usuario.userId}>
+                <td className="py-3 px-4">{usuario.userId}</td>
+                <td className="py-3 px-4 text-center">{usuario.nombre}</td>
+                <td className="py-3 px-4 text-center">{usuario.apellido}</td>
+                <td className="py-3 px-4 text-center">{usuario.direccion}</td>
+                <td className="py-3 px-4 text-center">{usuario.tipo_usuario}</td>
+                <td className="py-3 px-4 text-center">{usuario.correo}</td>
+                <td className="py-3 px-4 text-center">
+                  <button
+                    className="text-gray-500 hover:text-gray-800"
+                    onClick={() => handleEditUser(usuario.userId)}
+                  >
+                    ✏️
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   );
 };

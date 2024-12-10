@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { getUserById, updateUserById } from '@/app/actions/(backoffice)/user.actions';
-import UserForm from '@/components/(backoffice)/user-form';
+import UserForm from '@/components/(backoffice)/edit-user-form';
 
 interface FormData {
   nombre: string;
