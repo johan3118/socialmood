@@ -347,7 +347,7 @@ export async function getActiveUserAddress() {
     }
 
     // Retornar la dirección del usuario
-    return result[0].direccion.toString();
+    return result[0]?.direccion?.toString() || "";
   } catch (error: any) {
     return {
       error: error?.message || "An error occurred while fetching the address",
