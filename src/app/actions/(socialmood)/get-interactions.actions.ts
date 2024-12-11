@@ -56,7 +56,7 @@ export async function getInteractions() {
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
-        console.log(socialMediasAccounts)
+        console.log(socialMediasAccounts);
 
         // Agregamos el sort para ordenar por fecha_recepcion descendente
         const interactions = await db.collection("Interacciones").find({
@@ -65,7 +65,9 @@ export async function getInteractions() {
 
         let formattedInteractions = new Array<Interacciones>();
 
-        interactions.forEach(interaction => {
+        // Mapeamos las interacciones y agregamos el campo responseGenerated
+        for (const interaction of interactions) {
+            const hasResponse = !!interaction.respondida; // Asumimos que el campo "respondida" indica si hay una respuesta
             const date = new Date(interaction.fecha_recepcion);
             const formattedDate = date.toLocaleString('en-GB', {
                 day: '2-digit',
@@ -86,10 +88,12 @@ export async function getInteractions() {
                 emisor: interaction.usuario_cuenta_emisor,
                 categoria: interaction.categoria,
                 subcategoria: interaction.subcategoria,
-                fecha: formattedDate
-            }
+                fecha: formattedDate,
+                responseGenerated: hasResponse // Indicamos si se generó respuesta o no
+            };
+
             formattedInteractions.push(formattedInteraction);
-        });
+        }
 
         return formattedInteractions;
 
@@ -98,6 +102,7 @@ export async function getInteractions() {
         return [];
     }
 }
+
 
 export async function getInteractionsFiltered(filter: any) {
     try {
