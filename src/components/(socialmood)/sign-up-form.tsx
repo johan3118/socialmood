@@ -20,6 +20,7 @@ import { useState } from "react";
 import Link from 'next/link'
 import Image from "next/image";
 import SocialButton from "./social-button";
+import { sendEmail } from "@/app/actions/(socialmood)/email.actions";
 
 
 export function SignUpForm() {
@@ -41,6 +42,7 @@ export function SignUpForm() {
   async function onSubmit(values: z.infer<typeof SignUpSchema>) {
     console.log(values);
     setIsPending(true);
+  
     const res = await signUp(values);
     if (res.error) {
       setIsPending(false);
@@ -49,10 +51,25 @@ export function SignUpForm() {
         description: res.error,
       });
     } else if (res.success) {
-      toast({
-        variant: "default",
-        description: "Account created successfully",
+      // Enviar correo usando la acción
+      const emailResult = await sendEmail({
+        to: values.correo_electronico,
+        subject: "Bienvenido a SocialMood",
+        text: `Hola ${values.nombre}, gracias por registrarte en SocialMood.`,
       });
+  
+      if (emailResult.success) {
+        toast({
+          variant: "default",
+          description: "Account created successfully. Email sent.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          description: "Account created but failed to send email.",
+        });
+      }
+  
       setTimeout(() => {
         setIsPending(false);
         router.push("/app/profile");
