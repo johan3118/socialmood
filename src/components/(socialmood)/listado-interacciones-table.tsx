@@ -21,12 +21,12 @@ interface Interacciones {
   categoria: string;
   subcategoria: string;
   fecha: string;
+  responderAutomaticamente: boolean; // Propiedad para determinar si tiene respuesta automática
 }
 
 const ListadoInteraccionesTable: React.FC = () => {
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Controla la visibilidad del modal
-
   const openFilterModal = () => setIsFilterModalOpen(true);
   const closeFilterModal = () => setIsFilterModalOpen(false);
 
@@ -40,12 +40,8 @@ const ListadoInteraccionesTable: React.FC = () => {
     console.log(filter);
   }
 
-
-
-  // Estado para manejar los planes obtenidos de la base de datos
   const [Interacciones, setInteracciones] = useState<Interacciones[]>([]);
   const router = useRouter();
-
 
   const socialIconMap: { [key: string]: string } = {
     Instagram: "/instagram.svg",
@@ -61,13 +57,11 @@ const ListadoInteraccionesTable: React.FC = () => {
     "Elogio": "/happy.svg",
     "Recomendacion": "/happy.svg",
     "Consulta": "/neutral-face.svg",
-    // categorías y subcategorias con sus respectivos emojis
   };
-
 
   const fetchInteracciones = async () => {
     try {
-      const interacciones = await getInteractionsFiltered(selectedFilters); // Llamada a la función para obtener todos las interacciones de la subscripcion
+      const interacciones = await getInteractionsFiltered(selectedFilters); // Llamada a la función para obtener todas las interacciones
       console.log(interacciones);
       setInteracciones(interacciones);
     } catch (error) {
@@ -75,23 +69,16 @@ const ListadoInteraccionesTable: React.FC = () => {
     }
   };
 
-  // Llamar fetchPlanes al montar el componente
   useEffect(() => {
     fetchInteracciones();
   }, [selectedFilters]);
 
-
   const handleRefreshTable = () => {
     fetchInteracciones();
-
   };
-
-
 
   return (
     <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-4 mx-10 py-8">
-
-
       <div className="container mx-auto p-6 ">
         <div className="flex justify-between mb-6">
           <h1 className="text-[24px] text-white font-bold">Interacciones Capturadas</h1>
@@ -114,9 +101,7 @@ const ListadoInteraccionesTable: React.FC = () => {
                 className=" w-6 h-6"
               />
             </button>
-
           </div>
-
         </div>
         <hr className="border-[#FFF] mb-6" />
         <div className="max-h-80 overflow-y-auto">
@@ -129,6 +114,7 @@ const ListadoInteraccionesTable: React.FC = () => {
                 <th className="hidden sm:table-cell py-3 md:py-4 px-2 md:px-6 lg:px-10 text-left ">Categoría</th>
                 <th className="hidden sm:table-cell py-3 md:py-4 px-2 md:px-6 lg:px-10 text-left">Subcategoría</th>
                 <th className="py-3 md:py-4 px-2 md:px-6 lg:px-10 text-left">Fecha</th>
+                <th className="py-3 md:py-4 px-2 md:px-6 lg:px-10 text-left"> Estado</th> {/* Nueva columna */}
               </tr>
             </thead>
 
@@ -150,7 +136,6 @@ const ListadoInteraccionesTable: React.FC = () => {
                           alt={`${interacciones.perfil.red_social} Icon`}
                           className="w-5 h-5"
                         />
-
                         <span className="text-left">{interacciones.perfil.username}</span>
                       </span>
                     </div>
@@ -160,9 +145,7 @@ const ListadoInteraccionesTable: React.FC = () => {
                   <td className="hidden sm:table-cell py-2 md:py-3 px-2 md:px-4 lg:px-8">
                     <div className="flex items-center space-x-2">
                       <span
-                        className={cn(buttonVariants({ variant: "angry", size: "smBold" }))}
-                        style={{ width: "100%", justifyContent: "center" }}
-                      >
+                        className={cn(buttonVariants({ variant: "angry", size: "smBold" }))} style={{ width: "100%", justifyContent: "center" }}>
                         <img
                           src={emojimap[interacciones.categoria] || "/default.svg"}
                           alt="Emoji Icon"
@@ -175,9 +158,7 @@ const ListadoInteraccionesTable: React.FC = () => {
                   <td className="hidden sm:table-cell py-3 px-4 md:px-8 font-bold text-left ">
                     <div className="flex items-center justify-center space-x-2">
                       <span
-                        className={cn(buttonVariants({ variant: "angry", size: "smBold" }))}
-                        style={{ width: "80%", justifyContent: "center" }}
-                      >
+                        className={cn(buttonVariants({ variant: "angry", size: "smBold" }))} style={{ width: "80%", justifyContent: "center" }}>
                         <img
                           src={emojimap[interacciones.subcategoria] || "/default.svg"}
                           alt="Emoji Icon"
@@ -188,14 +169,19 @@ const ListadoInteraccionesTable: React.FC = () => {
                     </div>
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 lg:px-8">{interacciones.fecha}</td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 lg:px-8">
+                    {!interacciones.responderAutomaticamente && (
+                      <span className="bg-red-500 text-white font-bold py-1 px-3 rounded-full" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+>
+                        Sin respuesta
+                      </span>
+                    )}
+                  </td>
                 </tr>
               ))}
-
             </tbody>
           </table>
-
         </div>
-
       </div>
       <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
     </div>
@@ -203,3 +189,4 @@ const ListadoInteraccionesTable: React.FC = () => {
 };
 
 export default ListadoInteraccionesTable;
+
