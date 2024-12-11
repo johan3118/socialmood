@@ -37,7 +37,6 @@ export default function CreateUserPage() {
       <div className="flex-1 bg-backgroundPurple p-2 flex items-center justify-center">
         <BlurredContainer customStyle="h-[300px]"> <Image className="" src={"/socialmood-logo.svg"} width={400} height={70} alt={""} /></BlurredContainer>
       </div>
-
     </div>
   );
 }

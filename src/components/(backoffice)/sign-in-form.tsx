@@ -48,7 +48,7 @@ export function SignInForm() {
       });
       setTimeout(() => {
         setIsPending(false);
-        router.push("/bo/layout/dashboard");
+        router.push("/bo/layout/sub-table");
       }, 5000);
     }
   }

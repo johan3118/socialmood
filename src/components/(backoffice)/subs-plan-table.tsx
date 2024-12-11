@@ -71,56 +71,57 @@ const PlanesSubscripcionTable: React.FC = () => {
           <span className="text-white text-2xl">+</span>
         </button>
       </div>
-
-      <table className="min-w-full bg-white rounded-lg overflow-hidden border-t">
-        <thead className="bg-[#422EA3] text-white">
-          <tr>
-            <th className="py-3 px-4 text-left">Plan</th>
-            <th className="py-3 px-4 text-center">Límite de usuarios</th>
-            <th className="py-3 px-4 text-center">Redes sociales</th>
-            <th className="py-3 px-4 text-center">Interacciones por mes</th>
-            <th className="py-3 px-4 text-center">Estado</th>
-            <th className="py-3 px-4 text-center">Precio</th>
-            <th className="py-3 px-4 text-left">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {planesSubscripcion.map((plan) => (
-            <tr key={plan.planId} className="">
-              <td className="py-6 px-4">{plan.planNombre}</td>
-              <td className="py-3 px-4 text-center">{plan.cantidad_usuarios_permitidos}</td>
-              <td className="py-3 px-4 text-center">{plan.cantidad_cuentas_permitidas}</td>
-              <td className="py-3 px-4 text-center">{plan.cantidad_interacciones_mes}</td>
-              <td className="py-3 px-4 text-center">
-                <span
-                  className={`${
-                    plan.estado_plan_nombre === "ACTIVO"
-                      ? "bg-green-200 text-green-800"
-                      : "bg-red-200 text-red-800"
-                  } py-1 px-3 rounded-full text-xs font-bold`}
-                >
-                  {plan.estado_plan_nombre}
-                </span>
-              </td>
-              <td className="py-3 px-4 font-bold text-center">{plan.costo}$/{plan.tipo_facturacion_nombre.toLowerCase()}</td>
-              <td className="py-3 px-4 flex items-center">
-                <Switch
-                  className="data-[state=checked]:bg-[#422EA3]"
-                  checked={plan.estado_plan_nombre === "ACTIVO"}
-                  onCheckedChange={(checked) => handleSwitchChange(parseInt(plan.planId), checked)}
-                />
-                {/* Botón para editar el plan */}
-                <button
-                  className="ml-4 text-gray-500 hover:text-gray-800"
-                  onClick={() => handleEditPlan(plan.planId)} // Redirige a la página de edición con el planId
-                >
-                  ✏️
-                </button>
-              </td>
+      <div className="max-h-80 overflow-y-auto">
+        <table className="min-w-full bg-white rounded-lg  border-t table-auto">
+          <thead className="bg-[#422EA3] text-white">
+            <tr>
+              <th className="py-3 px-4 text-left">Plan</th>
+              <th className="py-3 px-4 text-center">Límite de usuarios</th>
+              <th className="py-3 px-4 text-center">Redes sociales</th>
+              <th className="py-3 px-4 text-center">Interacciones por mes</th>
+              <th className="py-3 px-4 text-center">Estado</th>
+              <th className="py-3 px-4 text-center">Precio</th>
+              <th className="py-3 px-4 text-left">Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {planesSubscripcion.map((plan) => (
+              <tr key={plan.planId} className="">
+                <td className="py-6 px-4">{plan.planNombre}</td>
+                <td className="py-3 px-4 text-center">{plan.cantidad_usuarios_permitidos}</td>
+                <td className="py-3 px-4 text-center">{plan.cantidad_cuentas_permitidas}</td>
+                <td className="py-3 px-4 text-center">{plan.cantidad_interacciones_mes}</td>
+                <td className="py-3 px-4 text-center">
+                  <span
+                    className={`${plan.estado_plan_nombre === "ACTIVO"
+                        ? "bg-green-200 text-green-800"
+                        : "bg-red-200 text-red-800"
+                      } py-1 px-3 rounded-full text-xs font-bold`}
+                  >
+                    {plan.estado_plan_nombre}
+                  </span>
+                </td>
+                <td className="py-3 px-4 font-bold text-center">{plan.costo}$/{plan.tipo_facturacion_nombre.toLowerCase()}</td>
+                <td className="py-3 px-4 flex items-center">
+                  <Switch
+                    className="data-[state=checked]:bg-[#422EA3]"
+                    checked={plan.estado_plan_nombre === "ACTIVO"}
+                    onCheckedChange={(checked) => handleSwitchChange(parseInt(plan.planId), checked)}
+                  />
+                  {/* Botón para editar el plan */}
+                  <button
+                    className="ml-4 text-gray-500 hover:text-gray-800"
+                    onClick={() => handleEditPlan(plan.planId)} // Redirige a la página de edición con el planId
+                  >
+                    ✏️
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   );
 };
