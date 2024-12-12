@@ -1,9 +1,10 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ChevronDown, ChevronUp, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { signOut } from '@/app/actions/(backoffice)/auth.actions'
+import { countUnansweredInteractions } from '@/app/actions/(socialmood)/get-interactions.actions'
 
 interface MenuItem {
   id: string
@@ -44,7 +45,16 @@ const menuItems: MenuItem[] = [
 export default function Sidebar() {
   const [expandedItem, setExpandedItem] = useState<string | null>('interactions')
   const [selectedItem, setSelectedItem] = useState<string>('')
+  const [unansweredCounts, setUnansweredCounts] = useState<Record<string, number>>({})
   const router = useRouter()
+
+  useEffect(() => {
+    const fetchUnansweredCounts = async () => {
+      const count = await countUnansweredInteractions()
+      setUnansweredCounts({ interactions: count }) // Ajusta las claves según los subitems
+    }
+    fetchUnansweredCounts()
+  }, [])
 
   const toggleExpand = (id: string) => {
     setExpandedItem(expandedItem === id ? null : id)
@@ -55,7 +65,7 @@ export default function Sidebar() {
     router.push(route)
   }
 
-  const  handleSignOut = async () => {
+  const handleSignOut = async () => {
     await signOut()
   }
 
@@ -99,6 +109,11 @@ export default function Sidebar() {
                       style={{ backgroundColor: subItem.color }}
                     ></span>
                     {subItem.label}
+                    {unansweredCounts[subItem.id] > 0 && (
+                      <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                        {unansweredCounts[subItem.id]}
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>

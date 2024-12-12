@@ -1,3 +1,4 @@
+
 import nodemailer from "nodemailer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,6 +11,7 @@ interface EmailRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
+
     const body = (await req.json()) as EmailRequestBody;
 
     if (!body.to || !body.subject || !body.text) {

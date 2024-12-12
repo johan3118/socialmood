@@ -21,7 +21,7 @@ interface Interacciones {
   categoria: string;
   subcategoria: string;
   fecha: string;
-  responderAutomaticamente: boolean; // Propiedad para determinar si tiene respuesta automática
+  respondida: boolean; // Propiedad para determinar si tiene respuesta automática
 }
 
 const ListadoInteraccionesTable: React.FC = () => {
@@ -71,6 +71,11 @@ const ListadoInteraccionesTable: React.FC = () => {
 
   useEffect(() => {
     fetchInteracciones();
+    const interval = setInterval(() => {
+      fetchInteracciones();
+    }, 60000); // Ejecutar cada minuto
+
+    return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
   }, [selectedFilters]);
 
   const handleRefreshTable = () => {
@@ -170,12 +175,19 @@ const ListadoInteraccionesTable: React.FC = () => {
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 lg:px-8">{interacciones.fecha}</td>
                   <td className="py-2 md:py-3 px-2 md:px-4 lg:px-8">
-                    {!interacciones.responderAutomaticamente && (
-                      <span className="bg-red-500 text-white font-bold py-1 px-3 rounded-full" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
->
-                        Sin respuesta
-                      </span>
-                    )}
+                    <span
+                      className={`
+                        inline-block
+                        px-2
+                        py-1
+                        rounded-full
+                        text-xs
+                        font-semibold
+                        ${interacciones.respondida ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}
+                      `}
+                    >
+                      {interacciones.respondida ? 'Respondida' : 'Sin respuesta'}
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -193,4 +205,3 @@ const ListadoInteraccionesTable: React.FC = () => {
 };
 
 export default ListadoInteraccionesTable;
-

@@ -19,6 +19,7 @@ interface Interacciones {
     categoria: string;
     subcategoria: string;
     fecha: string;
+    respondida: boolean;
 }
 
 interface Respuestas {
@@ -89,7 +90,7 @@ export async function getInteractions() {
                 categoria: interaction.categoria,
                 subcategoria: interaction.subcategoria,
                 fecha: formattedDate,
-                responseGenerated: hasResponse // Indicamos si se generó respuesta o no
+                respondida: interaction.respondida
             };
 
             formattedInteractions.push(formattedInteraction);
@@ -176,6 +177,8 @@ export async function getInteractionsFiltered(filter: any) {
             );
         }
 
+        console.log(interactions);
+
         let formattedInteractions = new Array<Interacciones>();
 
         interactions?.forEach(interaction => {
@@ -200,6 +203,7 @@ export async function getInteractionsFiltered(filter: any) {
                 categoria: interaction.categoria,
                 subcategoria: interaction.subcategoria,
                 fecha: formattedDate,
+                respondida: interaction.respondida
             };
             formattedInteractions.push(formattedInteraction);
         });
@@ -267,7 +271,7 @@ export async function getRespuestas() {
                 subcategoria: respuesta.subcategoria,
                 unique_code: respuesta.unique_code,
                 comment_id: respuesta.comment_id,
-                fecha: formattedDate
+                fecha: formattedDate,
             }
             formattedRespuestas.push(formattedInteraction);
         });
@@ -629,3 +633,36 @@ export async function getInteractionsByMonthAndUsername() {
         return { labels: [], datasets: [] };
     }
 }
+
+export async function countUnansweredInteractions() {
+    try {
+        const client = await clientPromise;
+        const db = client.db("socialMood");
+
+        const userid = await getActiveUserId();
+
+        if (!userid) {
+            throw new Error("User ID is undefined");
+        }
+
+        const subscription = await getSubscription(parseInt(userid));
+
+        if (subscription === null) {
+            throw new Error("Subscription is null");
+        }
+
+        const socialMediasAccounts = await getSocialMediaSubscription(subscription);
+
+        const unansweredCount = await db.collection("Interacciones").countDocuments({
+            codigo_cuenta_receptor: { $in: socialMediasAccounts },
+            respondida: false
+        });
+
+        return unansweredCount;
+
+    } catch (error) {
+        console.error("Error al contar interacciones no respondidas:", error);
+        return 0;
+    }
+}
+

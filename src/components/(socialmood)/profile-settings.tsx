@@ -5,6 +5,12 @@ import UserSettingsCard from '@/components/(socialmood)/user-settings-card'
 import UserCurrentPlanCard from '@/components/(socialmood)/user-current-plan-card'
 import SocialMediaCard from '@/components/(socialmood)/social-media-card'
 import TeamCard from '@/components/(socialmood)/team-card'
+import { IoIosInformationCircle } from "react-icons/io";
+import Modal from '@/components/(socialmood)/modal'
+import { useState } from 'react'
+import BlurredContainer from './blur-background'
+
+
 
 interface ProfileSettingsProps {
   onClose: () => void
@@ -12,24 +18,43 @@ interface ProfileSettingsProps {
 
 export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 px-[25vh]">
       <div className="bg-[#2C2436] text-white p-10 rounded-3xl w-full overflow-y-auto">
-        <header className="flex items-center mb-6">
+        <header className="flex items-center mb-6 pr-4">
           <button onClick={onClose} className="mr-4" aria-label="Volver">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-3xl font-bold">Ajustes de Perfil</h1>
+          <div className='flex justify-between items-center w-full'>
+            <h1 className="text-3xl font-bold">Ajustes de Perfil</h1>
+            <button className='underline flex items-center font-medium' onClick={openModal}>Ayuda<IoIosInformationCircle size={18} className='ml-1' /></button>
+          </div>
         </header>
-        
+
+        {isModalOpen && ( // Conditionally render the modal
+          <Modal onClose={closeModal}> {/* Added className */}
+          <button className="relative right-0 top-4 text-gray-400 hover:text-white" onClick={closeModal}>
+            <X className="h-6 w-6 text-white" />
+          </button>
+            <BlurredContainer variant='blur'><iframe width="560" height="315" src="https://www.youtube.com/embed/-BF7-d0WaAA?si=C7Hvvg_vs7DMJgbh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </BlurredContainer>
+          </Modal>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
           {/* User Card */}
-          <UserSettingsCard/>
+          <UserSettingsCard />
 
-          <div className= "space-y-4">
-          <UserCurrentPlanCard/>
-          <SocialMediaCard/>
+          <div className="space-y-4">
+            <UserCurrentPlanCard />
+            <SocialMediaCard />
           </div>
 
 
