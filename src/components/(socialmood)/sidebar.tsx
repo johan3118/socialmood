@@ -37,7 +37,6 @@ const menuItems: MenuItem[] = [
       { id: 'interactions', label: 'Interacciones', route: '/app/listado-interacciones', color: '#F59E0B' },
       { id: 'responses', label: 'Respuestas', route: '/app/respuestas', color: '#10B981' },
       { id: 'rules', label: 'Reglas', route: '/app/reglas', color: '#F59E0B' },
-      
     ],
   },
 ]
@@ -46,14 +45,31 @@ export default function Sidebar() {
   const [expandedItem, setExpandedItem] = useState<string | null>('interactions')
   const [selectedItem, setSelectedItem] = useState<string>('')
   const [unansweredCounts, setUnansweredCounts] = useState<Record<string, number>>({})
+  const [animateItems, setAnimateItems] = useState<Record<string, boolean>>({})
   const router = useRouter()
 
   useEffect(() => {
     const fetchUnansweredCounts = async () => {
       const count = await countUnansweredInteractions()
-      setUnansweredCounts({ interactions: count }) // Ajusta las claves según los subitems
+      setUnansweredCounts((prevCounts) => {
+        const updatedCounts = { ...prevCounts, interactions: count } // Ajusta las claves según los subitems
+        
+        // Detect changes to trigger animation
+        Object.keys(updatedCounts).forEach((key) => {
+          if (updatedCounts[key] !== prevCounts[key]) {
+            setAnimateItems((prev) => ({ ...prev, [key]: true }))
+            setTimeout(() => setAnimateItems((prev) => ({ ...prev, [key]: false })), 1000) // Reset animation after 1s
+          }
+        })
+
+        return updatedCounts
+      })
     }
+
     fetchUnansweredCounts()
+
+    const interval = setInterval(fetchUnansweredCounts, 60000) // Fetch every minute
+    return () => clearInterval(interval)
   }, [])
 
   const toggleExpand = (id: string) => {
@@ -110,7 +126,11 @@ export default function Sidebar() {
                     ></span>
                     {subItem.label}
                     {unansweredCounts[subItem.id] > 0 && (
-                      <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                      <span
+                        className={`ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1 transition-transform duration-1000 ${
+                          animateItems[subItem.id] ? 'scale-125' : 'scale-100'
+                        }`}
+                      >
                         {unansweredCounts[subItem.id]}
                       </span>
                     )}

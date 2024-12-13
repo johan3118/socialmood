@@ -9,6 +9,7 @@ import { IoIosInformationCircle } from "react-icons/io";
 import Modal from '@/components/(socialmood)/modal'
 import { useState } from 'react'
 import BlurredContainer from './blur-background'
+import InstructionCard from './instruction-card'
 
 
 
@@ -40,11 +41,13 @@ export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
 
         {isModalOpen && ( // Conditionally render the modal
           <Modal onClose={closeModal}> {/* Added className */}
-          <button className="relative right-0 top-4 text-gray-400 hover:text-white" onClick={closeModal}>
-            <X className="h-6 w-6 text-white" />
-          </button>
-            <BlurredContainer variant='blur'><iframe width="560" height="315" src="https://www.youtube.com/embed/-BF7-d0WaAA?si=C7Hvvg_vs7DMJgbh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            </BlurredContainer>
+
+  
+              <InstructionCard closeModal={closeModal}/>
+
+            
+             
+ 
           </Modal>
         )}
 
