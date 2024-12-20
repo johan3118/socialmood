@@ -30,51 +30,61 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
 
   useEffect(() => {
     console.log(paypalPlanId);
-    const script = document.createElement("script");
-    script.src =
-      "https://www.paypal.com/sdk/js?client-id=AQEpcxi6zo0JHfCkgJafrgfVG1xeUNwk53-xUepwT2CpcV7_foTYlsxCjp-JngT_stubauCGq07u67Af&vault=true&intent=subscription";
-    script.async = true;
-    script.onload = () => {
-      if (window.paypal) {
-        window.paypal
-          .Buttons({
-            style: {
-              layout: "vertical",
-              color: "gold",
-              shape: "rect",
-              label: "pay",
-              tagline: false,
-            },
-            createSubscription: function (data: any, actions: any) {
-              return actions.subscription.create({
-                plan_id: paypalPlanId,
-              });
-            },
-            onApprove: async function (data: any, actions: any) {
-              // Llamar a la server action para crear la suscripción y factura
-              const response = await handleNewSubscription({
-                subscriptionID: data.subscriptionID,
-                planName,
-                billingType,
-                planCost,
-                userId,
-                planId,
-              });
+    const scriptId = "paypal-sdk-script";
 
-              if (response.success) {
-                router.push("/app/dashboard");
-              } else {
-                alert("Hubo un problema al procesar la suscripción.");
-              }
-            },
-          })
-          .render("#paypal-button-container");
-      }
-    };
-    document.body.appendChild(script);
+    // Evitar agregar el script si ya existe
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src =
+        "https://www.paypal.com/sdk/js?client-id=AQEpcxi6zo0JHfCkgJafrgfVG1xeUNwk53-xUepwT2CpcV7_foTYlsxCjp-JngT_stubauCGq07u67Af&vault=true&intent=subscription";
+      script.async = true;
+      script.onload = () => {
+        if (window.paypal) {
+          window.paypal
+            .Buttons({
+              style: {
+                layout: "vertical",
+                color: "gold",
+                shape: "rect",
+                label: "pay",
+                tagline: false,
+              },
+              createSubscription: function (data: any, actions: any) {
+                return actions.subscription.create({
+                  plan_id: paypalPlanId,
+                });
+              },
+              onApprove: async function (data: any, actions: any) {
+                const response = await handleNewSubscription({
+                  subscriptionID: data.subscriptionID,
+                  planName,
+                  billingType,
+                  planCost,
+                  userId,
+                  planId,
+                });
 
+                if (response.success) {
+                  console.log("success test")
+                  router.push("/app/dashboard");
+                } else {
+                  alert("Hubo un problema al procesar la suscripción.");
+                }
+              },
+            })
+            .render("#paypal-button-container");
+        }
+      };
+      document.body.appendChild(script);
+    }
+
+    // Limpieza del efecto
     return () => {
-      document.body.removeChild(script);
+      const existingScript = document.getElementById(scriptId);
+      if (existingScript) {
+        document.body.removeChild(existingScript);
+      }
     };
   }, [paypalPlanId, planName, billingType, planCost, userId, planId, router]);
 
