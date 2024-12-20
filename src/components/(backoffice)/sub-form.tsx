@@ -10,7 +10,6 @@ import { ToastProvider, Toast, ToastViewport } from "@radix-ui/react-toast";
 import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { SubscriptionFormSchema } from "@/types";
 import { insertPlan, updatePlanById } from "@/app/actions/(backoffice)/subscriptions.actions";
 import { createSubscriptionPlan, getAccessToken } from "@/app/services/paypal";
@@ -140,6 +139,8 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
             id="nombre"
             className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
             {...register("nombre")}
+            disabled={isForUpdate}
+            onChange={handleInputChange}
           />
           {errors.nombre && <p className="text-red-500">{errors.nombre.message}</p>}
         </div>
@@ -151,6 +152,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
               name="tipoFacturacion"
               value={formData.tipoFacturacion}
               onValueChange={(value) => handleSelectChange("tipoFacturacion", value)}
+              disabled={isForUpdate}
             >
               <SelectTrigger className="bg-gray-100">
                 <SelectValue />
@@ -168,6 +170,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
               id="precio"
               className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
               {...register("precio")}
+              onChange={handleInputChange}
             />
             {errors.precio && <p className="text-red-500">{errors.precio.message}</p>}
           </div>
@@ -182,6 +185,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
             id="interacciones"
             className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
             {...register("interacciones")}
+            onChange={handleInputChange}
           />
           {errors.interacciones && <p className="text-red-500">{errors.interacciones.message}</p>}
         </div>
@@ -193,6 +197,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
               id="redesSociales"
               className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
               {...register("redesSociales")}
+              onChange={handleInputChange}
             />
             {errors.redesSociales && <p className="text-red-500">{errors.redesSociales.message}</p>}
           </div>
@@ -202,6 +207,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
               id="usuarios"
               className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
               {...register("usuarios")}
+              onChange={handleInputChange}
             />
             {errors.usuarios && <p className="text-red-500">{errors.usuarios.message}</p>}
           </div>
@@ -213,6 +219,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
             id="descripcion"
             className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
             {...register("descripcion")}
+            onChange={handleInputChange}
           />
           {errors.descripcion && <p className="text-red-500">{errors.descripcion.message}</p>}
         </div>
@@ -240,3 +247,4 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
 };
 
 export default FormularioSubscripcion;
+
