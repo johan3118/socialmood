@@ -13,7 +13,6 @@ import { getUserSubscription } from "@/app/actions/(socialmood)/get-plans.action
 
 export default async function GetSubscription() {
   const plans = await getSubscriptionPlans();
-
   const { user } = await validateRequest();
   if (!user) {
     return redirect("/");
@@ -40,6 +39,7 @@ export default async function GetSubscription() {
         ? pro
         : premium,
     isCurrentPlan: userSubscription?.planName === plan.nombre,
+    type: plan.id_tipo_facturacion == 1 ? "Mensual" : "Anual",
   }));
 
   return (
@@ -64,7 +64,7 @@ export default async function GetSubscription() {
             <section className="flex space-x-1">
               <h1 className="text-8xl text-white font-black">${plan.price}</h1>
               <p className="text-gray-100 font-medium opacity-70 self-end text-base">
-                /mensual
+                /$ {plan.type}
               </p>
             </section>
           </section>
