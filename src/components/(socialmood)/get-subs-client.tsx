@@ -37,7 +37,7 @@ export default function GetSubscriptionClient({
   };
 
   return (
-    <main className="flex flex-col xl:flex-row w-full min-h-screen items-center justify-center lg:px-56 2xl:px-72 xl:space-x-2">
+    <main className="flex flex-col xl:flex-row items-center justify-center pt-4">
       {/* Información del plan */}
       <BlurredContainer customStyle={`space-y-7 min-h-[75vh]`}>
         <section className="flex flex-col items-center justify-center space-y-3">
@@ -80,8 +80,6 @@ export default function GetSubscriptionClient({
       <BlurredContainer customStyle="bg-white min-h-[75vh]">
         <section className="items-center justify-center flex flex-col space-y-8 w-full">
           <h1 className="text-4xl font-[1000] self-start">CHECKOUT</h1>
-
-
 
           <HorizontalLine color="border-black" width="w-[90%]" />
 

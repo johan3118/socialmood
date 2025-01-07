@@ -25,7 +25,7 @@ export default async function GetSubscription({
   }
 
   return (
-    <div className="bg-[#2C2436] w-full h-screen">
+    <div className="bg-[#2C2436]">
       <GetSubscriptionClient
       userid={user.id}
       plan={plan}

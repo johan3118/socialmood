@@ -11,6 +11,7 @@ import { getSubscriptionPlans } from "@/app/actions/(socialmood)/get-plans.actio
 import SubscribeButton from "@/components/(socialmood)/subscribe-button"; // Client-side component
 import { getUserSubscription } from "@/app/actions/(socialmood)/get-plans.actions";
 
+
 export default async function GetSubscription() {
   const plans = await getSubscriptionPlans();
   const { user } = await validateRequest();
@@ -36,21 +37,20 @@ export default async function GetSubscription() {
       plan.nombre === "Plan Básico"
         ? basic
         : plan.nombre === "Plan Intermedio"
-        ? pro
-        : premium,
+          ? pro
+          : premium,
     isCurrentPlan: userSubscription?.planName === plan.nombre,
     type: plan.id_tipo_facturacion == 1 ? "Mensual" : "Anual",
   }));
 
   return (
-    <main className="flex flex-col xl:flex-row items-center justify-center xl:px-40 xl:space-x-10 bg-[#2C2436] w-full h-screen">
+    <main className="">
       {planDescription.map((plan, index) => (
         <BlurredContainer
           key={index}
           variant={plan.variant === "rose" ? "rose" : "blur"}
-          customStyle={`space-y-7 ${
-            index === 1 ? "xl:translate-y-[-1%]" : "xl:translate-y-[3%]"
-          }`}
+          customStyle={`space-y-7 ${index === 1 ? "xl:translate-y-[-1%]" : "xl:translate-y-[3%]"
+            }`}
         >
           <section className="flex flex-col items-center justify-center space-y-3">
             <section className="flex flex-col items-center justify-center">
