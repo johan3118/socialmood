@@ -4,7 +4,7 @@ import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTa
 import { eq, inArray, and} from "drizzle-orm";
 
 export async function getSubscriptionPlans() {
-  const plans = await db.select().from(planesTable).limit(3);
+  const plans = await db.select().from(planesTable).where(eq(planesTable.id_estado_plan, 1));
   return plans;
 }
 
