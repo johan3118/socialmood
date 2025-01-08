@@ -137,6 +137,9 @@ export async function getInteractionsFiltered(filter: any) {
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
+
+
+
         if (!isCategoryFilter && !isSubcategoryFilter) {
             interactions = await db.collection("Interacciones").find({
                 codigo_cuenta_receptor: { $in: socialMediasAccounts },
@@ -296,13 +299,9 @@ export async function getRespuestasFiltered(filter: any) {
         let subcategories = filter.subcategory;
         let social_medias = filter.social_medias;
 
-
-        let rules = [];
-
         const isCategoryFilter = (categories?.length ?? 0) > 0;
         const isSubcategoryFilter = (subcategories?.length ?? 0) > 0;
         const isSocialMediasFilter = (social_medias?.length ?? 0) > 0;
-
 
         const userid = await getActiveUserId();
 
@@ -318,44 +317,54 @@ export async function getRespuestasFiltered(filter: any) {
 
         const socialMediasAccounts = await getSocialMediaSubscription(subscription);
 
-
         let respuestas;
 
-
-        if (isCategoryFilter == false && isSubcategoryFilter == false) {
-
+        if (!isCategoryFilter && !isSubcategoryFilter) {
             respuestas = await db.collection("Interacciones").find({
                 codigo_cuenta_receptor: { $in: socialMediasAccounts },
                 respondida: false
-            }).toArray();
+            })
+            .sort({ fecha_recepcion: -1 }) // Ordenar por fecha_recepcion descendente
+            .toArray();
 
         } else {
-            if (isCategoryFilter == true && isSubcategoryFilter == true) {
+            if (isCategoryFilter && isSubcategoryFilter) {
+                respuestas = await db.collection("Interacciones").find({
+                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
+                    $or: [
+                        { categoria: { $in: categories } },
+                        { subcategoria: { $in: subcategories } }
+                    ],
+                    respondida: false
+                })
+                .sort({ fecha_recepcion: -1 }) // Ordenar por fecha_recepcion descendente
+                .toArray();
 
+            } else if (!isCategoryFilter && isSubcategoryFilter) {
                 respuestas = await db.collection("Interacciones").find({
                     codigo_cuenta_receptor: { $in: socialMediasAccounts },
-                    $or: [{ categoria: { $in: categories } },
-                    { subcategoria: { $in: subcategories } }]
-                }).toArray();
-            }
-            else if (isCategoryFilter == false && isSubcategoryFilter == true) {
+                    subcategoria: { $in: subcategories },
+                    respondida: false
+                })
+                .sort({ fecha_recepcion: -1 }) // Ordenar por fecha_recepcion descendente
+                .toArray();
+
+            } else if (isCategoryFilter && !isSubcategoryFilter) {
                 respuestas = await db.collection("Interacciones").find({
                     codigo_cuenta_receptor: { $in: socialMediasAccounts },
-                    subcategoria: { $in: subcategories }
-                }).toArray();
-            }
-            else if (isCategoryFilter == true && isSubcategoryFilter == false) {
-                respuestas = await db.collection("Interacciones").find({
-                    codigo_cuenta_receptor: { $in: socialMediasAccounts },
-                    categoria: { $in: categories }
-                }).toArray();
+                    categoria: { $in: categories },
+                    respondida: false
+                })
+                .sort({ fecha_recepcion: -1 }) // Ordenar por fecha_recepcion descendente
+                .toArray();
             }
         }
 
-        if (isSocialMediasFilter == true) {
-            respuestas = respuestas?.filter((respuesta) => social_medias.includes(respuesta.usuario_cuenta_receptor));
+        if (isSocialMediasFilter) {
+            respuestas = respuestas?.filter((respuesta) =>
+                social_medias.includes(respuesta.usuario_cuenta_receptor)
+            );
         }
-
 
         let formattedRespuestas = new Array<Respuestas>();
 
@@ -383,20 +392,18 @@ export async function getRespuestasFiltered(filter: any) {
                 unique_code: respuesta.unique_code,
                 comment_id: respuesta.comment_id,
                 fecha: formattedDate
-            }
+            };
             formattedRespuestas.push(formattedInteraction);
         });
 
         return formattedRespuestas;
 
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error al cargar las respuestas:", error);
         return [];
     }
-
-
 }
+
 
 
 
