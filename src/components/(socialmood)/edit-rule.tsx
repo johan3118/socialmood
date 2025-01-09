@@ -25,10 +25,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 
-import CreateRuleChild from "@/components/(socialmood)/create-rule-child";
-import EditRuleChild from "@/components/(socialmood)/edit-rule-child";
-import DeleteRuleChild from "@/components/(socialmood)/delete-rule-child";
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import {
@@ -51,8 +47,7 @@ import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/aut
 
 interface EditRuleProps {
     ruleID: number;
-    onOpenChange: (newOpenValue: boolean) => void;
-
+    onChangeForm: (newAction: string, child: number) => void;
 }
 
 interface Perfil {
@@ -68,7 +63,7 @@ interface Reglas {
     subcategorias: string[];
 }
 
-export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
+export default function EditRule({ ruleID, onChangeForm }: EditRuleProps) {
 
     const [action, setAction] = useState<string>("Create");
 
@@ -88,20 +83,15 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
     };
 
     const handleAddRule = () => {
-        setAction("Create");
-        setOpen(true);
+        onChangeForm("Create-Child", 0);
     };
 
     const handleEditRule = (ruleID: number) => {
-        setAction("Edit");
-        setRuleID(ruleID);
-        setOpen(true);
+        onChangeForm("Edit-Child", ruleID);
     }
 
     const handleDeleteRule = (ruleID: number) => {
-        setAction("Delete");
-        setRuleID(ruleID);
-        setOpen(true);
+        onChangeForm("Delete-Child", ruleID);
     }
 
     const [redSocial, setRedSocial] = useState("");
@@ -212,14 +202,13 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                 variant: "default",
                 description: "Rule updated successfully",
             });
-            onOpenChange(false);
-
+            onChangeForm("", 0);
         }
         setIsPending(false);
     }
 
     async function onClose() {
-        onOpenChange(false);
+        onChangeForm("", 0);
     }
 
     const handleOpenChild = (newOpenValue: boolean) => {
@@ -391,60 +380,48 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                                         <Label className="text-lg font-semibold">Reglas relacionadas</Label>
                                         <hr className="my-3 border-2 bg-white bg-opacity-30" />
                                         <div className="mt-3">
-                                            <Dialog open={Open}>
-                                                <DialogTrigger>
-                                                    <SocialButton
-                                                        variant="default"
-                                                        isPending={isPending}
-                                                        defaultText="Añadir Hijo +"
-                                                        customStyle="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white text-[16px]"
-                                                        type="button"
-                                                        size="sm"
-                                                        onClick={handleAddRule}
-                                                    />
-                                                </DialogTrigger>
+                                            <SocialButton
+                                                variant="default"
+                                                isPending={isPending}
+                                                defaultText="Añadir Hijo +"
+                                                customStyle="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white text-[16px]"
+                                                type="button"
+                                                size="sm"
+                                                onClick={handleAddRule}
+                                            />
 
 
-                                                <div className="space-y-2 mt-2">
-                                                    {ChildReglas.map((regla, index) => (
-                                                        <div key={regla.id} className="flex items-center space-x-2">
-                                                            <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                                                                {index + 1}
-                                                            </div>
-                                                            <span className="text-[16px]">{regla.alias}</span>
-                                                            <div className="flex items-center space-x-2">
-                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleEditRule(regla.id) }}>
-
-                                                                    <img
-                                                                        src="/edit.svg"
-                                                                        alt="Edit"
-                                                                        className=" w-6 h-6"
-                                                                    />
-                                                                </DialogTrigger>
-                                                                <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleDeleteRule(regla.id) }}>
-                                                                    <img
-                                                                        src="/delete.svg"
-                                                                        alt="Delete"
-                                                                        className=" w-6 h-6"
-                                                                    />
-                                                                </DialogTrigger>
-                                                            </div>
+                                            <div className="space-y-2 mt-2">
+                                                {ChildReglas.map((regla, index) => (
+                                                    <div key={regla.id} className="flex items-center space-x-2">
+                                                        <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                                                            {index + 1}
                                                         </div>
-                                                    ))}
-                                                </div>
-                                                {
-                                                    action === "Create" ? <CreateRuleChild onOpenChange={handleOpenChild} parentID={ruleID} /> :
-                                                        action === "Edit" ? <EditRuleChild ruleID={RuleID} parentId={ruleID} onOpenChange={handleOpenChild} /> :
-                                                            action === "Delete" ? <DeleteRuleChild ruleID={RuleID} onOpenChange={handleOpenChild} /> : null
-                                                }
+                                                        <span className="text-[16px]">{regla.alias}</span>
+                                                        <div className="flex items-center space-x-2">
+                                                            <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleEditRule(regla.id) }}>
 
-                                            </Dialog>
+                                                                <img
+                                                                    src="/edit.svg"
+                                                                    alt="Edit"
+                                                                    className=" w-6 h-6"
+                                                                />
+                                                            </DialogTrigger>
+                                                            <DialogTrigger className="btn w-8 h-8 rounded-[12px] flex items-center justify-center" onClick={() => { handleDeleteRule(regla.id) }}>
+                                                                <img
+                                                                    src="/delete.svg"
+                                                                    alt="Delete"
+                                                                    className=" w-6 h-6"
+                                                                />
+                                                            </DialogTrigger>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </DialogDescription>
                 </form>

@@ -7,7 +7,9 @@ import { cn } from "@/lib/utils"; // Importación de la función 'cn'
 import CreateRule from "@/components/(socialmood)/create-rule";
 import EditRule from "@/components/(socialmood)/edit-rule";
 import DeleteRule from "@/components/(socialmood)/delete-rule";
-import { getSubscription, getActiveUserId } from "@/app/actions/(socialmood)/auth.actions";
+import CreateRuleChild from "@/components/(socialmood)/create-rule-child";
+import EditRuleChild from "@/components/(socialmood)/edit-rule-child";
+import DeleteRuleChild from "@/components/(socialmood)/delete-rule-child";
 
 import {
     Dialog,
@@ -40,6 +42,8 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
 
     const [action, setAction] = useState<string>("Create");
     const [ruleID, setRuleID] = useState<number>(0);
+    const [childRuleID, setChildRuleID] = useState<number>(0);
+
 
     const socialIconMap: { [key: string]: string } = {
         Instagram: "/instagram.svg",
@@ -64,10 +68,30 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
         }
     };
 
-    const handleOpenChange = (newOpenValue: boolean) => {
+    const handleOpenChange = (newOpenValue: boolean, action: string = "") => {
         setOpen(newOpenValue);
-        if (newOpenValue === false) {
+        if (newOpenValue === false && action === "") {
             fetchReglas();
+        }
+        if (action === "Create-Child") {
+            setAction("");
+            setAction("Create-Child");
+            setOpen(true);
+        }
+        if (action === "Edit") {
+            setAction("");
+            setAction("Edit");
+            setOpen(true);
+        }
+        if (action === "Edit-Child") {
+            setAction("");
+            setAction("Edit-Child");
+            setOpen(true);
+        }
+        if (action === "Delete-Child") {
+            setAction("");
+            setAction("Delete-Child");
+            setOpen(true);
         }
     };
 
@@ -78,6 +102,7 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
     const handleAddRule = () => {
         setOpen(true);
         setRuleID(0);
+        setChildRuleID(0);
         setAction("");
         setAction("Create");
     };
@@ -85,6 +110,7 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
     const handleEditRule = (ruleID: number) => {
         setOpen(true);
         setRuleID(ruleID);
+        setChildRuleID(0);
         setAction("");
         setAction("Edit");
     }
@@ -92,12 +118,18 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
     const handleDeleteRule = async (ruleID: number) => {
         setOpen(true);
         setRuleID(ruleID);
+        setChildRuleID(0);
         setAction("");
         setAction("Delete");
     }
 
     const updateData = async () => {
         await fetchReglas();
+    }
+
+    const HandleChangeActionForChild = (newAction: string, child: number) => {
+        setChildRuleID(child);
+        handleOpenChange(false, newAction);
     }
 
     useEffect(() => {
@@ -210,8 +242,12 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
             </div>
             {
                 action === "Create" ? <CreateRule onOpenChange={handleOpenChange} /> :
-                    action === "Edit" ? <EditRule ruleID={ruleID} onOpenChange={handleOpenChange} /> :
-                        action === "Delete" ? <DeleteRule ruleID={ruleID} onOpenChange={handleOpenChange} /> : null
+                    action === "Edit" ? <EditRule ruleID={ruleID} onChangeForm={HandleChangeActionForChild} /> :
+                        action === "Delete" ? <DeleteRule ruleID={ruleID} onOpenChange={handleOpenChange} /> :
+                            action === "Create-Child" ? <CreateRuleChild onOpenChange={handleOpenChange} parentID={ruleID} /> :
+                                action === "Edit-Child" ? <EditRuleChild ruleID={childRuleID} parentId={ruleID} onOpenChange={handleOpenChange}/> :
+                                    action === "Delete-Child" ? <DeleteRuleChild ruleID={childRuleID} onOpenChange={handleOpenChange} /> :
+                                        null
             }
         </Dialog>
     );

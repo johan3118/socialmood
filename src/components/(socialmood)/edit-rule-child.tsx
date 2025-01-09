@@ -46,7 +46,7 @@ import { Label } from "../ui/label";
 interface EditRuleChildProps {
     ruleID: number;
     parentId: number;
-    onOpenChange: (newOpenValue: boolean) => void;
+    onOpenChange: (newOpenValue: boolean, action: string) => void;
 
 }
 interface Perfil {
@@ -61,9 +61,7 @@ interface Reglas {
     alias: string;
     subcategorias: string[];
 }
-export default function EditRuleChild({ ruleID, parentId, onOpenChange}: EditRuleChildProps) {
-
-    const [open, setOpen] = useState(false);
+export default function EditRuleChild({ ruleID, parentId, onOpenChange }: EditRuleChildProps) {
 
     const [redSocial, setRedSocial] = useState("");
 
@@ -120,14 +118,13 @@ export default function EditRuleChild({ ruleID, parentId, onOpenChange}: EditRul
                 variant: "default",
                 description: "Rule updated successfully",
             });
-            onOpenChange(false);
+            onOpenChange(false, "Edit");
         }
         setIsPending(false);
     }
 
     async function onClose() {
-
-        onOpenChange(false);
+        onOpenChange(false, "Edit");
     }
 
     const [Subcategorias, SetSubcategorias] = useState([

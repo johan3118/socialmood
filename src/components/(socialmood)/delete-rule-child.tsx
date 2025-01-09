@@ -17,7 +17,7 @@ import { deleteRule, ruleHasChildren } from "@/app/actions/(socialmood)/rules.ac
 
 interface DeleteRuleChildProps {
     ruleID: number;
-    onOpenChange: (newOpenValue: boolean) => void;
+    onOpenChange: (newOpenValue: boolean, action: string) => void;
 }
 
 export default function DeleteRuleChild({ ruleID, onOpenChange }: DeleteRuleChildProps) {
@@ -39,7 +39,7 @@ export default function DeleteRuleChild({ ruleID, onOpenChange }: DeleteRuleChil
                 variant: "default",
                 description: "Rule deleted successfully",
             });
-            onOpenChange(false);
+            onOpenChange(false, "Edit");
         }
         setIsPending(false);
 
@@ -62,7 +62,7 @@ export default function DeleteRuleChild({ ruleID, onOpenChange }: DeleteRuleChil
                         variant="google"
                         defaultText="Cancelar"
                         customStyle="text-black bg-[#EBEBEBA8]/[66%] text-[20px]"
-                        onClick={() => { onOpenChange(false) }}
+                        onClick={() => { onOpenChange(false, "Edit") }}
                     />
 
                     <SocialButton
@@ -78,7 +78,7 @@ export default function DeleteRuleChild({ ruleID, onOpenChange }: DeleteRuleChil
                 </div>
 
             </DialogDescription>
-            <button onClick={() => { onOpenChange(false) }} className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground text-white">
+            <button onClick={() => { onOpenChange(false, "Edit") }} className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground text-white">
                 <img src="/delete.svg" alt="Close" className="w-6 h-6" />
             </button>
         </DialogContent>

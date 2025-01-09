@@ -33,7 +33,7 @@ import { toast } from "@/components/ui/use-toast";
 import { getRuleSubcategories, getSocialMediaAccounts, getRule, createChildRule } from "@/app/actions/(socialmood)/rules.actions";
 
 interface CreateRuleChildProps {
-    onOpenChange: (newOpenValue: boolean) => void;
+    onOpenChange: (newOpenValue: boolean, action: string) => void;
     parentID: number;
 }
 
@@ -44,8 +44,6 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
     const [socialMedias, setSocialMedias] = useState<{ id: string, label: string }[]>([]);
 
     const [redSocial, setRedSocial] = useState("");
-
-    const [open, setOpen] = useState(false);
 
     const [Subcategorias, SetSubcategorias] = useState([
         {
@@ -95,16 +93,16 @@ export default function CreateRuleChild({ onOpenChange, parentID }: CreateRuleCh
                 variant: "default",
                 description: "Rule created successfully",
             });
-            setOpen(false);
-            onOpenChange(open);
+
             form.reset();
+            onOpenChange(false, "Edit");
         }
         setIsPending(false);
     }
 
     async function onClose() {
-        setOpen(false);
-        onOpenChange(open);
+        form.reset();
+        onOpenChange(false, "Edit");
     }
 
     const fetchSubcategorias = async () => {
