@@ -184,7 +184,9 @@ const saveCommentsToMongo = async (
       comment.from?.id || ""
     );
 
-    const existingComment = false;
+    const existingComment = await collection.findOne({
+      comment_id: comment.id,
+    });
 
     if (!existingComment) {
       let data;
