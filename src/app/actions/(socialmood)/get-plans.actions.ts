@@ -141,16 +141,16 @@ export const obtenerSoloReglasDeCuentas = async (id: number, subcategorias: stri
   for (let i = 0; i < ids_reglas_padre.length; i++) {
     let reglas_hijas = await db
       .select({
-        regla: reglasTable.prompt,
+      regla: reglasTable.prompt,
       })
       .from(reglasTable)
       .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_regla, reglasTable.id))
       .innerJoin(subcategoriasTable, eq(subcategoriasTable.id, subcategoriasReglasTable.id_subcategoria))
-      .where(and(eq(reglasTable.id_regla_padre, ids_reglas_padre[i]), eq(subcategoriasTable.nombre, subcategorias)));
+      .where(and(eq(reglasTable.id_regla_padre, ids_reglas_padre[i]), eq(subcategoriasTable.nombre, subcategorias)))
 
     reglas_hijas.forEach((r) => {
       if (descripciones.indexOf(r.regla) === -1) {
-        descripciones.push(r.regla)
+        descripciones.push(r.regla);
       }
     });
   }
