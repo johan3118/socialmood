@@ -1,14 +1,18 @@
-"use client"
+"use client";
+
 import React, { ChangeEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { getAccessToken, createSubscriptionPlan } from "@/app/services/paypal";
-import { insertPlan, updatePlanById } from "@/app/actions/(backoffice)/subscriptions.actions";
-import * as Toast from '@radix-ui/react-toast';
+import { ToastProvider, Toast, ToastViewport } from "@radix-ui/react-toast";
 import { useRouter, useParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubscriptionFormSchema } from "@/types";
+import { insertPlan, updatePlanById } from "@/app/actions/(backoffice)/subscriptions.actions";
+import { createSubscriptionPlan, getAccessToken } from "@/app/services/paypal";
 
 interface FormData {
   nombre: string;
@@ -18,27 +22,6 @@ interface FormData {
   redesSociales: string;
   usuarios: string;
   descripcion: string;
-}
-
-interface SubscriptionPlan {
-  id: string;
-  product_id: string;
-  name: string;
-  status: string;
-  description: string;
-  usage_type: string;
-  create_time: string;
-  links: Array<{
-    href: string;
-    rel: string;
-    method: string;
-    encType: string;
-  }>;
-  payment_preferences: {
-    auto_bill_outstanding: boolean;
-    setup_fee_failure_action: string;
-    payment_failure_threshold: number;
-  };
 }
 
 interface FormularioSubscripcionProps {
@@ -58,147 +41,119 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
   const params = useParams<{ planId: string }>();
   const planId = parseInt(params.planId);
 
-  const handleSave = async () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(SubscriptionFormSchema),
+    defaultValues: formData,
+  });
+
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
-
-    if (isForUpdate) {
-
-      try {
-        const idTipoFacturacion: number = formData.tipoFacturacion === "MONTH" ? 1 : 2;
-
-        // Actualizar plan en playpal
-        console.log("Actualizando plan en Paypal");
-
-        // Actualizar plan en la base de datos
+    try {
+      if (isForUpdate) {
+        const idTipoFacturacion = data.tipoFacturacion === "MONTH" ? 1 : 2;
 
         await updatePlanById(planId, {
-          nombre: formData.nombre,
-          costo: parseFloat(formData.precio),
-          cantidad_interacciones_mes: parseInt(formData.interacciones),
-          cantidad_usuarios_permitidos: parseInt(formData.usuarios),
-          cantidad_cuentas_permitidas: parseInt(formData.redesSociales),
-          descripcion: formData.descripcion,
+          nombre: data.nombre,
+          costo: parseFloat(data.precio),
+          cantidad_interacciones_mes: parseInt(data.interacciones),
+          cantidad_usuarios_permitidos: parseInt(data.usuarios),
+          cantidad_cuentas_permitidas: parseInt(data.redesSociales),
+          descripcion: data.descripcion,
           id_tipo_facturacion: idTipoFacturacion,
-        })
+        });
 
-
-        // Mostrar toast de éxito
         setToastMessage("El plan de suscripción se ha actualizado correctamente.");
-        setToastOpen(true);
-
-        setTimeout(() => {
-          router.push("/bo/layout/sub-table")
-        }, 2000)
-
-
-      } catch (error) {
-        // Mostrar toast de error
-        const errorMessage = error instanceof Error ? error.message : "Error desconocido.";
-        console.error('Error al crear el plan de suscripción:', errorMessage);
-        setToastMessage(`Ha ocurrido un error: ${errorMessage}`);
-        setIsError(true);
-        setToastOpen(true);
-
-      } finally {
-        setLoading(false);
-      }
-
-
-
-    } else {
-
-      try {
-        // Crear subscripción en PayPal
-        const accessToken: string = await getAccessToken();
-
+      } else {
+        const accessToken = await getAccessToken();
         const planData = {
-          product_id: "1725734723", // Usa el ID del producto adecuado
-          name: formData.nombre,
-          description: formData.descripcion,
+          product_id: "1725734723",
+          name: data.nombre,
+          description: data.descripcion,
           status: "INACTIVE",
           billing_cycles: [
             {
               frequency: {
-                interval_unit: formData.tipoFacturacion.toUpperCase(), // DAY WEEK MONTH YEAR
-                interval_count: 1
+                interval_unit: data.tipoFacturacion.toUpperCase(),
+                interval_count: 1,
               },
               tenure_type: "REGULAR",
               sequence: 1,
               total_cycles: 0,
               pricing_scheme: {
                 fixed_price: {
-                  value: formData.precio,
-                  currency_code: "USD"
-                }
-              }
-            }
+                  value: data.precio,
+                  currency_code: "USD",
+                },
+              },
+            },
           ],
           payment_preferences: {
             auto_bill_outstanding: true,
             setup_fee_failure_action: "CONTINUE",
-            payment_failure_threshold: 2
-          }
+            payment_failure_threshold: 2,
+          },
+          links: [],
+          usage_type: "",
+          create_time: "",
+          id: "",
         };
 
-        const subscriptionPlan: SubscriptionPlan = await createSubscriptionPlan(accessToken, planData);
-        console.log('Plan de suscripción creado:', subscriptionPlan);
-
-        // Guardar el plan de suscripción en la base de datos
-        const idTipoFacturacion: number = formData.tipoFacturacion === "MONTH" ? 1 : 2;
+        const subscriptionPlan = await createSubscriptionPlan(accessToken, planData);
 
         await insertPlan({
-          nombre: formData.nombre,
-          costo: parseFloat(formData.precio),
-          cantidad_interacciones_mes: parseInt(formData.interacciones),
-          cantidad_usuarios_permitidos: parseInt(formData.usuarios),
-          cantidad_cuentas_permitidas: parseInt(formData.redesSociales),
-          descripcion: formData.descripcion,
+          nombre: data.nombre,
+          costo: parseFloat(data.precio),
+          cantidad_interacciones_mes: parseInt(data.interacciones),
+          cantidad_usuarios_permitidos: parseInt(data.usuarios),
+          cantidad_cuentas_permitidas: parseInt(data.redesSociales),
+          descripcion: data.descripcion,
           id_estado_plan: 2, // INACTIVE
-          id_tipo_facturacion: idTipoFacturacion,
+          id_tipo_facturacion: data.tipoFacturacion === "MONTH" ? 1 : 2,
           paypal_plan_id: subscriptionPlan.id,
         });
 
-        // Mostrar toast de éxito
         setToastMessage("El plan de suscripción se ha creado correctamente.");
-        setToastOpen(true);
-
-        setTimeout(() => {
-          router.push("/bo/layout/sub-table")
-        }, 2000)
-
-
-
-      } catch (error) {
-
-        // Mostrar toast de error
-        const errorMessage = error instanceof Error ? error.message : "Error desconocido.";
-        console.error('Error al crear el plan de suscripción:', errorMessage);
-        setToastMessage(`Ha ocurrido un error: ${errorMessage}`);
-        setIsError(true);
-        setToastOpen(true);
-
-      } finally {
-        setLoading(false);
       }
-
+      setIsError(false);
+      router.push("/bo/layout/sub-table");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Error desconocido.";
+      setToastMessage(`Ha ocurrido un error: ${errorMessage}`);
+      setIsError(true);
+    } finally {
+      setToastOpen(true);
+      setLoading(false);
     }
-
   };
 
   return (
     <>
-      <form className="space-y-6">
+      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <Label htmlFor="nombre">Nombre</Label>
-          <Input id="nombre" name="nombre" className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black " value={formData.nombre} onChange={handleInputChange} readOnly={isForUpdate} />
+          <Input
+            id="nombre"
+            className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
+            {...register("nombre")}
+            disabled={isForUpdate}
+            onChange={handleInputChange}
+          />
+          {errors.nombre && <p className="text-red-500">{errors.nombre.message}</p>}
         </div>
+
         <div className="flex space-x-4">
           <div className="flex-1">
             <Label htmlFor="tipoFacturacion">Tipo de facturación</Label>
-            <Select name="tipoFacturacion" value={formData.tipoFacturacion} onValueChange={(value) => handleSelectChange("tipoFacturacion", value)}>
+            <Select
+              name="tipoFacturacion"
+              value={formData.tipoFacturacion}
+              onValueChange={(value) => handleSelectChange("tipoFacturacion", value)}
+              disabled={isForUpdate}
+            >
               <SelectTrigger className="bg-gray-100">
                 <SelectValue />
               </SelectTrigger>
@@ -207,13 +162,17 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
                 <SelectItem value="YEAR">Anual</SelectItem>
               </SelectContent>
             </Select>
+            {errors.tipoFacturacion && <p className="text-red-500">{errors.tipoFacturacion.message}</p>}
           </div>
           <div className="flex-1">
             <Label htmlFor="precio">Precio</Label>
-            <Input className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black " id="precio" name="precio" value={formData.precio} onChange={handleInputChange} />
+            <Input
+              id="precio"
+              className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
+              {...register("precio")}
+              onChange={handleInputChange}
+            />
+            {errors.precio && <p className="text-red-500">{errors.precio.message}</p>}
           </div>
         </div>
 
@@ -222,55 +181,70 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({ formDat
 
         <div>
           <Label htmlFor="interacciones">Cantidad de interacciones procesadas por hora</Label>
-          <Input className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black " id="interacciones" name="interacciones" value={formData.interacciones} onChange={handleInputChange} />
+          <Input
+            id="interacciones"
+            className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
+            {...register("interacciones")}
+            onChange={handleInputChange}
+          />
+          {errors.interacciones && <p className="text-red-500">{errors.interacciones.message}</p>}
         </div>
+
         <div className="flex space-x-4">
           <div className="flex-1">
             <Label htmlFor="redesSociales">Redes sociales asociadas</Label>
-            <Input className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black " id="redesSociales" name="redesSociales" value={formData.redesSociales} onChange={handleInputChange} />
+            <Input
+              id="redesSociales"
+              className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
+              {...register("redesSociales")}
+              onChange={handleInputChange}
+            />
+            {errors.redesSociales && <p className="text-red-500">{errors.redesSociales.message}</p>}
           </div>
           <div className="flex-1">
             <Label htmlFor="usuarios">Usuarios asociados</Label>
-            <Input className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black " id="usuarios" name="usuarios" value={formData.usuarios} onChange={handleInputChange} />
+            <Input
+              id="usuarios"
+              className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
+              {...register("usuarios")}
+              onChange={handleInputChange}
+            />
+            {errors.usuarios && <p className="text-red-500">{errors.usuarios.message}</p>}
           </div>
         </div>
+
         <div>
           <Label htmlFor="descripcion">Descripción</Label>
-          <Textarea className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black " id="descripcion" name="descripcion" value={formData.descripcion} onChange={handleInputChange} />
+          <Textarea
+            id="descripcion"
+            className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
+            {...register("descripcion")}
+            onChange={handleInputChange}
+          />
+          {errors.descripcion && <p className="text-red-500">{errors.descripcion.message}</p>}
         </div>
-        <Button className="bg-[#D24EA6] w-1/3" onClick={handleSave} disabled={loading}>
-          {loading ? 'Guardando...' : 'Guardar'}
+
+        <Button className="bg-[#D24EA6] w-1/3" type="submit" disabled={loading}>
+          {loading ? "Guardando..." : "Guardar"}
         </Button>
       </form>
 
-      <Toast.Provider>
-        <Toast.Root
+      <ToastProvider>
+        <Toast
           open={toastOpen}
           onOpenChange={setToastOpen}
-          className={`p-4 rounded-lg shadow-lg ${isError ? "bg-red-500" : "bg-green-500"
-            } transition-opacity duration-300 ease-in-out text-white`}
+          className={`p-4 rounded-lg shadow-lg ${isError ? "bg-red-500" : "bg-green-500"} transition-opacity duration-300 ease-in-out text-white`}
         >
           <div className="flex items-center">
             <span className="font-bold">{isError ? "Error" : "Éxito"}:</span>
-            <Toast.Title className="ml-2">{toastMessage}</Toast.Title>
+            <p className="ml-2">{toastMessage}</p>
           </div>
-        </Toast.Root>
-        <Toast.Viewport className="fixed top-5 right-5 flex flex-col gap-2 p-6" />
-      </Toast.Provider>
+        </Toast>
+        <ToastViewport className="fixed top-5 right-5 flex flex-col gap-2 p-6" />
+      </ToastProvider>
     </>
   );
 };
 
 export default FormularioSubscripcion;
+

@@ -200,3 +200,33 @@ export const EditResponseSchema = z.object({
     .string()
     .min(1, "La respuesta es obligatoria")
 })
+
+
+
+export const SubscriptionFormSchema = z.object({
+  nombre: z
+    .string()
+    .min(2, { message: "El nombre debe tener al menos 2 caracteres" })
+    .max(50, { message: "El nombre no puede exceder los 50 caracteres" }),
+  tipoFacturacion: z
+    .enum(["MONTH", "YEAR"])
+    .refine((val) => ["MONTH", "YEAR"].includes(val), {
+      message: "El tipo de facturación debe ser 'MONTH' o 'YEAR'",
+    }),
+  precio: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, { message: "El precio debe ser un número válido con hasta dos decimales" }),
+  interacciones: z
+    .string()
+    .regex(/^\d+$/, { message: "Las interacciones deben ser un número entero válido" }),
+  redesSociales: z
+    .string()
+    .regex(/^\d+$/, { message: "La cantidad de redes sociales debe ser un número entero válido" }),
+  usuarios: z
+    .string()
+    .regex(/^\d+$/, { message: "La cantidad de usuarios debe ser un número entero válido" }),
+  descripcion: z
+    .string()
+    .min(10, { message: "La descripción debe tener al menos 10 caracteres" })
+    .max(500, { message: "La descripción no puede exceder los 500 caracteres" }),
+});

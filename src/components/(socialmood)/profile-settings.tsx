@@ -40,14 +40,8 @@ export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
         </header>
 
         {isModalOpen && ( // Conditionally render the modal
-          <Modal onClose={closeModal}> {/* Added className */}
-
-  
-              <InstructionCard closeModal={closeModal}/>
-
-            
-             
- 
+          <Modal onClose={closeModal}> 
+            <InstructionCard closeModal={closeModal} />
           </Modal>
         )}
 
