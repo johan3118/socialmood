@@ -113,7 +113,7 @@ export async function handleNewSubscription({
 export const obtenerCuentasRedesSociales = async () => {
   const cuentas = await db
     .select({
-      id: cuentasRedesSocialesTable.id_subscripcion,
+      id: cuentasRedesSocialesTable.id,
       llave_acceso: cuentasRedesSocialesTable.llave_acceso,
       codigo_cuenta: cuentasRedesSocialesTable.codigo_cuenta,
       usuario_cuenta: cuentasRedesSocialesTable.usuario_cuenta,
@@ -133,5 +133,9 @@ export const obtenerSoloReglasDeCuentas = async (id: number, subcategorias: stri
     .innerJoin(subcategoriasTable, eq(subcategoriasTable.id, subcategoriasReglasTable.id_subcategoria))
     .where(and(eq(reglasTable.id_cuenta, id), eq(subcategoriasTable.nombre, subcategorias))); 
 
-  return regla.map((r) => r.regla);  
+    let descripciones = regla.map((r) => r.regla)
+
+    descripciones = descripciones.filter((item, index)=> descripciones.indexOf(item) == index)
+
+  return descripciones;  
 };
