@@ -1,7 +1,7 @@
 'use server'
 import db from "@/db";
 import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTable, reglasTable, subcategoriasReglasTable, subcategoriasTable } from "@/db/schema/socialMood";
-import { eq, inArray, and} from "drizzle-orm";
+import { eq, inArray, and } from "drizzle-orm";
 
 export async function getSubscriptionPlans() {
   const plans = await db.select().from(planesTable).limit(3);
@@ -50,14 +50,14 @@ export async function hasSubscription(userId: number) {
 }
 
 export async function handleNewSubscription({
-  userId,  
+  userId,
   subscriptionID,
   planId,
   planName,
   planCost,
   billingType,
 }: {
-  userId: number; 
+  userId: number;
   subscriptionID: string;
   planId: number;
   planName: string;
@@ -81,27 +81,27 @@ export async function handleNewSubscription({
     .insert(subscripcionesTable)
     .values({
       referencia_pago: subscriptionID,
-      fecha_adquisicion: fechaUltimoPago, 
-      fecha_ultimo_pago: fechaUltimoPago, 
-      fecha_proximo_pago: fechaProximoPago, 
+      fecha_adquisicion: fechaUltimoPago,
+      fecha_ultimo_pago: fechaUltimoPago,
+      fecha_proximo_pago: fechaProximoPago,
       costo: planCost,
       nombre_plan: planName,
       tipo_facturacion: billingType,
       id_propietario: userId,
       id_plan_subscripcion: planId,
-      id_estado_subscripcion: 1, 
+      id_estado_subscripcion: 1,
       id_metodo_pago: 1, // Método de pago PayPal
     })
-    .returning(); 
+    .returning();
 
   await db.insert(facturasTable).values({
     codigo_transaccion: subscriptionID,
     referencia_pago: subscriptionID,
     monto_total: planCost,
-    fecha_facturacion: fechaProximoPago, 
+    fecha_facturacion: fechaProximoPago,
     nombre_plan: planName,
     id_metodo_pago: 1, // Método de pago PayPal
-    id_estado_factura: 1, 
+    id_estado_factura: 1,
     id_usuario: userId,
     id_plan_subscripcion: planId,
     id_subscripcion: newSubscription.id,
@@ -119,23 +119,43 @@ export const obtenerCuentasRedesSociales = async () => {
       usuario_cuenta: cuentasRedesSocialesTable.usuario_cuenta,
     })
     .from(cuentasRedesSocialesTable);
-  
+
   return cuentas;
 };
 
 export const obtenerSoloReglasDeCuentas = async (id: number, subcategorias: string) => {
   const regla = await db
     .select({
-      regla: reglasTable.prompt, 
+      regla: reglasTable.prompt,
+      id: reglasTable.id
     })
     .from(reglasTable)
     .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_regla, reglasTable.id))
     .innerJoin(subcategoriasTable, eq(subcategoriasTable.id, subcategoriasReglasTable.id_subcategoria))
-    .where(and(eq(reglasTable.id_cuenta, id), eq(subcategoriasTable.nombre, subcategorias))); 
+    .where(and(eq(reglasTable.id_cuenta, id), eq(subcategoriasTable.nombre, subcategorias)));
 
-    let descripciones = regla.map((r) => r.regla)
+  let descripciones = regla.map((r) => r.regla)
 
-    descripciones = descripciones.filter((item, index)=> descripciones.indexOf(item) == index)
+  let ids_reglas_padre = regla.map((r) => r.id)
 
-  return descripciones;  
+  for (let i = 0; i < ids_reglas_padre.length; i++) {
+    let reglas_hijas = await db
+      .select({
+        regla: reglasTable.prompt,
+      })
+      .from(reglasTable)
+      .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_regla, reglasTable.id))
+      .innerJoin(subcategoriasTable, eq(subcategoriasTable.id, subcategoriasReglasTable.id_subcategoria))
+      .where(and(eq(reglasTable.id_regla_padre, ids_reglas_padre[i]), eq(subcategoriasTable.nombre, subcategorias)));
+
+    reglas_hijas.forEach((r) => {
+      if (descripciones.indexOf(r.regla) === -1) {
+        descripciones.push(r.regla)
+      }
+    });
+  }
+
+  descripciones = descripciones.filter((item, index) => descripciones.indexOf(item) == index)
+
+  return descripciones;
 };
