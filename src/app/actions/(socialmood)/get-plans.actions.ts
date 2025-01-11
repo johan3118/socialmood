@@ -1,11 +1,16 @@
 'use server'
 import db from "@/db";
-import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTable, reglasTable, subcategoriasReglasTable, subcategoriasTable } from "@/db/schema/socialMood";
-import { eq, inArray, and} from "drizzle-orm";
+import { planesTable, subscripcionesTable, facturasTable, cuentasRedesSocialesTable, reglasTable, subcategoriasReglasTable, subcategoriasTable, estadosPlanTable } from "@/db/schema/socialMood";
+import { eq, inArray, and } from "drizzle-orm";
+import { escape } from "querystring";
 
 export async function getSubscriptionPlans() {
-  const plans = await db.select().from(planesTable).where(eq(planesTable.id_estado_plan, 1));
-  return plans;
+  const plans = await db.
+    select()
+    .from(planesTable)
+    .innerJoin(estadosPlanTable, eq(estadosPlanTable.id, planesTable.id_estado_plan))
+    .where(eq(estadosPlanTable.nombre, "ACTIVO"));
+  return plans.map((plan) => (plan.planes));
 }
 
 export async function getUserSubscription(userId: number) {
@@ -50,14 +55,14 @@ export async function hasSubscription(userId: number) {
 }
 
 export async function handleNewSubscription({
-  userId,  
+  userId,
   subscriptionID,
   planId,
   planName,
   planCost,
   billingType,
 }: {
-  userId: number; 
+  userId: number;
   subscriptionID: string;
   planId: number;
   planName: string;
@@ -81,27 +86,27 @@ export async function handleNewSubscription({
     .insert(subscripcionesTable)
     .values({
       referencia_pago: subscriptionID,
-      fecha_adquisicion: fechaUltimoPago, 
-      fecha_ultimo_pago: fechaUltimoPago, 
-      fecha_proximo_pago: fechaProximoPago, 
+      fecha_adquisicion: fechaUltimoPago,
+      fecha_ultimo_pago: fechaUltimoPago,
+      fecha_proximo_pago: fechaProximoPago,
       costo: planCost,
       nombre_plan: planName,
       tipo_facturacion: billingType,
       id_propietario: userId,
       id_plan_subscripcion: planId,
-      id_estado_subscripcion: 1, 
+      id_estado_subscripcion: 1,
       id_metodo_pago: 1, // Método de pago PayPal
     })
-    .returning(); 
+    .returning();
 
   await db.insert(facturasTable).values({
     codigo_transaccion: subscriptionID,
     referencia_pago: subscriptionID,
     monto_total: planCost,
-    fecha_facturacion: fechaProximoPago, 
+    fecha_facturacion: fechaProximoPago,
     nombre_plan: planName,
     id_metodo_pago: 1, // Método de pago PayPal
-    id_estado_factura: 1, 
+    id_estado_factura: 1,
     id_usuario: userId,
     id_plan_subscripcion: planId,
     id_subscripcion: newSubscription.id,
@@ -119,19 +124,19 @@ export const obtenerCuentasRedesSociales = async () => {
       usuario_cuenta: cuentasRedesSocialesTable.usuario_cuenta,
     })
     .from(cuentasRedesSocialesTable);
-  
+
   return cuentas;
 };
 
 export const obtenerSoloReglasDeCuentas = async (id: number, subcategorias: string) => {
   const regla = await db
     .select({
-      regla: reglasTable.prompt, 
+      regla: reglasTable.prompt,
     })
     .from(reglasTable)
     .innerJoin(subcategoriasReglasTable, eq(subcategoriasReglasTable.id_regla, reglasTable.id))
     .innerJoin(subcategoriasTable, eq(subcategoriasTable.id, subcategoriasReglasTable.id_subcategoria))
-    .where(and(eq(reglasTable.id_cuenta, id), eq(subcategoriasTable.nombre, subcategorias))); 
+    .where(and(eq(reglasTable.id_cuenta, id), eq(subcategoriasTable.nombre, subcategorias)));
 
-  return regla.map((r) => r.regla);  
+  return regla.map((r) => r.regla);
 };

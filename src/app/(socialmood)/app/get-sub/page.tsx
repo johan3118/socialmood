@@ -4,7 +4,7 @@ import basic from "/public/basic.png";
 import pro from "/public/pro.png";
 import premium from "/public/premium.png";
 import Image from "next/image";
-import BlurredContainer from "@/components/(socialmood)/blur-background";
+import BlurredContainer from "@/components/(socialmood)/blur-background-sub";
 import HorizontalLine from "@/components/(socialmood)/horizontal-line";
 import IconContainer from "@/components/(socialmood)/check";
 import { getSubscriptionPlans } from "@/app/actions/(socialmood)/get-plans.actions";
@@ -39,18 +39,17 @@ export default async function GetSubscription() {
         : plan.nombre === "Plan Intermedio"
           ? pro
           : premium,
-    isCurrentPlan: userSubscription?.planName === plan.nombre,
+    isCurrentPlan: userSubscription?.planId === plan.id,
     type: plan.id_tipo_facturacion == 1 ? "Mensual" : "Anual",
   }));
 
   return (
-    <main className="">
+    <main className="flex flex-wrap items-center justify-center space-y-4 space-x-4">
       {planDescription.map((plan, index) => (
         <BlurredContainer
           key={index}
-          variant={plan.variant === "rose" ? "rose" : "blur"}
-          customStyle={`space-y-7 ${index === 1 ? "xl:translate-y-[-1%]" : "xl:translate-y-[3%]"
-            }`}
+          variant={"blur"}
+          customStyle={`space-y-4`}
         >
           <section className="flex flex-col items-center justify-center space-y-3">
             <section className="flex flex-col items-center justify-center">
