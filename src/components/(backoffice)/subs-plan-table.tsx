@@ -1,8 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch"; // Importa el switch de shadcn
-import { selectAllPlans, activatePlan, deactivatePlan } from "@/app/actions/(backoffice)/subscriptions.actions";
-import { useRouter } from 'next/navigation';
+import {
+  selectAllPlans,
+  activatePlan,
+  deactivatePlan,
+} from "@/app/[locale]/actions/(backoffice)/subscriptions.actions";
+import { useRouter } from "next/navigation";
 
 interface PlanSubscripcion {
   planId: string;
@@ -16,7 +20,9 @@ interface PlanSubscripcion {
 }
 
 const PlanesSubscripcionTable: React.FC = () => {
-  const [planesSubscripcion, setPlanesSubscripcion] = useState<PlanSubscripcion[]>([]);
+  const [planesSubscripcion, setPlanesSubscripcion] = useState<
+    PlanSubscripcion[]
+  >([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -67,7 +73,10 @@ const PlanesSubscripcionTable: React.FC = () => {
     <div className="container mx-auto p-6">
       <div className="flex justify-between mb-6">
         <h2 className="text-xl font-bold">Listado de subscripciones</h2>
-        <button className="btn w-8 h-8 bg-[#D24EA6] rounded-lg" onClick={handleCrearSubscripcion}>
+        <button
+          className="btn w-8 h-8 bg-[#D24EA6] rounded-lg"
+          onClick={handleCrearSubscripcion}
+        >
           <span className="text-white text-2xl">+</span>
         </button>
       </div>
@@ -88,25 +97,36 @@ const PlanesSubscripcionTable: React.FC = () => {
             {planesSubscripcion.map((plan) => (
               <tr key={plan.planId} className="">
                 <td className="py-6 px-4">{plan.planNombre}</td>
-                <td className="py-3 px-4 text-center">{plan.cantidad_usuarios_permitidos}</td>
-                <td className="py-3 px-4 text-center">{plan.cantidad_cuentas_permitidas}</td>
-                <td className="py-3 px-4 text-center">{plan.cantidad_interacciones_mes}</td>
+                <td className="py-3 px-4 text-center">
+                  {plan.cantidad_usuarios_permitidos}
+                </td>
+                <td className="py-3 px-4 text-center">
+                  {plan.cantidad_cuentas_permitidas}
+                </td>
+                <td className="py-3 px-4 text-center">
+                  {plan.cantidad_interacciones_mes}
+                </td>
                 <td className="py-3 px-4 text-center">
                   <span
-                    className={`${plan.estado_plan_nombre === "ACTIVO"
+                    className={`${
+                      plan.estado_plan_nombre === "ACTIVO"
                         ? "bg-green-200 text-green-800"
                         : "bg-red-200 text-red-800"
-                      } py-1 px-3 rounded-full text-xs font-bold`}
+                    } py-1 px-3 rounded-full text-xs font-bold`}
                   >
                     {plan.estado_plan_nombre}
                   </span>
                 </td>
-                <td className="py-3 px-4 font-bold text-center">{plan.costo}$/{plan.tipo_facturacion_nombre.toLowerCase()}</td>
+                <td className="py-3 px-4 font-bold text-center">
+                  {plan.costo}$/{plan.tipo_facturacion_nombre.toLowerCase()}
+                </td>
                 <td className="py-3 px-4 flex items-center">
                   <Switch
                     className="data-[state=checked]:bg-[#422EA3]"
                     checked={plan.estado_plan_nombre === "ACTIVO"}
-                    onCheckedChange={(checked) => handleSwitchChange(parseInt(plan.planId), checked)}
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(parseInt(plan.planId), checked)
+                    }
                   />
                   {/* Botón para editar el plan */}
                   <button
@@ -121,7 +141,6 @@ const PlanesSubscripcionTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };

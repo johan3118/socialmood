@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation"; // Importar useRouter
-import { handleNewSubscription } from "@/app/actions/(socialmood)/get-plans.actions";
+import { handleNewSubscription } from "@/app/[locale]/actions/(socialmood)/get-plans.actions";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 interface PayPalButtonProps {
@@ -25,44 +25,43 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
 
   return (
     <div className="w-full h-[18vh]">
-      <PayPalScriptProvider options={{
-        clientId: "AQEpcxi6zo0JHfCkgJafrgfVG1xeUNwk53-xUepwT2CpcV7_foTYlsxCjp-JngT_stubauCGq07u67Af",
-        vault: true,
-        intent: "subscription",
-      }}>
-        <PayPalButtons style={{
-          "layout": "vertical",
-          "color": "gold",
-          "shape": "rect",
-          "label": "pay",
+      <PayPalScriptProvider
+        options={{
+          clientId:
+            "AQEpcxi6zo0JHfCkgJafrgfVG1xeUNwk53-xUepwT2CpcV7_foTYlsxCjp-JngT_stubauCGq07u67Af",
+          vault: true,
+          intent: "subscription",
         }}
-          createSubscription={
-            function (data: any, actions: any) {
-              return actions.subscription.create({
-                plan_id: paypalPlanId,
-              });
-            }}
+      >
+        <PayPalButtons
+          style={{
+            layout: "vertical",
+            color: "gold",
+            shape: "rect",
+            label: "pay",
+          }}
+          createSubscription={function (data: any, actions: any) {
+            return actions.subscription.create({
+              plan_id: paypalPlanId,
+            });
+          }}
+          onApprove={async function (data: any, actions: any) {
+            // Llamar a la server action para crear la suscripción y factura
+            const response = await handleNewSubscription({
+              subscriptionID: data.subscriptionID,
+              planName,
+              billingType,
+              planCost,
+              userId,
+              planId,
+            });
 
-          onApprove={
-            async function (data: any, actions: any) {
-              // Llamar a la server action para crear la suscripción y factura
-              const response = await handleNewSubscription({
-                subscriptionID: data.subscriptionID,
-                planName,
-                billingType,
-                planCost,
-                userId,
-                planId,
-              });
-
-              if (response.success) {
-                router.push("/app/dashboard");
-              } else {
-                alert("Hubo un problema al procesar la suscripción.");
-              }
+            if (response.success) {
+              router.push("/app/dashboard");
+            } else {
+              alert("Hubo un problema al procesar la suscripción.");
             }
-
-          }
+          }}
         />
       </PayPalScriptProvider>
     </div>

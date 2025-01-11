@@ -13,13 +13,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignInSchema } from "../../types";
-import { signIn } from "@/app/actions/(backoffice)/auth.actions";
+import { signIn } from "@/app/[locale]/actions/(backoffice)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import SocialButton from "./social-button";
-
 
 export function SignInForm() {
   const [isPending, setIsPending] = useState(false);
@@ -55,22 +54,34 @@ export function SignInForm() {
 
   return (
     <Form {...form}>
-      <Image className="" src={"/socialmood-black-logo.svg"} width={163} height={70} alt={""} />
+      <Image
+        className=""
+        src={"/socialmood-black-logo.svg"}
+        width={163}
+        height={70}
+        alt={""}
+      />
       <h1 className="text-3xl font-bold text-black">Log In</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full px-20 py-5">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-5 w-full px-20 py-5"
+      >
         <FormField
           control={form.control}
           name="correo_electronico"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-black">Correo electrónico</FormLabel>
+              <FormLabel className="block text-sm font-medium text-black">
+                Correo electrónico
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
                             rounded-[12px] border-transparent
                             focus:outline-none focus:ring-2 focus:ring-primary
                             bg-[#EBEBEB] text-black "
-                  autoComplete="correo_electronico" {...field}
+                  autoComplete="correo_electronico"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -82,7 +93,9 @@ export function SignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-black">Contraseña</FormLabel>
+              <FormLabel className="block text-sm font-medium text-black">
+                Contraseña
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 

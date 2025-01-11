@@ -1,122 +1,114 @@
-'use client'
-import React, { useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
+"use client";
+import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
+import { getEmotionsDistribution } from "@/app/actions/(socialmood)/interactions.actions";
 
-import { getEmotions } from '@/app/actions/(socialmood)/get-interactions.actions';
-
-// Registrar los componentes necesarios de Chart.js
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-interface EmotionsChartProps {
-    filter: any;
+interface EmotionData {
+  name: string;
+  value: number;
 }
 
-const EmotionsChart: React.FC<EmotionsChartProps> = ({ filter = {} }) => {
-    const [emotions, setEmotions] = React.useState<[string, number][] | null>(null);
+interface EmotionsChartProps {
+  social_medias?: string[];
+}
 
-    // Obtener las emociones desde el backend
-    const fetchEmotions = async () => {
-        try {
-            const emotionsData = await getEmotions(filter);
-            setEmotions(emotionsData);
-        } catch (error) {
-            console.error("Error fetching emotions:", error);
-        }
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+const EmotionsChart: React.FC<EmotionsChartProps> = ({
+  social_medias = [],
+}) => {
+  const t = useTranslations("socialmood.dashboard.charts");
+  const [data, setData] = useState<EmotionData[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const emotionsData = await getEmotionsDistribution();
+        setData(emotionsData);
+      } catch (error) {
+        console.error("Error fetching emotions data:", error);
+      }
     };
 
-    useEffect(() => {
-        fetchEmotions();
-    }, [filter]);
+    fetchData();
+  }, []);
 
-    // Mapa de colores predefinidos para cada emoción
-    const emotionColors: { [key: string]: string } = {
-        Alegría: '#F86A3A',       // Dorado
-        Enfado: '#FF6961',       // Rojo anaranjado
-        Miedo: '#422EA3',        // Rojo oscuro
-        Tristeza: '#2046E1',     // Azul
-        Sorpresa: '#FCC327',     // Rosa
-        Asco: '#30BD92',         // Verde
-        Confianza: '#FFFFFF',    // Turquesa
-        Anticipación: '#D24EA6', // Naranja
-    };
+  if (data.length === 0) {
+    return <div className="text-center py-4">{t("noData")}</div>;
+  }
 
-    // Obtener colores correspondientes para las etiquetas actuales
-    const getBackgroundColors = (labels: string[]) => {
-        return labels.map(label => emotionColors[label] || '#808080'); // Gris para emociones desconocidas
-    };
+  return (
+    <div className="w-full h-[300px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            outerRadius={80}
+            fill="#8884d8"
+            dataKey="value"
+            label={({
+              cx,
+              cy,
+              midAngle,
+              innerRadius,
+              outerRadius,
+              percent,
+              name,
+            }) => {
+              const RADIAN = Math.PI / 180;
+              const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+              const x = cx + radius * Math.cos(-midAngle * RADIAN);
+              const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-    const data = {
-        labels: emotions?.map(([emotion]) => emotion) ?? [], // Etiquetas de las emociones
-        datasets: [
-            {
-                label: 'Emociones', // Título del dataset
-                data: emotions?.map(([_, frequency]) => frequency) ?? [], // Frecuencia de cada emoción
-                backgroundColor: getBackgroundColors(emotions?.map(([emotion]) => emotion) ?? []), // Colores predefinidos
-                borderRadius: 10, // Bordes redondeados para las barras
-            },
-        ],
-    };
-
-    const options = {
-        indexAxis: 'y' as const, // Cambiar las barras a orientación horizontal
-        plugins: {
-            legend: {
-                display: false,
-            },
-            title: {
-                display: true,
-                text: 'Emociones',
-                font: {
-                    size: 18,
-                    family: 'Arial',
-                    weight: 'bold' as const,
-                },
-                color: '#FFFFFF', // Color del título
-            },
-        },
-        responsive: true,
-        maintainAspectRatio: false, // El gráfico ocupa todo el contenedor
-        scales: {
-            x: {
-                ticks: {
-                    color: '#FFFFFF', // Color blanco para las etiquetas del eje X
-                    stepSize: 1,
-                },
-                grid: {
-                    color: 'rgba(255, 255, 255, 0.2)', // Líneas de rejilla en el eje X
-                },
-            },
-            y: {
-                ticks: {
-                    color: '#FFFFFF', // Color blanco para las etiquetas del eje Y
-                },
-                grid: {
-                    display: false, // Ocultar las líneas de rejilla en el eje Y
-                },
-            },
-        },
-    };
-
-    return (
-        <div className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-6 overflow-auto" style={{ height: '250px' }}>
-            {emotions ? (
-                <Bar data={data} options={options} />
-            ) : (
-                <div className="flex justify-center items-center h-full">
-                    <p className="text-white text-lg">Cargando...</p>
-                </div>
+              return (
+                <text
+                  x={x}
+                  y={y}
+                  fill="white"
+                  textAnchor={x > cx ? "start" : "end"}
+                  dominantBaseline="central"
+                >
+                  {`${name} ${(percent * 100).toFixed(0)}%`}
+                </text>
+              );
+            }}
+          >
+            {data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "#1a1a1a",
+              border: "1px solid #333",
+              borderRadius: "4px",
+            }}
+            labelStyle={{ color: "white" }}
+            itemStyle={{ color: "white" }}
+          />
+          <Legend
+            formatter={(value) => (
+              <span style={{ color: "white" }}>{value}</span>
             )}
-        </div>
-    );
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
 };
 
 export default EmotionsChart;

@@ -13,14 +13,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignInSchema } from "../../types";
-import { createGoogleAuthotizationURL, signIn } from "@/app/actions/(socialmood)/auth.actions";
+import {
+  createGoogleAuthotizationURL,
+  signIn,
+} from "@/app/[locale]/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Link from 'next/link'
+import Link from "next/link";
 import Image from "next/image";
 import SocialButton from "./social-button";
-
 
 export function SignInForm() {
   const [isPending, setIsPending] = useState(false);
@@ -55,7 +57,6 @@ export function SignInForm() {
   }
 
   const onGoogleSignInClicked = async () => {
-
     setIsPending(true);
     const res = await createGoogleAuthotizationURL();
     if (res.error) {
@@ -68,27 +69,38 @@ export function SignInForm() {
     }
 
     setIsPending(false);
-
-  }
+  };
 
   return (
     <Form {...form}>
-      <Image className="" src={"/socialmood-logo.svg"} width={163} height={70} alt={""} />
+      <Image
+        className=""
+        src={"/socialmood-logo.svg"}
+        width={163}
+        height={70}
+        alt={""}
+      />
       <h1 className="text-3xl font-bold text-white">Log In</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full px-20 py-5">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-5 w-full px-20 py-5"
+      >
         <FormField
           control={form.control}
           name="correo_electronico"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-white">Correo electrónico</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">
+                Correo electrónico
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
                             rounded-[15px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
                             bg-white/40 text-white "
-                  autoComplete="correo_electronico" {...field}
+                  autoComplete="correo_electronico"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -100,7 +112,9 @@ export function SignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-white">Contraseña</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">
+                Contraseña
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
@@ -140,7 +154,10 @@ export function SignInForm() {
         </div>
         <p className="text-sm text-white text-center">
           No tienes una cuenta?{" "}
-          <Link href="/app/sign-up" className="font-medium text-white hover:underline">
+          <Link
+            href="/app/sign-up"
+            className="font-medium text-white hover:underline"
+          >
             Regístrate
           </Link>
         </p>

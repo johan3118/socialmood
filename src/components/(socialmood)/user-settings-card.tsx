@@ -1,8 +1,9 @@
 "use client";
 
-import { Edit, Save, X } from "lucide-react"; // Importar el icono X
+import { Edit, Save, X } from "lucide-react";
 import BlurredContainer from "@/components/(socialmood)/blur-background";
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   getActiveUserName,
   getActiveUserEmail,
@@ -10,171 +11,106 @@ import {
   updateUserProfile,
 } from "@/app/actions/(socialmood)/auth.actions";
 
-function UserSettingsCard() {
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [userEmail, setUserEmail] = useState<string>("");
-  const [userAddress, setUserAddress] = useState<string>("");
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-
-  // Fetch current user data
-  const fetchUserData = async () => {
-    const nameResult = await getActiveUserName();
-    if (typeof nameResult === "string") {
-      const [name, surname] = nameResult.split(" ");
-      setFirstName(name || "");
-      setLastName(surname || "");
-    } else {
-      console.error(nameResult.error);
-    }
-
-    const emailResult = await getActiveUserEmail();
-    if (typeof emailResult === "string") {
-      setUserEmail(emailResult);
-    } else {
-      console.error(emailResult.error);
-    }
-
-    const addressResult = await getActiveUserAddress();
-    if (typeof addressResult === "string") {
-      setUserAddress(addressResult);
-    } else {
-      console.error(addressResult.error);
-    }
-  };
+export default function UserSettingsCard() {
+  const t = useTranslations("socialmood.profile.user");
+  const [isEditing, setIsEditing] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userAddress, setUserAddress] = useState("");
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      const name = await getActiveUserName();
+      const email = await getActiveUserEmail();
+      const address = await getActiveUserAddress();
+      setUserName(name || "");
+      setUserEmail(email || "");
+      setUserAddress(address || "");
+    };
     fetchUserData();
   }, []);
 
-  // Update user data
-  const handleSaveChanges = async () => {
-    if (!firstName || !lastName || !userEmail || !userAddress) {
-      alert("Por favor, llena todos los campos obligatorios.");
-      return;
-    }
-
-    try {
-      const response = await updateUserProfile({
-        name: firstName,
-        lastName: lastName,
-        address: userAddress,
-      });
-      if (response.success) {
-        alert("Perfil actualizado exitosamente.");
-        setIsEditing(false);
-      } else {
-        console.error(response.error);
-      }
-    } catch (error) {
-      console.error("Error al guardar los cambios:", error);
-    }
-  };
-
-  // Cancel editing
-  const handleCancel = () => {
-    fetchUserData(); // Restablece los datos del usuario
+  const handleSave = async () => {
+    await updateUserProfile(userName, userEmail, userAddress);
     setIsEditing(false);
   };
 
   return (
-    <BlurredContainer customStyle="h-auto !m-0 p-6">
-      <div className="flex flex-col gap-y-4 w-full">
-        <div className="flex items-center gap-x-3">
-          <div className="w-20 h-20 text-5xl bg-emerald-500 rounded-full flex items-center justify-center">
-            😎
-          </div>
-          <div className="flex-1">
-            <h2 className="font-bold text-[26px]">Datos de Perfil</h2>
-          </div>
-
-          {/* Botones de acción */}
-          {!isEditing ? (
-            <button
-              className="text-white flex items-center gap-1"
-              onClick={() => setIsEditing(true)}
-            >
-              <Edit className="w-6 h-6" />
-            </button>
+    <BlurredContainer>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold">{t("title")}</h2>
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          aria-label={isEditing ? t("common.save") : t("common.edit")}
+        >
+          {isEditing ? (
+            <Save className="w-5 h-5" />
           ) : (
-            <div className="flex items-center gap-2">
-              <button
-                className="text-green-500 hover:underline flex items-center gap-1"
-                onClick={handleSaveChanges}
-              >
-                <Save className="w-6 h-6" />
-              </button>
-              <button
-                className="text-white hover:underline flex items-center gap-1"
-                onClick={handleCancel}
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
+            <Edit className="w-5 h-5" />
+          )}
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <label className="text-xs mb-1 block">{t("name")}</label>
+          {isEditing ? (
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              className="bg-transparent border border-gray-600 rounded p-2 w-full"
+            />
+          ) : (
+            <p className="text-sm">{userName}</p>
           )}
         </div>
 
-        {/* Editable fields */}
-        <div className="flex flex-col gap-y-3">
-          <div className="flex gap-x-3">
-            <div className="flex-1">
-              <label className="text-sm font-medium">Nombre</label>
-              <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className={`bg-white font-bold text-black rounded-lg py-2 w-full ${
-                  isEditing
-                    ? "bg-white/30 font-medium border border-gray-300"
-                    : "border-none"
-                }`}
-                readOnly={!isEditing}
-              />
-            </div>
-            <div className="flex-1">
-              <label className="text-sm font-medium">Apellido</label>
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                className={`bg-white font-bold text-black rounded-lg py-2 w-full ${
-                  isEditing
-                    ? "bg-white/30 font-medium border border-gray-300"
-                    : "border-none"
-                }`}
-                readOnly={!isEditing}
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-sm font-medium">Dirección</label>
+        <div>
+          <label className="text-xs mb-1 block">{t("email")}</label>
+          {isEditing ? (
+            <input
+              type="email"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              className="bg-transparent border border-gray-600 rounded p-2 w-full"
+            />
+          ) : (
+            <p className="text-sm">{userEmail}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="text-xs mb-1 block">{t("address")}</label>
+          {isEditing ? (
             <input
               type="text"
               value={userAddress}
               onChange={(e) => setUserAddress(e.target.value)}
-              className={`bg-white font-bold text-black text-sm rounded-md px-4 py-2 w-full ${
-                isEditing ? "bg-white/30 font-medium border border-gray-300" : "border-none"
-              }`}
-              readOnly={!isEditing}
+              className="bg-transparent border border-gray-600 rounded p-2 w-full"
             />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Correo electrónico</label>
-            <input
-              type="email"
-              value={userEmail}
-              readOnly={true}
-              className={`bg-white font-bold text-black rounded-md px-4 py-2 w-full ${
-                isEditing
-                  ? "border border-gray-300 cursor-not-allowed"
-                  : "border-none"
-              }`}
-            />
-          </div>
+          ) : (
+            <p className="text-sm">{userAddress}</p>
+          )}
         </div>
+
+        {isEditing && (
+          <div className="flex justify-end space-x-2 mt-4">
+            <button
+              onClick={() => setIsEditing(false)}
+              className="text-sm text-gray-400 hover:text-white"
+            >
+              {t("common.cancel")}
+            </button>
+            <button
+              onClick={handleSave}
+              className="text-sm text-blue-500 hover:text-blue-400"
+            >
+              {t("common.save")}
+            </button>
+          </div>
+        )}
       </div>
     </BlurredContainer>
   );
 }
-
-export default UserSettingsCard;

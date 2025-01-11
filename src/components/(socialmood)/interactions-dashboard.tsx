@@ -1,90 +1,80 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getInteractionsFiltered } from "@/app/actions/(socialmood)/get-interactions.actions";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getInteractions } from "@/app/actions/(socialmood)/interactions.actions";
+import { Interacciones } from "@/types";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
-interface Perfil {
-  red_social: string;
-  username: string;
-  color: string;
-}
-
-interface Interacciones {
-  perfil: Perfil;
-  mensaje: string;
-  emisor: string;
-  categoria: string;
-  subcategoria: string;
-  fecha: string;
-}
-
-interface InteraccionesDashboardProps {
-  filter: any;
-}
-
-const InteraccionesDashboard: React.FC<InteraccionesDashboardProps> = ({ filter = {} }) => {
-  const [interacciones, setInteracciones] = useState<Interacciones[]>([]);
-
-  const socialIconMap: { [key: string]: string } = {
-    Instagram: "/instagram.svg",
-    Facebook: "/facebook.svg",
-    Twitter: "/twitter.svg",
-  };
+export default function InteraccionesDashboard() {
+  const t = useTranslations("socialmood.interactions");
+  const [interactions, setInteractions] = useState<Interacciones[]>([]);
 
   useEffect(() => {
-    const fetchInteracciones = async () => {
+    const fetchInteractions = async () => {
       try {
-        const data = await getInteractionsFiltered(filter);
-        console.log(data)
-        setInteracciones(data);
+        const data = await getInteractions();
+        setInteractions(data);
       } catch (error) {
-        console.error("Error al cargar las interacciones:", error);
+        console.error("Error fetching interactions:", error);
       }
     };
 
-    fetchInteracciones();
-  }, [filter]);
+    fetchInteractions();
+  }, []);
 
   return (
-    <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-10 h-[300px]">
-      <div className="grid grid-cols-1 gap-4">
-        {interacciones.slice(0, 3).map((interaccion, index) => (
-          <div key={index} className="flex items-center space-x-4 rounded-lg mb-4">
-            <span
-              className={cn(
-                buttonVariants({
-                  variant:
-                    interaccion.perfil.red_social === "Instagram"
-                      ? "orange"
-                      : interaccion.perfil.red_social === "Facebook"
-                        ? "blue"
-                        : "default",
-                  size: "sm",
-                })
-              )}
-            >
-              <img
-                src={socialIconMap[interaccion.perfil.red_social] || "/default.svg"}
-                alt={`${interaccion.perfil.red_social} Icon`}
-                className="w-5 h-5"
-              />
-              <span className="">{interaccion.perfil.username}</span>
-            </span>
-            <div className="flex-1">
-              <p className="font-semibold text-md">{interaccion.mensaje}</p>
-              <div className="flex items-center">
-                <p className="font-medium text-sm text-gray-300 mr-4">{interaccion.fecha}</p>
-                <span className="text-xs font-bold">@{interaccion.emisor}</span>
-
-              </div>
-
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{t("sender")}</TableHead>
+            <TableHead>{t("message")}</TableHead>
+            <TableHead>{t("category")}</TableHead>
+            <TableHead>{t("subcategory")}</TableHead>
+            <TableHead>{t("date")}</TableHead>
+            <TableHead>{t("responded")}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {interactions.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
+                {t("noInteractions")}
+              </TableCell>
+            </TableRow>
+          ) : (
+            interactions.map((interaction) => (
+              <TableRow key={interaction.id}>
+                <TableCell>{interaction.emisor}</TableCell>
+                <TableCell className="max-w-[200px] truncate">
+                  {interaction.mensaje}
+                </TableCell>
+                <TableCell>{interaction.categoria}</TableCell>
+                <TableCell>{interaction.subcategoria}</TableCell>
+                <TableCell>
+                  {format(new Date(interaction.fecha), "dd/MM/yyyy HH:mm", {
+                    locale: es,
+                  })}
+                </TableCell>
+                <TableCell>
+                  {interaction.respondida
+                    ? t("response.manual")
+                    : t("response.pending")}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
-};
-
-export default InteraccionesDashboard;
+}

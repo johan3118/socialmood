@@ -8,7 +8,7 @@ import {
   getActiveUserEmail,
   getActiveUserAddress,
   updateUserProfile,
-} from "@/app/actions/(backoffice)/auth.actions";
+} from "@/app/[locale]/actions/(backoffice)/auth.actions";
 
 function UserSettingsCard() {
   const [firstName, setFirstName] = useState<string>("");
@@ -153,7 +153,9 @@ function UserSettingsCard() {
               value={userAddress}
               onChange={(e) => setUserAddress(e.target.value)}
               className={`bg-white font-bold text-black text-sm rounded-md px-4 py-2 w-full ${
-                isEditing ? "bg-white/30 font-medium border border-gray-300" : "border-none"
+                isEditing
+                  ? "bg-white/30 font-medium border border-gray-300"
+                  : "border-none"
               }`}
               readOnly={!isEditing}
             />

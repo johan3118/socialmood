@@ -1,0 +1,198 @@
+{
+  "common": {
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "help": "Help",
+    "edit": "Edit",
+    "close": "Close",
+    "delete": "Delete",
+    "active": "Active",
+    "inactive": "Inactive",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "moreInfo": "More Information"
+  },
+  "socialmood": {
+    "auth": {
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "signOut": "Sign Out",
+      "logoAlt": "Social Mood Logo",
+      "footer": {
+        "copyright": "All rights reserved"
+      },
+      "login": {
+        "title": "Sign In",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email",
+        "password": "Password",
+        "passwordPlaceholder": "Enter your password",
+        "signIn": "Sign In",
+        "errors": {
+          "loginFailed": "Login Failed",
+          "invalidCredentials": "Invalid email or password"
+        }
+      }
+    },
+    "profile": {
+      "settings": "Profile Settings",
+      "currentPlan": "Current Plan",
+      "nextPayment": "Next payment: ${amount} on ${date}",
+      "paymentMethod": "Payment Method",
+      "help": "Help",
+      "user": {
+        "title": "User Settings",
+        "address": "Address",
+        "personalInfo": "Personal Information",
+        "email": "Email",
+        "name": "Name",
+        "phone": "Phone"
+      },
+      "plan": {
+        "basic": "Basic Plan",
+        "monthly": "monthly",
+        "yearly": "yearly",
+        "features": "Features",
+        "interactionsPerMonth": "${count} interactions per month",
+        "maxSocialAccounts": "Manage up to ${count} social networks",
+        "maxUsers": "Maximum of ${count} users",
+        "changePlan": "Change Plan",
+        "currentPayment": "Current Payment Method"
+      },
+      "social": {
+        "title": "Social Media Accounts",
+        "addAccount": "Add Account",
+        "selectPlatform": "Select Platform",
+        "selectColor": "Select Color",
+        "noAccounts": "No social media accounts added",
+        "connectAccount": "Connect Account",
+        "removeAccount": "Remove Account",
+        "confirmRemoval": "Are you sure you want to remove this account?",
+        "accountAdded": "Account Added Successfully",
+        "accountAddedDescription": "Your social media account has been connected",
+        "selectPlatformPlaceholder": "Select a platform",
+        "selectColorPlaceholder": "Choose a color",
+        "errors": {
+          "addAccountError": "Error Adding Account",
+          "tryAgain": "Please try again later"
+        }
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "interactions": "Interactions",
+      "followers": "Followers",
+      "emotions": "Emotions",
+      "categories": "Categories",
+      "filters": {
+        "title": "Filters",
+        "category": "Category",
+        "subcategory": "Subcategory",
+        "network": "Network",
+        "ruleType": "Rule Type",
+        "apply": "Apply Filters",
+        "clear": "Clear Filters",
+        "dateRange": "Date Range"
+      },
+      "charts": {
+        "noData": "No data available",
+        "interactionsTitle": "Interactions Over Time",
+        "followersTitle": "Followers Growth",
+        "emotionsTitle": "Emotion Distribution",
+        "categoriesTitle": "Category Distribution"
+      },
+      "interactionsSummary": "Interactions Summary",
+      "viewList": "View list",
+      "filters": {
+        "title": "Filters"
+      }
+    },
+    "interactions": {
+      "sender": "Sender",
+      "message": "Message",
+      "category": "Category",
+      "subcategory": "Subcategory",
+      "date": "Date",
+      "responded": "Responded",
+      "recommendation": "Recommendation",
+      "query": "Query",
+      "complaint": "Complaint",
+      "praise": "Praise",
+      "noInteractions": "No interactions found",
+      "loadMore": "Load More",
+      "filterBy": "Filter by",
+      "sortBy": "Sort by",
+      "response": {
+        "title": "Response",
+        "autoReply": "Automatic Reply",
+        "manual": "Manual Response",
+        "pending": "Pending"
+      },
+      "listTitle": "Interactions List",
+      "filters": {
+        "title": "Filters"
+      }
+    },
+    "instructions": {
+      "facebook": {
+        "step1": "1. You must create your Facebook Business account to link it with Social Mood.",
+        "moreInfo": "More information",
+        "documentation": "Facebook Documentation"
+      }
+    },
+    "layout": {
+      "logoAlt": "Social Mood Logo",
+      "nav": {
+        "dashboard": "Dashboard"
+      }
+    }
+  },
+  "backoffice": {
+    "subscriptions": {
+      "create": "Create Subscription",
+      "edit": "Edit Subscription",
+      "preview": "Subscription Preview",
+      "form": {
+        "name": "Name",
+        "billingType": "Billing Type",
+        "price": "Price",
+        "interactions": "Interactions",
+        "socialNetworks": "Social Networks",
+        "users": "Users",
+        "description": "Description",
+        "submit": "Create Subscription",
+        "update": "Update Subscription",
+        "validation": {
+          "required": "This field is required",
+          "minPrice": "Price must be greater than 0",
+          "maxUsers": "Maximum users exceeded"
+        }
+      },
+      "list": {
+        "title": "Subscriptions",
+        "noSubscriptions": "No subscriptions found",
+        "addNew": "Add New Subscription",
+        "status": "Status",
+        "actions": "Actions"
+      }
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "stats": {
+        "totalUsers": "Total Users",
+        "activeSubscriptions": "Active Subscriptions",
+        "revenue": "Revenue"
+      }
+    }
+  },
+  "errors": {
+    "general": "Something went wrong",
+    "notFound": "Not found",
+    "unauthorized": "Unauthorized access",
+    "validation": "Validation error",
+    "network": "Network error"
+  }
+} 

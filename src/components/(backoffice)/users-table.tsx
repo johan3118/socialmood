@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { selectAllUsers } from "@/app/actions/(backoffice)/user.actions";
+import { selectAllUsers } from "@/app/[locale]/actions/(backoffice)/user.actions";
 import { useRouter } from "next/navigation";
 
 interface Usuarios {
@@ -23,7 +23,9 @@ const UserTable: React.FC = () => {
       try {
         setIsLoading(true);
         const usuario = await selectAllUsers();
-        setUsuarios(usuario.map((u: any) => ({ ...u, userId: u.userId.toString() })));
+        setUsuarios(
+          usuario.map((u: any) => ({ ...u, userId: u.userId.toString() }))
+        );
       } catch (error: any) {
         console.error("Error al cargar los usuarios:", error);
         setError("No se pudo cargar la lista de usuarios. Intente nuevamente.");
@@ -76,7 +78,9 @@ const UserTable: React.FC = () => {
                 <td className="py-3 px-4 text-center">{usuario.nombre}</td>
                 <td className="py-3 px-4 text-center">{usuario.apellido}</td>
                 <td className="py-3 px-4 text-center">{usuario.direccion}</td>
-                <td className="py-3 px-4 text-center">{usuario.tipo_usuario}</td>
+                <td className="py-3 px-4 text-center">
+                  {usuario.tipo_usuario}
+                </td>
                 <td className="py-3 px-4 text-center">{usuario.correo}</td>
                 <td className="py-3 px-4 text-center">
                   <button
@@ -91,7 +95,6 @@ const UserTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };

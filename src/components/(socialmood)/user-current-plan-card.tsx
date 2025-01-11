@@ -1,69 +1,82 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Edit, Plus, X } from "lucide-react";
+"use client";
+import React, { useEffect, useState } from "react";
 import BlurredContainer from "@/components/(socialmood)/blur-background";
 import Image from "next/image";
-import { getNextPaymentDate } from '@/app/actions/(backoffice)/subscriptions.actions';
+import basic from "@/assets/basic.png";
+import { useTranslations } from "next-intl";
+import { getSubscription } from "@/app/actions/(socialmood)/auth.actions";
+import { HorizontalLine } from "@/components/(socialmood)/horizontal-line";
+import IconContainer from "@/components/(socialmood)/icon-container";
 
-function UserCurrentPlanCard() {
-
-  const [nextPaymentDate, setNextPaymentDate] = useState<string | null>(null);
-
-  const fetchNextPaymentDate = async () => {
-    try {
-      const nextPaymentTimestamp = await getNextPaymentDate();
-      if (nextPaymentTimestamp) {
-        const formattedDate = new Date(nextPaymentTimestamp).toLocaleDateString('es-ES', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        });
-        setNextPaymentDate(formattedDate);
-      } else {
-        setNextPaymentDate("Fecha no disponible");
-      }
-    } catch (error) {
-      console.error("Error fetching next payment date:", error);
-      setNextPaymentDate("Error al obtener fecha");
-    }
-  };
+export default function UserCurrentPlanCard() {
+  const t = useTranslations("socialmood.profile.plan");
+  const [plan, setPlan] = useState<any>(null);
 
   useEffect(() => {
-    fetchNextPaymentDate();
+    const fetchPlan = async () => {
+      const subscription = await getSubscription();
+      setPlan(subscription);
+    };
+    fetchPlan();
   }, []);
 
+  if (!plan) {
+    return <div>{t("loading")}</div>;
+  }
+
   return (
-    <BlurredContainer customStyle='h-[30vh] !mx-0'>
-        <div className="flex items-center w-full">
+    <BlurredContainer>
+      <section className="flex flex-col items-center justify-center space-y-3">
+        <Image src={basic} quality={100} alt={`${plan.nombre} plan image`} />
+        <h1 className="text-lg font-medium text-white">{plan.nombre}</h1>
+        <section className="flex space-x-1">
+          <h1 className="text-8xl text-white font-black">${plan.costo}</h1>
+          <p className="text-gray-100 font-medium opacity-70 self-end text-base">
+            {plan.id_tipo_facturacion === 1 ? t("monthly") : t("yearly")}
+          </p>
+        </section>
+      </section>
 
-          <div className='payment-info w-full'>
+      <HorizontalLine width="w-[75%]" />
 
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-2xl font-bold">Plan Actual</h2>
-              <button aria-label="Editar plan">
-                <Edit className="w-5 h-5" />
-              </button>
-            </div>
-
-            <p className="text-xs mb-2">Próximo pago: {nextPaymentDate ? `$25 el ${nextPaymentDate}` : "Cargando..."}</p>
-            <p className="text-sm font-bold mb-4">Plan Básico $25/mensual</p>
-            <p className="text-xs mb-1">Método de pago</p>
-
-            <div className="flex items-center">
-              <Image src="/paypal-logo.svg" width={15} height={25} alt="credit card"/>
-              <span className='text-sm ml-2'>PayPal</span>
-              <button aria-label="Editar método de pago">
-                <Edit className="w-4 h-5 ml-3" />
-              </button>
-            </div>
-
-          </div>
-
-          <Image src="/credit-card.svg" width={200} height={100} alt="credit card"/>
-
+      <section className="flex flex-col items-start justify-start space-y-2">
+        <div className="flex space-x-3">
+          <IconContainer
+            bgColor={"bg-[#F86A3A]"}
+            size={18}
+            iconColor={"white"}
+          />
+          <h2 className="text-xs text-white font-medium">
+            {t("interactionsPerMonth", {
+              count: plan.cantidad_interacciones_mes,
+            })}
+          </h2>
         </div>
+        <div className="flex space-x-3">
+          <IconContainer
+            bgColor={"bg-[#F86A3A]"}
+            size={18}
+            iconColor={"white"}
+          />
+          <h2 className="text-xs text-white font-medium">
+            {t("maxSocialAccounts", {
+              count: plan.cantidad_cuentas_permitidas,
+            })}
+          </h2>
+        </div>
+        <div className="flex space-x-3">
+          <IconContainer
+            bgColor={"bg-[#F86A3A]"}
+            size={18}
+            iconColor={"white"}
+          />
+          <h2 className="text-xs text-white font-medium">
+            {t("maxUsers", { count: plan.cantidad_usuarios_permitidos })}
+          </h2>
+        </div>
+      </section>
+
+      <HorizontalLine width="w-[75%]" />
     </BlurredContainer>
   );
 }
-
-export default UserCurrentPlanCard;

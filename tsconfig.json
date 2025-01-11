@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/testdb.js", "src/app/actions/auth.actions.js", "src/app/actions/testdb.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/testdb.js", "src/app/[locale]/actions/auth.actions.js", "src/app/[locale]/actions/testdb.js"],
   "exclude": ["node_modules"]
 }

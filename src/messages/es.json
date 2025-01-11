@@ -1,0 +1,198 @@
+{
+  "common": {
+    "back": "Volver",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "help": "Ayuda",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "delete": "Eliminar",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "confirm": "Confirmar",
+    "moreInfo": "Más Información"
+  },
+  "socialmood": {
+    "auth": {
+      "signIn": "Iniciar Sesión",
+      "signUp": "Registrarse",
+      "signOut": "Cerrar Sesión",
+      "logoAlt": "Logo de Social Mood",
+      "footer": {
+        "copyright": "Todos los derechos reservados"
+      },
+      "login": {
+        "title": "Iniciar Sesión",
+        "email": "Correo electrónico",
+        "emailPlaceholder": "Ingresa tu correo electrónico",
+        "password": "Contraseña",
+        "passwordPlaceholder": "Ingresa tu contraseña",
+        "signIn": "Iniciar Sesión",
+        "errors": {
+          "loginFailed": "Error de Inicio de Sesión",
+          "invalidCredentials": "Correo electrónico o contraseña inválidos"
+        }
+      }
+    },
+    "profile": {
+      "settings": "Ajustes de Perfil",
+      "currentPlan": "Plan Actual",
+      "nextPayment": "Próximo pago: ${amount} el ${date}",
+      "paymentMethod": "Método de Pago",
+      "help": "Ayuda",
+      "user": {
+        "title": "Ajustes de Usuario",
+        "address": "Dirección",
+        "personalInfo": "Información Personal",
+        "email": "Correo Electrónico",
+        "name": "Nombre",
+        "phone": "Teléfono"
+      },
+      "plan": {
+        "basic": "Plan Básico",
+        "monthly": "mensual",
+        "features": "Características",
+        "interactionsPerMonth": "${count} interacciones por mes",
+        "maxSocialAccounts": "Administra hasta ${count} redes sociales",
+        "maxUsers": "Cantidad máxima de ${count} usuarios",
+        "changePlan": "Cambiar Plan",
+        "currentPayment": "Método de Pago Actual",
+        "yearly": "anual"
+      },
+      "social": {
+        "title": "Cuentas de Redes Sociales",
+        "addAccount": "Agregar Cuenta",
+        "selectPlatform": "Seleccionar Plataforma",
+        "selectColor": "Seleccionar Color",
+        "noAccounts": "No hay cuentas de redes sociales agregadas",
+        "connectAccount": "Conectar Cuenta",
+        "removeAccount": "Eliminar Cuenta",
+        "confirmRemoval": "¿Estás seguro de que deseas eliminar esta cuenta?",
+        "accountAdded": "Cuenta Agregada Exitosamente",
+        "accountAddedDescription": "Tu cuenta de red social ha sido conectada",
+        "selectPlatformPlaceholder": "Selecciona una plataforma",
+        "selectColorPlaceholder": "Elige un color",
+        "errors": {
+          "addAccountError": "Error al Agregar Cuenta",
+          "tryAgain": "Por favor intenta nuevamente más tarde"
+        }
+      }
+    },
+    "dashboard": {
+      "title": "Panel de Control",
+      "interactions": "Interacciones",
+      "followers": "Seguidores",
+      "emotions": "Emociones",
+      "categories": "Categorías",
+      "filters": {
+        "title": "Filtros",
+        "category": "Categoría",
+        "subcategory": "Subcategoría",
+        "network": "Red",
+        "ruleType": "Tipo de Regla",
+        "apply": "Aplicar Filtros",
+        "clear": "Limpiar Filtros",
+        "dateRange": "Rango de Fechas"
+      },
+      "charts": {
+        "noData": "No hay datos disponibles",
+        "interactionsTitle": "Interacciones a lo Largo del Tiempo",
+        "followersTitle": "Crecimiento de Seguidores",
+        "emotionsTitle": "Distribución de Emociones",
+        "categoriesTitle": "Distribución por Categorías"
+      },
+      "interactionsSummary": "Resumen de Interacciones",
+      "viewList": "Ver listado",
+      "filters": {
+        "title": "Filtros"
+      }
+    },
+    "interactions": {
+      "sender": "Emisor",
+      "message": "Mensaje",
+      "category": "Categoría",
+      "subcategory": "Subcategoría",
+      "date": "Fecha",
+      "responded": "Respondida",
+      "recommendation": "Recomendación",
+      "query": "Consulta",
+      "complaint": "Queja",
+      "praise": "Elogio",
+      "noInteractions": "No se encontraron interacciones",
+      "loadMore": "Cargar Más",
+      "filterBy": "Filtrar por",
+      "sortBy": "Ordenar por",
+      "response": {
+        "title": "Respuesta",
+        "autoReply": "Respuesta Automática",
+        "manual": "Respuesta Manual",
+        "pending": "Pendiente"
+      },
+      "listTitle": "Listado de Interacciones",
+      "filters": {
+        "title": "Filtros"
+      }
+    },
+    "instructions": {
+      "facebook": {
+        "step1": "1. Debes crear tu cuenta de Facebook Business para poder asociarla a Social Mood.",
+        "moreInfo": "Más información",
+        "documentation": "Documentación de Facebook"
+      }
+    },
+    "layout": {
+      "logoAlt": "Logo de Social Mood",
+      "nav": {
+        "dashboard": "Panel de Control"
+      }
+    }
+  },
+  "backoffice": {
+    "subscriptions": {
+      "create": "Crear Subscripción",
+      "edit": "Editar Subscripción",
+      "preview": "Vista Previa de Subscripción",
+      "form": {
+        "name": "Nombre",
+        "billingType": "Tipo de Facturación",
+        "price": "Precio",
+        "interactions": "Interacciones",
+        "socialNetworks": "Redes Sociales",
+        "users": "Usuarios",
+        "description": "Descripción",
+        "submit": "Crear Subscripción",
+        "update": "Actualizar Subscripción",
+        "validation": {
+          "required": "Este campo es requerido",
+          "minPrice": "El precio debe ser mayor a 0",
+          "maxUsers": "Se excedió el máximo de usuarios"
+        }
+      },
+      "list": {
+        "title": "Subscripciones",
+        "noSubscriptions": "No se encontraron subscripciones",
+        "addNew": "Agregar Nueva Subscripción",
+        "status": "Estado",
+        "actions": "Acciones"
+      }
+    },
+    "dashboard": {
+      "title": "Panel de Administración",
+      "stats": {
+        "totalUsers": "Total de Usuarios",
+        "activeSubscriptions": "Subscripciones Activas",
+        "revenue": "Ingresos"
+      }
+    }
+  },
+  "errors": {
+    "general": "Algo salió mal",
+    "notFound": "No encontrado",
+    "unauthorized": "Acceso no autorizado",
+    "validation": "Error de validación",
+    "network": "Error de red"
+  }
+}

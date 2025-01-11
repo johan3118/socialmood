@@ -13,15 +13,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignUpSchema } from "@/types";
-import { createGoogleAuthotizationURL, signUp } from "@/app/actions/(socialmood)/auth.actions";
+import {
+  createGoogleAuthotizationURL,
+  signUp,
+} from "@/app/[locale]/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Link from 'next/link'
+import Link from "next/link";
 import Image from "next/image";
 import SocialButton from "./social-button";
-import { sendEmail } from "@/app/actions/(socialmood)/email.actions";
-
+import { sendEmail } from "@/app/[locale]/actions/(socialmood)/email.actions";
 
 export function SignUpForm() {
   const [isPending, setIsPending] = useState(false);
@@ -35,14 +37,14 @@ export function SignUpForm() {
       direccion: "",
       correo_electronico: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof SignUpSchema>) {
     console.log(values);
     setIsPending(true);
-  
+
     const res = await signUp(values);
     if (res.error) {
       setIsPending(false);
@@ -57,7 +59,7 @@ export function SignUpForm() {
         subject: "Bienvenido a SocialMood",
         text: `Hola ${values.nombre}, gracias por registrarte en SocialMood.`,
       });
-  
+
       if (emailResult.success) {
         toast({
           variant: "default",
@@ -69,7 +71,7 @@ export function SignUpForm() {
           description: "Account created but failed to send email.",
         });
       }
-  
+
       setTimeout(() => {
         setIsPending(false);
         router.push("/app/profile");
@@ -78,7 +80,6 @@ export function SignUpForm() {
   }
 
   const onGoogleSignUpClicked = async () => {
-
     setIsPending(true);
     const res = await createGoogleAuthotizationURL();
     if (res.error) {
@@ -91,26 +92,38 @@ export function SignUpForm() {
     }
 
     setIsPending(false);
-
-  }
+  };
   return (
     <Form {...form}>
-      <Image className="" src={"/socialmood-logo.svg"} width={163} height={70} alt={""} />
+      <Image
+        className=""
+        src={"/socialmood-logo.svg"}
+        width={163}
+        height={70}
+        alt={""}
+      />
       <h1 className="text-3xl font-bold text-white">Sign Up</h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 w-full px-20">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-5 w-full px-20"
+      >
         <FormField
           control={form.control}
           name="nombre"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-white">Nombre</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">
+                Nombre
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
                   rounded-[15px] 
                   focus:outline-none focus:ring-2 focus:ring-primary 
                   bg-white/40 text-white"
-                  autoComplete="nombre" {...field} />
+                  autoComplete="nombre"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -121,7 +134,9 @@ export function SignUpForm() {
           name="apellido"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-white">Apellido</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">
+                Apellido
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
@@ -141,7 +156,9 @@ export function SignUpForm() {
           name="direccion"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-white">Dirección</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">
+                Dirección
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
@@ -161,7 +178,9 @@ export function SignUpForm() {
           name="correo_electronico"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-white">Correo electrónico</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">
+                Correo electrónico
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
@@ -181,7 +200,9 @@ export function SignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-white">Contraseña</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">
+                Contraseña
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
@@ -202,7 +223,9 @@ export function SignUpForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block text-sm font-medium text-white">Confirmar contraseña</FormLabel>
+              <FormLabel className="block text-sm font-medium text-white">
+                Confirmar contraseña
+              </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
@@ -242,7 +265,10 @@ export function SignUpForm() {
         </div>
         <p className="text-sm text-white text-center">
           Tienes una cuenta?{" "}
-          <Link href="/app/sign-in" className="font-medium text-white hover:underline">
+          <Link
+            href="/app/sign-in"
+            className="font-medium text-white hover:underline"
+          >
             Log In
           </Link>
         </p>

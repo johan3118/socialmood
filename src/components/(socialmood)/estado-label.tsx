@@ -1,20 +1,23 @@
-import React from "react";
+import { useTranslations } from "next-intl";
 
 interface EstadoLabelProps {
   estado: "ACTIVO" | "INACTIVO";
 }
 
-const EstadoLabel: React.FC<EstadoLabelProps> = ({ estado }) => {
-  const estadoClasses =
-    estado === "ACTIVO"
-      ? "bg-green-200 text-[#08A600]"
-      : "bg-red-200 text-red-800";
+export default function EstadoLabel({ estado }: EstadoLabelProps) {
+  const t = useTranslations("common");
+
+  const getColorClass = (estado: string) => {
+    return estado === "ACTIVO"
+      ? "bg-green-100 text-green-800"
+      : "bg-red-100 text-red-800";
+  };
 
   return (
-    <span className={`${estadoClasses} py-1 px-3 rounded-full text-xs font-bold`}>
-      {estado.toLowerCase()}
+    <span
+      className={`text-xs px-2 py-0.5 rounded-full ${getColorClass(estado)}`}
+    >
+      {estado === "ACTIVO" ? t("active") : t("inactive")}
     </span>
   );
-};
-
-export default EstadoLabel;
+}
