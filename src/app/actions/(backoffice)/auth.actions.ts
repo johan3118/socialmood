@@ -178,3 +178,40 @@ export async function updateUserProfile(data: {
     };
   }
 }
+
+export async function getActiveUserAddress() {
+  // Validar la sesión activa y obtener el usuario autenticado
+  const { user } = await validateRequest();
+
+  // Obtener el ID del usuario
+  const userId = user?.id;
+
+  // Verificar si el ID del usuario está definido
+  if (userId === undefined) {
+    return {
+      error: "User ID is undefined",
+    };
+  }
+
+  try {
+    const result = await db
+      .select({ direccion: usuariosTable.direccion })
+      .from(usuariosTable)
+      .where(eq(usuariosTable.id, userId))
+      .limit(1);
+
+    // Verificar si se obtuvo un resultado
+    if (result.length === 0) {
+      return {
+        error: "Address not found for the user",
+      };
+    }
+
+    // Retornar la dirección del usuario
+    return result[0]?.direccion?.toString() || "";
+  } catch (error: any) {
+    return {
+      error: error?.message || "An error occurred while fetching the address",
+    };
+  }
+}

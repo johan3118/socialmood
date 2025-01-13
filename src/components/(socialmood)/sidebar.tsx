@@ -52,7 +52,7 @@ export default function Sidebar() {
     const fetchUnansweredCounts = async () => {
       const count = await countUnansweredInteractions()
       setUnansweredCounts((prevCounts) => {
-        const updatedCounts = { ...prevCounts, interactions: count } // Ajusta las claves según los subitems
+        const updatedCounts:any = { ...prevCounts, interactions: count } // Ajusta las claves según los subitems
         
         // Detect changes to trigger animation
         Object.keys(updatedCounts).forEach((key) => {

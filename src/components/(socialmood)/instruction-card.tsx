@@ -67,9 +67,7 @@ const steps = [
                 <iframe 
                 src="https://scribehow.com/page-embed/Ayuda_en_linea__-5UdHVEvSk-LKbsT8cZylw" 
                 width="100%" 
-                height="640" 
-                allowfullscreen 
-                frameborder="0">
+                height="640">
                 </iframe>
             </div>
         ),
