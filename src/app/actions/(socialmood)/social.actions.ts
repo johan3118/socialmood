@@ -107,7 +107,7 @@ export const deleteLinkedAccount = async (username: string): Promise<{ message: 
     const subscription = await getSubscription(parseInt(userId));
     if (!subscription) throw new Error("Subscription is null");
 
-    // Intentar eliminar la cuenta de la base de datos directamente
+    // Intentar eliminar el registro principal
     await db
       .delete(cuentasRedesSocialesTable)
       .where(
@@ -119,9 +119,19 @@ export const deleteLinkedAccount = async (username: string): Promise<{ message: 
       .run();
 
     return { message: "Account deleted successfully." };
-  } catch (error) {
+
+  } catch (error: any) {
+    // Manejo específico para errores de restricción de clave foránea
+    if (error.code === 'SQLITE_CONSTRAINT') {
+      console.error("Error deleting linked account: Foreign key constraint failed");
+      throw new Error(
+        "No se pudo eliminar la cuenta vinculada porque está referenciada en otra tabla. Por favor, verifica las dependencias antes de intentar eliminarla."
+      );
+    }
+
+    // Otros errores
     console.error("Error deleting linked account:", error);
-    throw new Error("An error occurred while deleting the account.");
+    throw new Error("An unexpected error occurred while deleting the account.");
   }
 };
 

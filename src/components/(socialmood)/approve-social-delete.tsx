@@ -17,14 +17,19 @@ export default function ApproveSocialDelete({ onOpenChange, onConfirm }: Approve
   const [isPending, setIsPending] = useState(false);
 
   const handleApprove = async () => {
-    setIsPending(true);
+    setIsPending(true); // Marca la operación como pendiente
     try {
+      // Intenta confirmar la eliminación
       await onConfirm();
+      // Si no lanza error, muestra mensaje de éxito
       toast({ variant: "default", description: "Cuenta eliminada correctamente" });
-      onOpenChange(false);
+      onOpenChange(false); // Cierra el diálogo si fue exitoso
     } catch (error) {
-      toast({ variant: "destructive", description: "Error al eliminar la cuenta" });
+      // Muestra un mensaje destructivo si ocurre un error
+      console.error("Error al eliminar la cuenta:", error); // Detalles para depuración
+      toast({ variant: "destructive", description: "Error al eliminar la cuenta. Por favor, inténtalo nuevamente." });
     } finally {
+      // Restablece el estado de pendiente en ambos casos
       setIsPending(false);
     }
   };

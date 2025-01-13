@@ -39,7 +39,7 @@ const steps = [
                     src="https://estintecedu-my.sharepoint.com/personal/1104220_est_intec_edu_do/_layouts/15/embed.aspx?UniqueId=4d74b80f-a003-4768-8f8c-174fedb8d1df&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create"
                     className="w-full h-[35vh]"
                     allowFullScreen
-                    >
+                >
                 </iframe>
 
                 <ol className="mt-4">
@@ -56,6 +56,22 @@ const steps = [
 
 
 
+        ),
+    },
+    {
+        id: "step3",
+        title: "FAQ",
+        content: (
+            <div className="w-full h-full">
+                <p className="font-medium text-black">FAQ - Frequently Asked Questions</p>
+                <iframe 
+                src="https://scribehow.com/page-embed/Ayuda_en_linea__-5UdHVEvSk-LKbsT8cZylw" 
+                width="100%" 
+                height="640" 
+                allowfullscreen 
+                frameborder="0">
+                </iframe>
+            </div>
         ),
     }
 ];

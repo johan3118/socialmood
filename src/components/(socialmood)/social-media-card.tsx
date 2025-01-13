@@ -59,10 +59,13 @@ const SocialMediaCard: React.FC = () => {
         fetchPerfiles(); // Actualiza la lista después de la eliminación
       } catch (error) {
         console.error("Error al desvincular y eliminar la cuenta:", error);
+        throw error; // Propaga el error para que `handleApprove` lo maneje
+      } finally {
+        setOpenDialog(false); // Cierra el diálogo después de la operación
       }
-      setOpenDialog(false); // Cierra el diálogo después de la operación
     }
   };
+  
 
   return (
     <>
