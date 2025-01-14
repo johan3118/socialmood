@@ -6,12 +6,12 @@ import Image from 'next/image'
 import { signOut } from '@/app/actions/(backoffice)/auth.actions'
 
 const menuItems = [
-  {
-    id: 'dashboard',
-    label: 'Dasboard',
-    route: '/bo/layout/dashboard',
-    icon: <span className="text-xl">📈</span>,
-  },
+  // {
+  //   id: 'dashboard',
+  //   label: 'Dasboard',
+  //   route: '/bo/layout/dashboard',
+  //   icon: <span className="text-xl">📈</span>,
+  // },
   {
     id: 'users',
     label: 'Usuarios',

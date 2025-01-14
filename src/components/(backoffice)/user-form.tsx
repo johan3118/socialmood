@@ -17,9 +17,11 @@ import { CreateUserSchema } from "@/types";
 import { useForm } from "react-hook-form";
 import SocialButton from "./social-button";
 import { createUser } from "@/app/actions/(backoffice)/user.actions";
+import { useRouter } from "next/navigation";
 
 export function UserForm() {
   const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof CreateUserSchema>>({
     resolver: zodResolver(CreateUserSchema),
@@ -50,9 +52,11 @@ export function UserForm() {
       });
       setTimeout(() => {
         setIsPending(false);
-      }, 5000);
+      }, 3000);
       form.reset();
+      router.push("/bo/layout/user-table");
     }
+
   }
 
   return (

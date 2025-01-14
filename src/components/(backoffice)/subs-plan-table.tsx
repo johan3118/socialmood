@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch"; // Importa el switch de shadcn
 import { selectAllPlans, activatePlan, deactivatePlan } from "@/app/actions/(backoffice)/subscriptions.actions";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 interface PlanSubscripcion {
   planId: string;
@@ -17,13 +17,13 @@ interface PlanSubscripcion {
 
 const PlanesSubscripcionTable: React.FC = () => {
   const [planesSubscripcion, setPlanesSubscripcion] = useState<PlanSubscripcion[]>([]);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof PlanSubscripcion; direction: "asc" | "desc" } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const fetchPlanes = async () => {
       try {
         const planes = await selectAllPlans(); // Llamada a la función para obtener todos los planes
-        console.log(planes);
         setPlanesSubscripcion(planes);
       } catch (error) {
         console.error("Error al cargar los planes:", error);
@@ -33,7 +33,6 @@ const PlanesSubscripcionTable: React.FC = () => {
     fetchPlanes();
   }, []);
 
-  // Manejar el cambio de estado del switch
   const handleSwitchChange = async (id: number, isActive: boolean) => {
     try {
       if (isActive) {
@@ -58,10 +57,32 @@ const PlanesSubscripcionTable: React.FC = () => {
     router.push("/bo/create-sub");
   };
 
-  // Función para manejar la edición del plan
   const handleEditPlan = (planId: string) => {
     router.push(`/bo/edit-sub/${planId}`);
   };
+
+  const handleSort = (key: keyof PlanSubscripcion) => {
+    setSortConfig((prevSortConfig) => {
+      if (prevSortConfig?.key === key && prevSortConfig.direction === "asc") {
+        return { key, direction: "desc" };
+      }
+      return { key, direction: "asc" };
+    });
+  };
+
+  const sortedPlanes = React.useMemo(() => {
+    if (!sortConfig) return planesSubscripcion;
+
+    return [...planesSubscripcion].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  }, [planesSubscripcion, sortConfig]);
 
   return (
     <div className="container mx-auto p-6">
@@ -72,31 +93,43 @@ const PlanesSubscripcionTable: React.FC = () => {
         </button>
       </div>
       <div className="max-h-80 overflow-y-auto">
-        <table className="min-w-full bg-white rounded-lg  border-t table-auto">
+        <table className="min-w-full bg-white rounded-lg border-t table-auto">
           <thead className="bg-[#422EA3] text-white">
             <tr>
-              <th className="py-3 px-4 text-left">Plan</th>
-              <th className="py-3 px-4 text-center">Límite de usuarios</th>
-              <th className="py-3 px-4 text-center">Redes sociales</th>
-              <th className="py-3 px-4 text-center">Interacciones por mes</th>
-              <th className="py-3 px-4 text-center">Estado</th>
-              <th className="py-3 px-4 text-center">Precio</th>
+              {[
+                { label: "Plan", key: "planNombre" },
+                { label: "Límite de usuarios", key: "cantidad_usuarios_permitidos" },
+                { label: "Redes sociales", key: "cantidad_cuentas_permitidas" },
+                { label: "Interacciones por mes", key: "cantidad_interacciones_mes" },
+                { label: "Estado", key: "estado_plan_nombre" },
+                { label: "Precio", key: "costo" },
+              ].map((header) => (
+                <th
+                  key={header.key}
+                  className="py-3 px-4 text-center cursor-pointer"
+                  onClick={() => handleSort(header.key as keyof PlanSubscripcion)}
+                >
+                  {header.label}
+                  {sortConfig?.key === header.key && (sortConfig.direction === "asc" ? " ↑" : " ↓")}
+                </th>
+              ))}
               <th className="py-3 px-4 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {planesSubscripcion.map((plan) => (
-              <tr key={plan.planId} className="">
+            {sortedPlanes.map((plan) => (
+              <tr key={plan.planId}>
                 <td className="py-6 px-4">{plan.planNombre}</td>
                 <td className="py-3 px-4 text-center">{plan.cantidad_usuarios_permitidos}</td>
                 <td className="py-3 px-4 text-center">{plan.cantidad_cuentas_permitidas}</td>
                 <td className="py-3 px-4 text-center">{plan.cantidad_interacciones_mes}</td>
                 <td className="py-3 px-4 text-center">
                   <span
-                    className={`${plan.estado_plan_nombre === "ACTIVO"
+                    className={`${
+                      plan.estado_plan_nombre === "ACTIVO"
                         ? "bg-green-200 text-green-800"
                         : "bg-red-200 text-red-800"
-                      } py-1 px-3 rounded-full text-xs font-bold`}
+                    } py-1 px-3 rounded-full text-xs font-bold`}
                   >
                     {plan.estado_plan_nombre}
                   </span>
@@ -108,10 +141,9 @@ const PlanesSubscripcionTable: React.FC = () => {
                     checked={plan.estado_plan_nombre === "ACTIVO"}
                     onCheckedChange={(checked) => handleSwitchChange(parseInt(plan.planId), checked)}
                   />
-                  {/* Botón para editar el plan */}
                   <button
                     className="ml-4 text-gray-500 hover:text-gray-800"
-                    onClick={() => handleEditPlan(plan.planId)} // Redirige a la página de edición con el planId
+                    onClick={() => handleEditPlan(plan.planId)}
                   >
                     ✏️
                   </button>
@@ -121,7 +153,6 @@ const PlanesSubscripcionTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };

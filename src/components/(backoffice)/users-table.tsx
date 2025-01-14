@@ -16,6 +16,7 @@ const UserTable: React.FC = () => {
   const [usuarios, setUsuarios] = useState<Usuarios[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Usuarios; direction: "asc" | "desc" } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -42,6 +43,29 @@ const UserTable: React.FC = () => {
     router.push(`/bo/edit-user/${userId}`);
   };
 
+  const handleSort = (key: keyof Usuarios) => {
+    setSortConfig((prevSortConfig) => {
+      if (prevSortConfig?.key === key && prevSortConfig.direction === "asc") {
+        return { key, direction: "desc" };
+      }
+      return { key, direction: "asc" };
+    });
+  };
+
+  const sortedUsuarios = React.useMemo(() => {
+    if (!sortConfig) return usuarios;
+
+    return [...usuarios].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  }, [usuarios, sortConfig]);
+
   if (isLoading) return <p>Cargando usuarios...</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
@@ -60,19 +84,30 @@ const UserTable: React.FC = () => {
         <table className="min-w-full bg-white rounded-lg border-t table-auto">
           <thead className="bg-[#422EA3] text-white">
             <tr>
-              <th className="py-3 px-4 text-left">Id</th>
-              <th className="py-3 px-4 text-center">Nombre</th>
-              <th className="py-3 px-4 text-center">Apellido</th>
-              <th className="py-3 px-4 text-center">Dirección</th>
-              <th className="py-3 px-4 text-center">Tipo de Usuario</th>
-              <th className="py-3 px-4 text-center">Correo Electrónico</th>
+              {[
+                { label: "Id", key: "userId" },
+                { label: "Nombre", key: "nombre" },
+                { label: "Apellido", key: "apellido" },
+                { label: "Dirección", key: "direccion" },
+                { label: "Tipo de Usuario", key: "tipo_usuario" },
+                { label: "Correo Electrónico", key: "correo" },
+              ].map((header) => (
+                <th
+                  key={header.key}
+                  className="py-3 px-4 text-center cursor-pointer"
+                  onClick={() => handleSort(header.key as keyof Usuarios)}
+                >
+                  {header.label}
+                  {sortConfig?.key === header.key && (sortConfig.direction === "asc" ? " ↑" : " ↓")}
+                </th>
+              ))}
               <th className="py-3 px-4 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {usuarios.map((usuario) => (
+            {sortedUsuarios.map((usuario) => (
               <tr key={usuario.userId}>
-                <td className="py-3 px-4">{usuario.userId}</td>
+                <td className="py-3 px-4 text-center">{usuario.userId}</td>
                 <td className="py-3 px-4 text-center">{usuario.nombre}</td>
                 <td className="py-3 px-4 text-center">{usuario.apellido}</td>
                 <td className="py-3 px-4 text-center">{usuario.direccion}</td>
@@ -91,7 +126,6 @@ const UserTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };
