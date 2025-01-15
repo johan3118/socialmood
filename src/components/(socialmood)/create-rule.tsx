@@ -54,6 +54,7 @@ import {
 } from "@/app/actions/(socialmood)/auth.actions";
 
 import SocialButton from "./social-button";
+import { useTranslations } from "next-intl";
 
 interface CreateRuleProps {
   onOpenChange: (newOpenValue: boolean) => void;
@@ -80,6 +81,7 @@ const items = [
 
 export default function CreateRule({ onOpenChange }: CreateRuleProps) {
   const [isPending, setIsPending] = useState(false);
+  const t = useTranslations("createRule");
 
   const form = useForm<z.infer<typeof CreateRuleSchema>>({
     resolver: zodResolver(CreateRuleSchema),
@@ -104,7 +106,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
     } else if (res.success) {
       toast({
         variant: "default",
-        description: "Rule created successfully",
+        description: t("ruleCreated"),
       });
       form.reset();
       onOpenChange(false);
@@ -165,14 +167,14 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
             <DialogTitle className="flex justify-between w-full mt-6">
               <div className="flex">
                 <img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
-                <h1 className="ml-2 text-[40px]">Crear Regla</h1>
+                <h1 className="ml-2 text-[40px]">{t("title")}</h1>
               </div>
               <SocialButton
                 variant="default"
                 isPending={isPending}
-                defaultText="Guardar"
+                defaultText={t("save")}
                 customStyle="text-[20px]"
-                pendingText="Guardando..."
+                pendingText={t("saving")}
                 type="submit"
               />
             </DialogTitle>
@@ -191,7 +193,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                       <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Alias de la regla"
+                            placeholder={t("aliasPlaceholder")}
                             className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
@@ -215,7 +217,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Red Social
+                          {t("socialMedia")}
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -253,7 +255,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                     render={() => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Subcategorias
+                          {t("subcategories")}
                         </FormLabel>
                         {items.map((item) => (
                           <FormField
@@ -302,7 +304,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Tipo
+                          {t("type")}
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -320,8 +322,8 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="1">Padre</SelectItem>
-                              <SelectItem value="2">Hijo</SelectItem>
+                              <SelectItem value="1">{t("parent")}</SelectItem>
+                              <SelectItem value="2">{t("child")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -339,7 +341,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Instrucciones
+                          {t("instructions")}
                         </FormLabel>
                         <FormControl>
                           <Textarea

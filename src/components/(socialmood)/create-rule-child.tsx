@@ -45,6 +45,7 @@ import {
   getRule,
   createChildRule,
 } from "@/app/actions/(socialmood)/rules.actions";
+import { useTranslations } from "next-intl";
 
 interface CreateRuleChildProps {
   onOpenChange: (newOpenValue: boolean) => void;
@@ -95,6 +96,8 @@ export default function CreateRuleChild({
     },
   });
 
+  const t = useTranslations("createRuleChild");
+
   async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
     form.trigger();
     if (!form.formState.isValid) {
@@ -111,7 +114,7 @@ export default function CreateRuleChild({
     } else if (res.success) {
       toast({
         variant: "default",
-        description: "Rule created successfully",
+        description: t("ruleCreated"),
       });
       setOpen(false);
       onOpenChange(open);
@@ -195,14 +198,14 @@ export default function CreateRuleChild({
             <DialogTitle className="flex justify-between w-full mt-6">
               <div className="flex">
                 <img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
-                <h1 className="ml-2 text-[40px]">Crear Regla Hijo</h1>
+                <h1 className="ml-2 text-[40px]">{t("title")}</h1>
               </div>
               <SocialButton
                 variant="default"
                 isPending={isPending}
-                defaultText="Guardar"
+                defaultText={t("save")}
                 customStyle="text-[20px]"
-                pendingText="Guardando..."
+                pendingText={t("saving")}
                 type="button"
                 onClick={() => {
                   onSubmit(form.getValues());
@@ -224,7 +227,7 @@ export default function CreateRuleChild({
                       <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Alias de la regla"
+                            placeholder={t("aliasPlaceholder")}
                             className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
@@ -248,7 +251,7 @@ export default function CreateRuleChild({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Red Social
+                          {t("socialMedia")}
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -287,7 +290,7 @@ export default function CreateRuleChild({
                     render={() => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Subcategorias
+                          {t("subcategories")}
                         </FormLabel>
                         {Subcategorias.map((item) => (
                           <FormField
@@ -336,7 +339,7 @@ export default function CreateRuleChild({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Tipo
+                          {t("type")}
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -354,8 +357,8 @@ export default function CreateRuleChild({
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="1">Padre</SelectItem>
-                              <SelectItem value="2">Hijo</SelectItem>
+                              <SelectItem value="1">{t("parent")}</SelectItem>
+                              <SelectItem value="2">{t("child")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -373,7 +376,7 @@ export default function CreateRuleChild({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Instrucciones
+                          {t("instructions")}
                         </FormLabel>
                         <FormControl>
                           <Textarea

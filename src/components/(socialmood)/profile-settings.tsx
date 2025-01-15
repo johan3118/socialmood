@@ -75,7 +75,7 @@ export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
             onClick={switchLocale}
             className="flex items-center space-x-2 text-white hover:text-gray-300 transition-colors"
           >
-            <span>{locale === "en" ? "🇪��" : "🇬🇧"}</span>
+            <span>{locale === "en" ? "->" : "->"}</span>
             <span>
               {locale === "en" ? "Cambiar a Español" : "Switch to English"}
             </span>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { getSentimentCounts } from "@/app/actions/(socialmood)/get-sentimentcount.actions";
+import { useTranslations } from "next-intl";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -16,6 +17,8 @@ const CategoryChart = ({ filter }: CategoryChartProps) => {
     negativeCount: 0,
     neutralCount: 0,
   });
+
+  const t = useTranslations("categoryChart");
 
   const fetchSentimentCounts = async () => {
     try {
@@ -36,7 +39,7 @@ const CategoryChart = ({ filter }: CategoryChartProps) => {
   }, [sentimentData]);
 
   const chartData = {
-    labels: ["Positivo", "Negativo", "Neutro"],
+    labels: [t("positive"), t("negative"), t("neutral")],
     datasets: [
       {
         data: [
@@ -77,10 +80,10 @@ const CategoryChart = ({ filter }: CategoryChartProps) => {
   return (
     <div className="w-full bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[28px] p-8 h-[300px]">
       <div className="flex justify-between mb-2">
-        <h1 className="text-[24px] font-bold">Sentimientos</h1>
+        <h1 className="text-[24px] font-bold">{t("title")}</h1>
         <div className="text-right">
           <p className="text-white/50 text-[16px] font-medium">
-            Cantidad de interacciones
+            {t("interactionCount")}
           </p>
           <p className="text-white text-2xl font-bold">
             {sentimentData.totalInteractions.toLocaleString()}
@@ -91,15 +94,15 @@ const CategoryChart = ({ filter }: CategoryChartProps) => {
         <div className="text-white text-md space-y-8">
           <div className="flex items-center">
             <span className="w-3 h-3 bg-[#2B4FE2] mr-2 rounded-full"></span>{" "}
-            Positivo
+            {t("positive")}
           </div>
           <div className="flex items-center">
             <span className="w-3 h-3 bg-[#414470] mr-2 rounded-full"></span>{" "}
-            Negativo
+            {t("negative")}
           </div>
           <div className="flex items-center">
             <span className="w-3 h-3 bg-white mr-2 rounded-full border border-gray-600"></span>{" "}
-            Neutral
+            {t("neutral")}
           </div>
         </div>
         <div className="w-40 h-40">

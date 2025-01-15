@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { signOut } from "@/app/actions/(socialmood)/auth.actions";
 import { countUnansweredInteractions } from "@/app/actions/(socialmood)/get-interactions.actions";
+import { useTranslations } from "next-intl";
 
 interface MenuItem {
   id: string;
@@ -13,7 +14,6 @@ interface MenuItem {
   icon?: React.ReactNode;
   subItems?: SubMenuItem[];
 }
-
 interface SubMenuItem {
   id: string;
   label: string;
@@ -21,37 +21,43 @@ interface SubMenuItem {
   color: string;
 }
 
-const menuItems: MenuItem[] = [
-  {
-    id: "dashboard",
-    label: "Informes y analíticas",
-    route: "/app/dashboard",
-    icon: <span className="text-xl">📊</span>,
-  },
-  {
-    id: "interactions",
-    label: "Interacciones",
-    route: "/app/listado-interacciones",
-    icon: <span className="text-xl">💬</span>,
-    subItems: [
-      {
-        id: "interactions",
-        label: "Interacciones",
-        route: "/app/listado-interacciones",
-        color: "#F59E0B",
-      },
-      {
-        id: "responses",
-        label: "Respuestas",
-        route: "/app/respuestas",
-        color: "#10B981",
-      },
-      { id: "rules", label: "Reglas", route: "/app/reglas", color: "#F59E0B" },
-    ],
-  },
-];
-
 export default function Sidebar() {
+  const t = useTranslations("sidebar");
+  const menuItems: MenuItem[] = [
+    {
+      id: "dashboard",
+      label: t("dashboard"),
+      route: "/app/dashboard",
+      icon: <span className="text-xl">📊</span>,
+    },
+    {
+      id: "interactions",
+      label: t("interactions"),
+      route: "/app/listado-interacciones",
+      icon: <span className="text-xl">💬</span>,
+      subItems: [
+        {
+          id: "interactions",
+          label: t("interactions"),
+          route: "/app/listado-interacciones",
+          color: "#F59E0B",
+        },
+        {
+          id: "responses",
+          label: t("responses"),
+          route: "/app/respuestas",
+          color: "#10B981",
+        },
+        {
+          id: "rules",
+          label: t("rules"),
+          route: "/app/reglas",
+          color: "#F59E0B",
+        },
+      ],
+    },
+  ];
+
   const [expandedItem, setExpandedItem] = useState<string | null>(
     "interactions"
   );
@@ -177,7 +183,7 @@ export default function Sidebar() {
         onClick={handleSignOut}
       >
         <LogOut size={18} className="mr-3" />
-        Cerrar sesión
+        {t("logout")}
       </button>
     </div>
   );

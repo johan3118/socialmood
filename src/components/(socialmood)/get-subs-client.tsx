@@ -8,31 +8,37 @@ import HorizontalLine from "@/components/(socialmood)/horizontal-line";
 import PayPalButton from "@/components/(socialmood)/paypal-button";
 import basic from "/public/basic.png";
 import IconContainer from "./check";
+import { useTranslations } from "next-intl";
 
 export default function GetSubscriptionClient({
   userid,
-  plan
+  plan,
 }: {
   userid: number;
   plan: any | null;
 }) {
+  const t = useTranslations("getSubscription");
   console.log("Plan", plan);
   const [selectedPlan, setSelectedPlan] = useState(plan);
 
   if (!selectedPlan) {
-    return <div>No hay un plan disponible para seleccionar.</div>;
+    return <div>{t("noPlan")}</div>;
   }
 
   const planDescription = {
-    name: selectedPlan?.nombre || "Plan no disponible",
+    name: selectedPlan?.nombre || t("planUnavailable"),
     price: selectedPlan?.costo || 0,
-    description: selectedPlan?.descripcion || "No hay descripción disponible",
+    description: selectedPlan?.descripcion || t("description"),
     features: [
-      `${selectedPlan?.cantidad_interacciones_mes || 0} interacciones por mes`,
-      `Administra hasta ${selectedPlan?.cantidad_cuentas_permitidas || 0
-      } redes sociales`,
-      `Cantidad máxima de ${selectedPlan?.cantidad_usuarios_permitidos || 0
-      } usuarios`,
+      `${selectedPlan?.cantidad_interacciones_mes || 0} ${t(
+        "interactionsPerMonth"
+      )}`,
+      `${t("manageUpTo")} ${selectedPlan?.cantidad_cuentas_permitidas || 0} ${t(
+        "socialNetworks"
+      )}`,
+      `${t("maxUsersAllowed")} ${
+        selectedPlan?.cantidad_usuarios_permitidos || 0
+      } ${t("users")}`,
     ],
   };
 
@@ -44,7 +50,7 @@ export default function GetSubscriptionClient({
           <Image
             src={basic}
             quality={100}
-            alt={`${planDescription.name} plan image`}
+            alt={`${planDescription.name} ${t("planImageAlt")}`}
           />
           <h1 className="text-lg font-medium text-white">
             {planDescription.name}
@@ -54,7 +60,7 @@ export default function GetSubscriptionClient({
               ${planDescription.price}
             </h1>
             <p className="text-gray-100 font-medium opacity-70 self-end text-base">
-              {plan.id_tipo_facturacion == 1 ? "Mensual" : "Anual"}
+              {plan.id_tipo_facturacion == 1 ? t("monthly") : t("annual")}
             </p>
           </section>
         </section>
@@ -79,7 +85,7 @@ export default function GetSubscriptionClient({
       {/* Selección y checkout */}
       <BlurredContainer customStyle="bg-white min-h-[75vh]">
         <section className="items-center justify-center flex flex-col space-y-8 w-full">
-          <h1 className="text-4xl font-[1000] self-start">CHECKOUT</h1>
+          <h1 className="text-4xl font-[1000] self-start">{t("checkout")}</h1>
 
           <HorizontalLine color="border-black" width="w-[90%]" />
 
@@ -89,17 +95,11 @@ export default function GetSubscriptionClient({
 
           <HorizontalLine color="border-black" width="w-[90%]" />
 
-
           <PayPalButton
-            paypalPlanId={plan?.paypal_plan_id
-            }
-            planName={
-              plan.nombre
-            }
+            paypalPlanId={plan?.paypal_plan_id}
+            planName={plan.nombre}
             billingType={plan.id_tipo_facturacion == 1 ? "mensual" : "anual"}
-            planCost={
-              plan.costo
-            }
+            planCost={plan.costo}
             userId={userid}
             planId={plan.id}
           />

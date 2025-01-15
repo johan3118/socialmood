@@ -9,8 +9,10 @@ import {
   getActiveUserAddress,
   updateUserProfile,
 } from "@/app/actions/(backoffice)/auth.actions";
+import { useTranslations } from "next-intl"; // Importar useTranslations
 
 function UserSettingsCard() {
+  const t = useTranslations("userSettingsCard"); // Inicializar useTranslations
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
@@ -50,7 +52,7 @@ function UserSettingsCard() {
   // Update user data
   const handleSaveChanges = async () => {
     if (!firstName || !lastName || !userEmail || !userAddress) {
-      alert("Por favor, llena todos los campos obligatorios.");
+      alert(t("fillAllFields")); // Usar traducción para "Por favor, llena todos los campos obligatorios."
       return;
     }
 
@@ -61,7 +63,7 @@ function UserSettingsCard() {
         address: userAddress,
       });
       if (response.success) {
-        alert("Perfil actualizado exitosamente.");
+        alert(t("updateSuccess")); // Usar traducción para "Perfil actualizado exitosamente."
         setIsEditing(false);
       } else {
         console.error(response.error);
@@ -85,7 +87,8 @@ function UserSettingsCard() {
             😎
           </div>
           <div className="flex-1">
-            <h2 className="font-bold text-[26px]">Datos de Perfil</h2>
+            <h2 className="font-bold text-[26px]">{t("profileData")}</h2>{" "}
+            {/* Usar traducción para "Datos de Perfil" */}
           </div>
 
           {/* Botones de acción */}
@@ -118,7 +121,8 @@ function UserSettingsCard() {
         <div className="flex flex-col gap-y-3">
           <div className="flex gap-x-3">
             <div className="flex-1">
-              <label className="text-sm font-medium">Nombre</label>
+              <label className="text-sm font-medium">{t("firstName")}</label>{" "}
+              {/* Usar traducción para "Nombre" */}
               <input
                 type="text"
                 value={firstName}
@@ -132,7 +136,8 @@ function UserSettingsCard() {
               />
             </div>
             <div className="flex-1">
-              <label className="text-sm font-medium">Apellido</label>
+              <label className="text-sm font-medium">{t("lastName")}</label>{" "}
+              {/* Usar traducción para "Apellido" */}
               <input
                 type="text"
                 value={lastName}
@@ -147,7 +152,8 @@ function UserSettingsCard() {
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium">Dirección</label>
+            <label className="text-sm font-medium">{t("address")}</label>{" "}
+            {/* Usar traducción para "Dirección" */}
             <input
               type="text"
               value={userAddress}
@@ -161,7 +167,8 @@ function UserSettingsCard() {
             />
           </div>
           <div>
-            <label className="text-sm font-medium">Correo electrónico</label>
+            <label className="text-sm font-medium">{t("email")}</label>{" "}
+            {/* Usar traducción para "Correo electrónico" */}
             <input
               type="email"
               value={userEmail}

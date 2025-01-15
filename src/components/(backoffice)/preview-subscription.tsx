@@ -1,7 +1,14 @@
-"use client"
+"use client";
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface FormData {
   nombre: string;
@@ -17,7 +24,11 @@ interface VistaPreviaSubscripcionProps {
   formData: FormData;
 }
 
-const VistaPreviaSubscripcion: React.FC<VistaPreviaSubscripcionProps> = ({ formData }) => {
+const VistaPreviaSubscripcion: React.FC<VistaPreviaSubscripcionProps> = ({
+  formData,
+}) => {
+  const t = useTranslations("previewSubscription");
+
   return (
     <Card className="w-[450px] bg-gray-400 rounded-3xl backdrop-filter backdrop-blur-sm bg-opacity-30 border border-gray-100 text-white p-6">
       <CardHeader className="flex flex-col items-center text-center">
@@ -25,34 +36,72 @@ const VistaPreviaSubscripcion: React.FC<VistaPreviaSubscripcionProps> = ({ formD
         <CardTitle className="text-2xl font-bold">{formData.nombre}</CardTitle>
         <CardDescription className="text-5xl text-white font-bold mt-2">
           ${formData.precio}
-          <span className="text-lg font-normal">/ {formData.tipoFacturacion.toLowerCase()}</span>
+          <span className="text-lg font-normal">
+            / {formData.tipoFacturacion.toLowerCase()}
+          </span>
         </CardDescription>
       </CardHeader>
       <CardContent>
         <hr className="border-gray-500 border-solid mb-3" />
         <ul className="space-y-2">
           <li className="flex items-center">
-            <svg className="w-5 mr-2 text-white bg-orange-500 rounded-full p-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              className="w-5 mr-2 text-white bg-orange-500 rounded-full p-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
-            {formData.interacciones} interacciones procesadas por hora
+            {formData.interacciones} {t("interactions")}
           </li>
           <li className="flex items-center">
-            <svg className="w-5 mr-2 text-white bg-orange-500 rounded-full p-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              className="w-5 mr-2 text-white bg-orange-500 rounded-full p-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
-            Administra hasta {formData.redesSociales} redes sociales
+            {t("manageSocials", { count: formData.redesSociales })}
           </li>
           <li className="flex items-center">
-            <svg className="w-5 mr-2 text-white bg-orange-500 rounded-full p-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              className="w-5 mr-2 text-white bg-orange-500 rounded-full p-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
-            Cantidad máxima de {formData.usuarios} usuario{formData.usuarios !== "1" ? "s" : ""}
+            {t("maxUsers", {
+              count: formData.usuarios,
+              plural: formData.usuarios !== "1" ? "s" : "",
+            })}
           </li>
         </ul>
         <hr className="border-gray-500 border-solid mt-3" />
         <div className="mt-6">
-          <h3 className="font-semibold mb-2">Descripción</h3>
+          <h3 className="font-semibold mb-2">{t("description")}</h3>
           <p className="text-sm text-white">{formData.descripcion}</p>
         </div>
       </CardContent>

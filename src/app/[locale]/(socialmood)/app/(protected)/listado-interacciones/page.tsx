@@ -1,5 +1,4 @@
-"use client"; // Asegúrate de tener esto al principio del archivo si estás usando Next.js
-
+"use client";
 import React from "react";
 import { useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";

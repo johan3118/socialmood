@@ -9,6 +9,7 @@ import {
   getPlanById,
   updatePlanById,
 } from "@/app/actions/(backoffice)/subscriptions.actions";
+import { useTranslations } from "next-intl";
 
 interface FormData {
   nombre: string;
@@ -21,6 +22,7 @@ interface FormData {
 }
 
 export default function EditSubPage() {
+  const t = useTranslations("editSubscription");
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
     tipoFacturacion: "MONTH",
@@ -62,10 +64,10 @@ export default function EditSubPage() {
             descripcion: plan.descripcion || "",
           });
         } else {
-          setError("Plan no encontrado");
+          setError(t("errorNotFound"));
         }
       } catch (error) {
-        setError("Error al obtener los datos del plan");
+        setError(t("errorFetching"));
         console.error(error);
       } finally {
         setIsLoading(false);
@@ -106,19 +108,17 @@ export default function EditSubPage() {
       <div className="flex-1 p-20">
         <div className="flex">
           <ChevronLeft className="mr-2 h-10 w-10" onClick={handleBack} />
-          <h1 className="text-3xl font-bold mb-2">Editar Plan Subscripción</h1>
+          <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
         </div>
 
-        <p className="text-gray-500 mb-6">
-          Ingrese los datos a editar del plan de subscripción
-        </p>
+        <p className="text-gray-500 mb-6">{t("description")}</p>
 
         {/* Mostrar error si ocurre alguno */}
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         {/* Mostrar cargando si estamos esperando la respuesta */}
         {isLoading ? (
-          <p>Cargando...</p>
+          <p>{t("loading")}</p>
         ) : (
           <FormularioSubscripcion
             formData={formData}

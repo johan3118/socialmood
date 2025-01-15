@@ -4,6 +4,7 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { signOut } from "@/app/actions/(backoffice)/auth.actions";
+import { useTranslations } from "next-intl";
 
 const menuItems = [
   {
@@ -27,6 +28,7 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const t = useTranslations("sidebarMenu");
   const [selectedItem, setSelectedItem] = useState<string>();
   const router = useRouter();
 
@@ -75,7 +77,7 @@ export default function Sidebar() {
         onClick={handleSignOut}
       >
         <LogOut size={18} className="mr-3" />
-        Cerrar sesión
+        {t("logout")}
       </button>
     </div>
   );

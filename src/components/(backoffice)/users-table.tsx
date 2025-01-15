@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { selectAllUsers } from "@/app/actions/(backoffice)/user.actions";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface Usuarios {
   userId: string;
@@ -13,6 +14,7 @@ interface Usuarios {
 }
 
 const UserTable: React.FC = () => {
+  const t = useTranslations("userTable");
   const [usuarios, setUsuarios] = useState<Usuarios[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,7 @@ const UserTable: React.FC = () => {
         );
       } catch (error: any) {
         console.error("Error al cargar los usuarios:", error);
-        setError("No se pudo cargar la lista de usuarios. Intente nuevamente.");
+        setError(t("error"));
       } finally {
         setIsLoading(false);
       }
@@ -44,13 +46,13 @@ const UserTable: React.FC = () => {
     router.push(`/bo/edit-user/${userId}`);
   };
 
-  if (isLoading) return <p>Cargando usuarios...</p>;
+  if (isLoading) return <p>{t("loading")}</p>;
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between mb-6 ">
-        <h2 className="text-xl font-bold">Listado de Usuarios</h2>
+        <h2 className="text-xl font-bold">{t("title")}</h2>
         <button
           className="btn w-8 h-8 bg-[#D24EA6] rounded-lg flex items-center justify-center"
           onClick={handleCrearUsuario}
@@ -62,13 +64,13 @@ const UserTable: React.FC = () => {
         <table className="min-w-full bg-white rounded-lg border-t table-auto">
           <thead className="bg-[#422EA3] text-white">
             <tr>
-              <th className="py-3 px-4 text-left">Id</th>
-              <th className="py-3 px-4 text-center">Nombre</th>
-              <th className="py-3 px-4 text-center">Apellido</th>
-              <th className="py-3 px-4 text-center">Dirección</th>
-              <th className="py-3 px-4 text-center">Tipo de Usuario</th>
-              <th className="py-3 px-4 text-center">Correo Electrónico</th>
-              <th className="py-3 px-4 text-center">Acciones</th>
+              <th className="py-3 px-4 text-left">{t("id")}</th>
+              <th className="py-3 px-4 text-center">{t("firstName")}</th>
+              <th className="py-3 px-4 text-center">{t("lastName")}</th>
+              <th className="py-3 px-4 text-center">{t("address")}</th>
+              <th className="py-3 px-4 text-center">{t("userType")}</th>
+              <th className="py-3 px-4 text-center">{t("email")}</th>
+              <th className="py-3 px-4 text-center">{t("actions")}</th>
             </tr>
           </thead>
           <tbody>

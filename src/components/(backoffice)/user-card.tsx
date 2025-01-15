@@ -1,12 +1,14 @@
 import { User } from "lucide-react";
 import { getActiveUserName } from "@/app/actions/(backoffice)/auth.actions";
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface UserCardProps {
   onShowSettings: () => void;
 }
 
 export default function UserCard({ onShowSettings }: UserCardProps) {
+  const t = useTranslations("backofficeUser");
   const [userName, setUserName] = useState<string>("");
 
   const fetchUserName = async () => {
@@ -29,7 +31,7 @@ export default function UserCard({ onShowSettings }: UserCardProps) {
       </div>
       <div className="text-left">
         <p className="font-medium">{userName}</p>
-        <p className="text-xs text-gray-400">Gestor de operaciones</p>
+        <p className="text-xs text-gray-400">{t("role")}</p>
       </div>
     </button>
   );

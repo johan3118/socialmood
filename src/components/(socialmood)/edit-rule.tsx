@@ -1,31 +1,22 @@
 import React, { useEffect } from "react";
-
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
 import router, { useRouter } from "next/router";
-
 import { useState } from "react";
-
 import { Checkbox } from "@/components/ui/checkbox";
-
 import { CreateRuleSchema } from "../../types";
-
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-
 import CreateRuleChild from "@/components/(socialmood)/create-rule-child";
 import EditRuleChild from "@/components/(socialmood)/edit-rule-child";
 import DeleteRuleChild from "@/components/(socialmood)/delete-rule-child";
-
 import {
   Select,
   SelectContent,
@@ -33,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import {
   Form,
   FormControl,
@@ -42,9 +32,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { Input } from "@/components/ui/input";
-
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";
 import { toast } from "@/components/ui/use-toast";
@@ -54,11 +42,11 @@ import {
   getChildRules,
   updateRule,
 } from "@/app/actions/(socialmood)/rules.actions";
-
 import {
   getSubscription,
   getActiveUserId,
 } from "@/app/actions/(socialmood)/auth.actions";
+import { useTranslations } from "next-intl";
 
 interface EditRuleProps {
   ruleID: number;
@@ -80,11 +68,8 @@ interface Reglas {
 
 export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
   const [action, setAction] = useState<string>("Create");
-
   const [Open, setOpen] = useState<boolean>(false);
-
   const [RuleID, setRuleID] = useState<number>(0);
-
   const [ChildReglas, setChildReglas] = useState<Reglas[]>([]);
 
   const fetchChildRules = async () => {
@@ -135,6 +120,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
   ] as const;
 
   const [isPending, setIsPending] = useState(false);
+  const t = useTranslations("editRule");
 
   const form = useForm<z.infer<typeof CreateRuleSchema>>({
     resolver: zodResolver(CreateRuleSchema),
@@ -218,7 +204,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
     } else if (res.success) {
       toast({
         variant: "default",
-        description: "Rule updated successfully",
+        description: t("ruleUpdated"),
       });
       onOpenChange(false);
     }
@@ -245,14 +231,14 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
             <DialogTitle className="flex justify-between w-full mt-6">
               <div className="flex">
                 <img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
-                <h1 className="ml-2 text-[40px]">Editar Regla</h1>
+                <h1 className="ml-2 text-[40px]">{t("title")}</h1>
               </div>
               <SocialButton
                 variant="default"
                 isPending={isPending}
-                defaultText="Guardar"
+                defaultText={t("save")}
                 customStyle="text-[20px]"
-                pendingText="Guardando..."
+                pendingText={t("saving")}
                 type="submit"
               />
             </DialogTitle>
@@ -271,7 +257,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                       <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Alias de la regla"
+                            placeholder={t("aliasPlaceholder")}
                             className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
@@ -382,15 +368,15 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Instrucciones
+                          {t("instructions")}
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Redactar instrucciones..."
                             className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black "
+                            rounded-[12px] border-transparent
+                            focus:outline-none focus:ring-2 focus:ring-primary
+                            bg-[#EBEBEB] text-black "
                             {...field}
                           />
                         </FormControl>
@@ -406,7 +392,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Tipo
+                          {t("type")}
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -435,7 +421,7 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
                   />{" "}
                   <div>
                     <Label className="text-lg font-semibold">
-                      Reglas relacionadas
+                      {t("relatedRules")}
                     </Label>
                     <hr className="my-3 border-2 bg-white bg-opacity-30" />
                     <div className="mt-3">

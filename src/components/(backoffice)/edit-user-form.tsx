@@ -2,7 +2,14 @@ import React, { ChangeEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useTranslations } from "next-intl";
 
 interface FormData {
   nombre: string;
@@ -18,11 +25,17 @@ interface UserFormProps {
   handleSubmit: (e: React.FormEvent) => void;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handleSubmit }) => {
+const UserForm: React.FC<UserFormProps> = ({
+  formData,
+  handleInputChange,
+  handleSubmit,
+}) => {
+  const t = useTranslations("userForm");
+
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <Label htmlFor="nombre">Nombre</Label>
+        <Label htmlFor="nombre">{t("firstName")}</Label>
         <Input
           id="nombre"
           name="nombre"
@@ -32,7 +45,7 @@ const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handle
         />
       </div>
       <div>
-        <Label htmlFor="apellido">Apellido</Label>
+        <Label htmlFor="apellido">{t("lastName")}</Label>
         <Input
           id="apellido"
           name="apellido"
@@ -42,7 +55,7 @@ const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handle
         />
       </div>
       <div>
-        <Label htmlFor="correo">Correo</Label>
+        <Label htmlFor="correo">{t("email")}</Label>
         <Input
           id="correo"
           name="correo"
@@ -52,7 +65,7 @@ const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handle
         />
       </div>
       <div>
-        <Label htmlFor="direccion">Dirección</Label>
+        <Label htmlFor="direccion">{t("address")}</Label>
         <Input
           id="direccion"
           name="direccion"
@@ -62,7 +75,7 @@ const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handle
         />
       </div>
       <div>
-        <Label htmlFor="tipoUsuario">Tipo de Usuario</Label>
+        <Label htmlFor="tipoUsuario">{t("userType")}</Label>
         <Input
           id="tipoUsuario"
           name="tipoUsuario"
@@ -72,11 +85,9 @@ const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handle
         />
       </div>
 
-      <Button type="submit">Guardar</Button>
+      <Button type="submit">{t("save")}</Button>
     </form>
   );
 };
 
 export default UserForm;
-
-

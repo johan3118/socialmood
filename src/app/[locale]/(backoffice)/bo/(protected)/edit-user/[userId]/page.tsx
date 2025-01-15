@@ -8,6 +8,7 @@ import {
   updateUserById,
 } from "@/app/actions/(backoffice)/user.actions";
 import UserForm from "@/components/(backoffice)/edit-user-form";
+import { useTranslations } from "next-intl";
 
 interface FormData {
   nombre: string;
@@ -20,6 +21,7 @@ interface FormData {
 }
 
 export default function EditUserPage() {
+  const t = useTranslations("editUser");
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
     apellido: "",
@@ -53,10 +55,10 @@ export default function EditUserPage() {
             tipoUsuario: user.tipo_usuario || "",
           });
         } else {
-          setError("Usuario no encontrado");
+          setError(t("errorNotFound"));
         }
       } catch (err) {
-        setError("Error al obtener los datos del usuario");
+        setError(t("errorFetching"));
         console.error(err);
       } finally {
         setIsLoading(false);
@@ -90,10 +92,10 @@ export default function EditUserPage() {
     setError(null);
     try {
       await updateUserById(userId, formData);
-      alert("Usuario actualizado correctamente");
+      alert(t("success"));
       router.push("/bo/layout/user-table"); // Redirige a la lista de usuarios tras actualizar
     } catch (err) {
-      setError("Error al actualizar el usuario");
+      setError(t("errorUpdating"));
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -108,16 +110,14 @@ export default function EditUserPage() {
             className="mr-2 h-10 w-10 cursor-pointer"
             onClick={handleBack}
           />
-          <h1 className="text-3xl font-bold mb-2">Editar Usuario</h1>
+          <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
         </div>
-        <p className="text-gray-500 mb-6">
-          Ingrese los datos a editar del usuario
-        </p>
+        <p className="text-gray-500 mb-6">{t("description")}</p>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         {isLoading ? (
-          <p>Cargando...</p>
+          <p>{t("loading")}</p>
         ) : (
           <UserForm
             formData={formData}

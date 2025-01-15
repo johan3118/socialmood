@@ -4,6 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import FormularioSubscripcion from "@/components/(backoffice)/sub-form";
 import VistaPreviaSubscripcion from "@/components/(backoffice)/preview-subscription";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface FormData {
   nombre: string;
@@ -16,6 +17,7 @@ interface FormData {
 }
 
 export default function CreateSubPage() {
+  const t = useTranslations("createSubscription");
   const [formData, setFormData] = useState<FormData>({
     nombre: "Plan Básico",
     tipoFacturacion: "MONTH",
@@ -29,7 +31,9 @@ export default function CreateSubPage() {
 
   const router = useRouter();
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -53,12 +57,13 @@ export default function CreateSubPage() {
       {/* Lado Izquierdo */}
       <div className="flex-1 p-20">
         <div className="flex">
-          <ChevronLeft className="mr-2 h-10 w-10 cursor-pointer" onClick={handleBack} />
-          <h1 className="text-3xl font-bold mb-2">Crear Plan Subscripción</h1>
+          <ChevronLeft
+            className="mr-2 h-10 w-10 cursor-pointer"
+            onClick={handleBack}
+          />
+          <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
         </div>
-        <p className="text-gray-500 mb-6">
-          Ingrese los datos del plan de subscripción
-        </p>
+        <p className="text-gray-500 mb-6">{t("description")}</p>
         <FormularioSubscripcion
           formData={formData}
           handleInputChange={handleInputChange}

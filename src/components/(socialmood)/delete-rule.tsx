@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 import {
   DialogContent,
   DialogDescription,
@@ -7,15 +6,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import SocialButton from "./social-button";
-
 import { useState } from "react";
-
 import { toast } from "@/components/ui/use-toast";
-
 import {
   deleteRule,
   ruleHasChildren,
 } from "@/app/actions/(socialmood)/rules.actions";
+import { useTranslations } from "next-intl";
 
 interface DeleteRuleProps {
   ruleID: number;
@@ -24,10 +21,11 @@ interface DeleteRuleProps {
 
 export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
   const [isPending, setIsPending] = useState(false);
-
   const [hasChildren, setHasChildren] = useState(false);
+  const t = useTranslations("deleteRule");
 
   const handleDeleteRule = async () => {
+    setIsPending(true);
     const res = await deleteRule(ruleID);
     if (res.error) {
       toast({
@@ -38,7 +36,7 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
     } else if (res.success) {
       toast({
         variant: "default",
-        description: "Rule deleted successfully",
+        description: t("ruleDeleted"),
       });
       onOpenChange(false);
     }
@@ -58,7 +56,7 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
       <DialogHeader className="flex items-center justify-center">
         <img src="/thinking-face.svg" alt="Alert" className="w-66 h-66" />
         <DialogTitle>
-          <h1 className="text-[33px]">CONFIRMACIÓN</h1>
+          <h1 className="text-[33px]">{t("confirmation")}</h1>
         </DialogTitle>
       </DialogHeader>
 
@@ -66,14 +64,14 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
         <hr className="my-3" />
         <p className="text-[18px] text-center">
           {hasChildren
-            ? "¿Estás seguro de que quieres eliminar esta regla? Esta contiene reglas hijas asociadas"
-            : "¿Estás seguro de que quieres eliminar esta regla?"}
+            ? t("deleteConfirmationWithChildren")
+            : t("deleteConfirmation")}
         </p>
 
         <div className="mt-12 flex items-center justify-center space-x-2 ">
           <SocialButton
             variant="google"
-            defaultText="Cancelar"
+            defaultText={t("cancel")}
             customStyle="text-black bg-[#EBEBEBA8]/[66%] text-[20px]"
             onClick={() => {
               onOpenChange(false);
@@ -82,8 +80,8 @@ export default function DeleteRule({ ruleID, onOpenChange }: DeleteRuleProps) {
 
           <SocialButton
             variant="default"
-            defaultText="Eliminar"
-            pendingText="Eliminando..."
+            defaultText={t("delete")}
+            pendingText={t("deleting")}
             customStyle="text-[20px]"
             isPending={isPending}
             onClick={handleDeleteRule}

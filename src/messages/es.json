@@ -179,7 +179,10 @@
       "dashboard": {
         "title": "Hola, {userName}",
         "phrase": "Supervisa los moods de todas tus redes sociales."
-      }
+      },
+      "subscriptions": "Subscripciones",
+      "users": "Usuarios",
+      "greeting": "Hola, {name}"
     },
     "languageSwitcher": {
       "switchTo": "Cambiar a Inglés"
@@ -260,5 +263,317 @@
       "signingIn": "Iniciando sesión...",
       "signInWithGoogle": "Iniciar sesión con Google"
     }
+  },
+  "subscription": {
+    "interactions_per_month": "{count} interacciones por mes",
+    "manage_up_to": "Administra hasta {count} redes sociales",
+    "max_users": "Cantidad máxima de {count} usuarios",
+    "monthly": "Mensual",
+    "yearly": "Anual",
+    "description_title": "Descripción",
+    "basic_plan": "Plan Básico",
+    "intermediate_plan": "Plan Intermedio",
+    "premium_plan": "Plan Premium"
+  },
+  "approveResponse": {
+    "confirmation": "CONFIRMACIÓN",
+    "sendConfirmation": "¿Estás seguro de que quieres enviar las respuestas seleccionadas?",
+    "sendSuccess": "Respuestas enviadas correctamente",
+    "sendError": "Error al enviar respuestas",
+    "cancel": "Cancelar",
+    "send": "Enviar",
+    "sending": "Enviando..."
+  },
+  "categoryChart": {
+    "title": "Sentimientos",
+    "interactionCount": "Cantidad de interacciones",
+    "positive": "Positivo",
+    "negative": "Negativo",
+    "neutral": "Neutral"
+  },
+  "createRuleChild": {
+    "title": "Crear Regla Hijo",
+    "aliasPlaceholder": "Alias de la regla",
+    "socialMedia": "Red Social",
+    "subcategories": "Subcategorías",
+    "instructions": "Instrucciones",
+    "type": "Tipo",
+    "parent": "Padre",
+    "child": "Hijo",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "ruleCreated": "Regla creada con éxito"
+  },
+   "createRule": {
+    "title": "Crear Regla",
+    "aliasPlaceholder": "Alias de la regla",
+    "socialMedia": "Red Social",
+    "subcategories": "Subcategorías",
+    "instructions": "Instrucciones",
+    "type": "Tipo",
+    "parent": "Padre",
+    "child": "Hijo",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "ruleCreated": "Regla creada con éxito"
+  },
+  "deleteRuleChild": {
+    "confirmation": "CONFIRMACIÓN",
+    "deleteConfirmation": "¿Estás seguro de que quieres eliminar esta regla?",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "deleting": "Eliminando...",
+    "ruleDeleted": "Regla eliminada con éxito"
+  },
+  "deleteRule": {
+    "confirmation": "CONFIRMACIÓN",
+    "deleteConfirmation": "¿Estás seguro de que quieres eliminar esta regla?",
+    "deleteConfirmationWithChildren": "¿Estás seguro de que quieres eliminar esta regla? Esta contiene reglas hijas asociadas.",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "deleting": "Eliminando...",
+    "ruleDeleted": "Regla eliminada con éxito"
+  },
+  "editRuleChild": {
+    "title": "Editar Regla Hijo",
+    "date": "Fecha",
+    "socialProfile": "Perfil de Red Social",
+    "category": "Categoría",
+    "subcategory": "Subcategoría",
+    "emitter": "Emisor",
+    "instructions": "Instrucciones",
+    "type": "Tipo",
+    "relatedRules": "Reglas Relacionadas",
+    "update": "Actualizar",
+    "ruleUpdated": "Regla actualizada con éxito",
+    "aliasPlaceholder": "Alias de la regla"
+  },
+  "editRule": {
+    "title": "Editar Regla",
+    "aliasPlaceholder": "Alias de la regla",
+    "instructions": "Instrucciones",
+    "type": "Tipo",
+    "relatedRules": "Reglas Relacionadas",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "ruleUpdated": "Regla actualizada con éxito",
+    "addChild": "Añadir Hijo +"
+  },
+  "emotionsChart": {
+    "title": "Emociones",
+    "loading": "Cargando..."
+  },
+  "filterModal": {
+    "title": "Filtrar por",
+    "socialMediaAccounts": "Cuentas de redes sociales:",
+    "category": "Categoría:",
+    "subcategory": "Subcategoría:",
+    "ruleType": "Tipo de Regla:",
+    "applyFilters": "Aplicar filtros"
+  },
+  "filterModalInteraction": {
+    "title": "Filtrar por",
+    "category": "Categoría:",
+    "subcategory": "Subcategoría:",
+    "socialMediaAccounts": "Cuentas de redes sociales:",
+    "applyFilters": "Aplicar filtros"
+  },
+  "followersChart": {
+    "title": "Seguidores",
+    "loading": "Cargando...",
+    "followers": "seguidores"
+  },
+  "getSubscription": {
+    "noPlan": "No hay un plan disponible para seleccionar.",
+    "planImageAlt": "Imagen del plan",
+    "checkout": "CHECKOUT",
+    "description": "No hay descripción disponible",
+    "monthly": "Mensual",
+    "annual": "Anual",
+    "interactionsPerMonth": "interacciones por mes",
+    "manageUpTo": "Administra hasta",
+    "socialNetworks": "redes sociales",
+    "maxUsersAllowed": "Cantidad máxima de",
+    "users": "usuarios",
+    "planUnavailable": "Plan no disponible"
+  },
+  "interactionsTable": {
+    "title": "Interacciones Capturadas",
+    "filters": "Filtros",
+    "refresh": "Actualizar",
+    "responded": "Respondida",
+    "unanswered": "Sin respuesta",
+    "noInteractions": "No hay interacciones disponibles."
+  },
+  "rulesTable": {
+    "title": "Reglas",
+    "addRule": "Agregar Regla",
+    "refresh": "Actualizar",
+    "profile": "Perfil",
+    "alias": "Alias",
+    "subcategories": "Subcategorías",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "noRules": "No hay reglas disponibles."
+  },
+  "responsesTable": {
+    "title": "Respuestas",
+    "send": "Enviar",
+    "refresh": "Actualizar",
+    "profile": "Perfil",
+    "automaticResponse": "Respuesta automática",
+    "edit": "Editar",
+    "noResponses": "No hay respuestas disponibles."
+  },
+  "sidebar": {
+    "dashboard": "Informes y analíticas",
+    "interactions": "Interacciones",
+    "responses": "Respuestas",
+    "rules": "Reglas",
+    "logout": "Cerrar sesión"
+  },
+  "signUpForm": {
+    "title": "Registrarse",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "address": "Dirección",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "signUp": "Registrarse",
+    "signUpWithGoogle": "Inicia sesión con Google",
+    "alreadyHaveAccount": "¿Tienes una cuenta?",
+    "logIn": "Iniciar sesión",
+    "welcomeEmailSubject": "Bienvenido a SocialMood",
+    "welcomeEmailText": "Hola {name}, gracias por registrarte en SocialMood."
+  },
+  "sentimentChart": {
+    "title": "Categorías",
+    "totalInteractions": "Total Interacciones",
+    "positive": "Positivo",
+    "negative": "Negativo",
+    "neutral": "Neutro"
+  },
+  "userCard": {
+    "role": "Gestor de comunidad"
+  },
+  "userForm": {
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Correo",
+    "address": "Dirección",
+    "userType": "Tipo de Usuario",
+    "save": "Guardar"
+  },
+  "previewSubscription": {
+    "interactions": "interacciones procesadas por hora",
+    "manageSocials": "Administra hasta {count} redes sociales",
+    "maxUsers": "Cantidad máxima de {count} usuario{plural}",
+    "description": "Descripción"
+  },
+  "profileSettings": {
+    "title": "Ajustes de Perfil",
+    "back": "Volver"
+  },
+  "sidebarMenu": {
+    "dashboard": "Tablero",
+    "users": "Usuarios",
+    "subscriptions": "Subscripciones",
+    "logout": "Cerrar sesión"
+  },
+  "signInForm": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "login": "Iniciar sesión",
+    "loginPending": "Iniciando sesión..."
+  },
+  "subscriptionForm": {
+    "name": "Nombre",
+    "billingType": "Tipo de facturación",
+    "price": "Precio",
+    "interactions": "Cantidad de interacciones procesadas por hora",
+    "socialNetworks": "Redes sociales asociadas",
+    "users": "Usuarios asociados",
+    "description": "Descripción",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "success": "Éxito",
+    "error": "Error"
+  },
+  "subscriptionTable": {
+    "title": "Listado de subscripciones",
+    "userLimit": "Límite de usuarios",
+    "socialNetworks": "Redes sociales",
+    "monthlyInteractions": "Interacciones por mes",
+    "status": "Estado",
+    "price": "Precio",
+    "actions": "Acciones",
+    "createSubscription": "Crear suscripción"
+  },
+  "backofficeUser": {
+    "role": "Gestor de operaciones"
+  },
+  "backofficeUserForm": {
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "address": "Dirección",
+    "userType": "Tipo de Usuario",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "communityManager": "Gestor de comunidad",
+    "operationsManager": "Gestor de operaciones",
+    "register": "Registrar",
+    "registering": "Registrando..."
+  },
+  "userSettingsCard": {
+    "profileData": "Datos de Perfil",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "address": "Dirección",
+    "email": "Correo electrónico",
+    "updateSuccess": "Perfil actualizado exitosamente.",
+    "fillAllFields": "Por favor, llena todos los campos obligatorios."
+  },
+  "userTable": {
+    "title": "Listado de Usuarios",
+    "id": "Id",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "address": "Dirección",
+    "userType": "Tipo de Usuario",
+    "email": "Correo Electrónico",
+    "actions": "Acciones",
+    "loading": "Cargando usuarios...",
+    "error": "No se pudo cargar la lista de usuarios. Intente nuevamente."
+  },
+  "createSubscription": {
+    "title": "Crear Plan de Subscripción",
+    "description": "Ingrese los datos del plan de subscripción",
+    "back": "Volver"
+  },
+  "createUser": {
+    "title": "Crear Usuario",
+    "description": "Ingrese los datos del usuario",
+    "back": "Volver"
+  },
+  "editSubscription": {
+    "title": "Editar Plan de Subscripción",
+    "description": "Ingrese los datos a editar del plan de subscripción",
+    "loading": "Cargando...",
+    "errorNotFound": "Plan no encontrado",
+    "errorFetching": "Error al obtener los datos del plan"
+  },
+  "editUser": {
+    "title": "Editar Usuario",
+    "description": "Ingrese los datos a editar del usuario",
+    "loading": "Cargando...",
+    "errorNotFound": "Usuario no encontrado",
+    "errorFetching": "Error al obtener los datos del usuario",
+    "errorUpdating": "Error al actualizar el usuario",
+    "success": "Usuario actualizado correctamente"
+  },
+  "interactionsGraph": {
+    "title": "Cantidad de Comentarios"
   }
 }

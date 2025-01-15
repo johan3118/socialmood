@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import { getInteractionsByMonthAndUsername } from "@/app/actions/(socialmood)/get-interactions.actions"; // Ajusta la ruta al action
+import { useTranslations } from "next-intl"; // Importar useTranslations
 
 // Definir el tipo de datos del gráfico
 type ChartData = {
@@ -49,7 +50,7 @@ const options = {
   plugins: {
     title: {
       display: true,
-      text: "Cantidad de Comentarios",
+      text: "", // Se establecerá más adelante
       font: {
         size: 18,
         family: "Arial",
@@ -99,6 +100,7 @@ interface GraficoInteraccionesProps {
 const GraficoInteracciones: React.FC<GraficoInteraccionesProps> = ({
   filter = {},
 }) => {
+  const t = useTranslations("interactionsGraph"); // Inicializar useTranslations
   const [data, setData] = useState<ChartData>({
     labels: [],
     datasets: [],
@@ -151,6 +153,9 @@ const GraficoInteracciones: React.FC<GraficoInteraccionesProps> = ({
 
     fetchData();
   }, [filter]);
+
+  // Establecer el título del gráfico
+  options.plugins.title.text = t("title"); // Usar traducción para el título
 
   return (
     <div

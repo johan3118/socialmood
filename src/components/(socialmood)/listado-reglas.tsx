@@ -15,6 +15,7 @@ import {
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 import router, { useRouter } from "next/router";
+import { useTranslations } from "next-intl"; // Importar useTranslations
 
 interface Perfil {
   red_social: string;
@@ -34,6 +35,7 @@ interface ListadoReglasTableProps {
 }
 
 const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
+  const t = useTranslations("rulesTable"); // Inicializar useTranslations
   const [Reglas, setReglas] = useState<Reglas[]>([]);
   const [Open, setOpen] = useState<boolean>(false);
 
@@ -107,7 +109,8 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
       <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-10 mx-12 py-8">
         <div className="container mx-auto p-6">
           <div className="flex justify-between mb-6">
-            <h1 className="text-[24px] text-white font-bold">Reglas</h1>
+            <h1 className="text-[24px] text-white font-bold">{t("title")}</h1>{" "}
+            {/* Usar traducción para el título */}
             <div className="flex items-center space-x-1">
               <DialogTrigger
                 className="btn w-8 h-8 bg-[#D24EA6] rounded-lg"
@@ -128,9 +131,16 @@ const ListadoReglasTable: React.FC<ListadoReglasTableProps> = ({ filter }) => {
             <table className="min-w-full table-auto ">
               <thead>
                 <tr className="text-[16px] md:text-[18px]">
-                  <th className="py-2 px-3 text-left">Perfil</th>
-                  <th className="py-2 px-3 text-left w-1/4">Alias</th>
-                  <th className="py-2 px-3 text-left">Subcategorías</th>
+                  <th className="py-2 px-3 text-left">{t("profile")}</th>{" "}
+                  {/* Usar traducción para "Perfil" */}
+                  <th className="py-2 px-3 text-left w-1/4">
+                    {t("alias")}
+                  </th>{" "}
+                  {/* Usar traducción para "Alias" */}
+                  <th className="py-2 px-3 text-left">
+                    {t("subcategories")}
+                  </th>{" "}
+                  {/* Usar traducción para "Subcategorías" */}
                   <th className="py-2 px-3 text-left hidden sm:table-cell"></th>
                 </tr>
               </thead>

@@ -24,8 +24,10 @@ import Link from "next/link";
 import Image from "next/image";
 import SocialButton from "./social-button";
 import { sendEmail } from "@/app/actions/(socialmood)/email.actions";
+import { useTranslations } from "next-intl";
 
 export function SignUpForm() {
+  const t = useTranslations("signUpForm");
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
@@ -56,8 +58,8 @@ export function SignUpForm() {
       // Enviar correo usando la acción
       const emailResult = await sendEmail({
         to: values.correo_electronico,
-        subject: "Bienvenido a SocialMood",
-        text: `Hola ${values.nombre}, gracias por registrarte en SocialMood.`,
+        subject: t("welcomeEmailSubject"),
+        text: t("welcomeEmailText", { name: values.nombre }),
       });
 
       if (emailResult.success) {
@@ -102,7 +104,7 @@ export function SignUpForm() {
         height={70}
         alt={""}
       />
-      <h1 className="text-3xl font-bold text-white">Sign Up</h1>
+      <h1 className="text-3xl font-bold text-white">{t("title")}</h1>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-5 w-full px-20"
@@ -113,7 +115,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-white">
-                Nombre
+                {t("firstName")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -135,7 +137,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-white">
-                Apellido
+                {t("lastName")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -157,7 +159,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-white">
-                Dirección
+                {t("address")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -179,7 +181,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-white">
-                Correo electrónico
+                {t("email")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -201,7 +203,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-white">
-                Contraseña
+                {t("password")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -224,7 +226,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-white">
-                Confirmar contraseña
+                {t("confirmPassword")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -246,7 +248,7 @@ export function SignUpForm() {
             customStyle="w-full"
             isPending={isPending}
             variant="default"
-            defaultText="Sign up"
+            defaultText={t("signUp")}
             pendingText="Signing up..."
             type="submit"
           />
@@ -256,20 +258,20 @@ export function SignUpForm() {
             customStyle="w-full"
             isPending={isPending}
             variant="google"
-            defaultText="Inicia sesión con Google"
-            pendingText="Signing un..."
+            defaultText={t("signUpWithGoogle")}
+            pendingText="Signing up..."
             type="button"
             icon="gg"
             onClick={onGoogleSignUpClicked}
           />
         </div>
         <p className="text-sm text-white text-center">
-          Tienes una cuenta?{" "}
+          {t("alreadyHaveAccount")}
           <Link
             href="/app/sign-in"
             className="font-medium text-white hover:underline"
           >
-            Log In
+            {t("logIn")}
           </Link>
         </p>
       </form>

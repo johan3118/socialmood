@@ -22,6 +22,7 @@ import {
   updatePlanById,
 } from "@/app/actions/(backoffice)/subscriptions.actions";
 import { createSubscriptionPlan, getAccessToken } from "@/app/services/paypal";
+import { useTranslations } from "next-intl";
 
 interface FormData {
   nombre: string;
@@ -48,6 +49,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
   handleSelectChange,
   isForUpdate,
 }) => {
+  const t = useTranslations("subscriptionForm");
   const [loading, setLoading] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -156,7 +158,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
     <>
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <Label htmlFor="nombre">Nombre</Label>
+          <Label htmlFor="nombre">{t("name")}</Label>
           <Input
             id="nombre"
             className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
@@ -171,7 +173,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
 
         <div className="flex space-x-4">
           <div className="flex-1">
-            <Label htmlFor="tipoFacturacion">Tipo de facturación</Label>
+            <Label htmlFor="tipoFacturacion">{t("billingType")}</Label>
             <Select
               name="tipoFacturacion"
               value={formData.tipoFacturacion}
@@ -193,7 +195,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
             )}
           </div>
           <div className="flex-1">
-            <Label htmlFor="precio">Precio</Label>
+            <Label htmlFor="precio">{t("price")}</Label>
             <Input
               id="precio"
               className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
@@ -207,12 +209,10 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
         </div>
 
         <hr className="border" />
-        <p>Límites</p>
+        <p>{t("limits")}</p>
 
         <div>
-          <Label htmlFor="interacciones">
-            Cantidad de interacciones procesadas por hora
-          </Label>
+          <Label htmlFor="interacciones">{t("interactions")}</Label>
           <Input
             id="interacciones"
             className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
@@ -226,7 +226,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
 
         <div className="flex space-x-4">
           <div className="flex-1">
-            <Label htmlFor="redesSociales">Redes sociales asociadas</Label>
+            <Label htmlFor="redesSociales">{t("socialNetworks")}</Label>
             <Input
               id="redesSociales"
               className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
@@ -238,7 +238,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
             )}
           </div>
           <div className="flex-1">
-            <Label htmlFor="usuarios">Usuarios asociados</Label>
+            <Label htmlFor="usuarios">{t("users")}</Label>
             <Input
               id="usuarios"
               className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
@@ -252,7 +252,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
         </div>
 
         <div>
-          <Label htmlFor="descripcion">Descripción</Label>
+          <Label htmlFor="descripcion">{t("description")}</Label>
           <Textarea
             id="descripcion"
             className="w-full px-3 py-2 rounded-[12px] border-transparent focus:outline-none focus:ring-2 focus:ring-primary bg-[#EBEBEB] text-black"
@@ -265,7 +265,7 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
         </div>
 
         <Button className="bg-[#D24EA6] w-1/3" type="submit" disabled={loading}>
-          {loading ? "Guardando..." : "Guardar"}
+          {loading ? t("saving") : t("save")}
         </Button>
       </form>
 
@@ -278,7 +278,9 @@ const FormularioSubscripcion: React.FC<FormularioSubscripcionProps> = ({
           } transition-opacity duration-300 ease-in-out text-white`}
         >
           <div className="flex items-center">
-            <span className="font-bold">{isError ? "Error" : "Éxito"}:</span>
+            <span className="font-bold">
+              {isError ? t("error") : t("success")}:
+            </span>
             <p className="ml-2">{toastMessage}</p>
           </div>
         </Toast>

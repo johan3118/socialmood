@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import { getFacebookAccountFollowers } from "@/app/actions/(socialmood)/dashboard.actions";
 import { getAccountColor } from "@/app/actions/(socialmood)/social.actions"; // Asegúrate de ajustar la ruta
+import { useTranslations } from "next-intl"; // Importar useTranslations
 
 // Registrar componentes de Chart.js
 ChartJS.register(
@@ -36,6 +37,7 @@ interface SeguidoresChartProps {
 const SeguidoresChart: React.FC<SeguidoresChartProps> = ({
   social_medias = [],
 }) => {
+  const t = useTranslations("followersChart"); // Inicializar useTranslations
   const [chartData, setChartData] = useState<{
     labels: string[];
     datasets: {
@@ -89,7 +91,7 @@ const SeguidoresChart: React.FC<SeguidoresChartProps> = ({
           labels,
           datasets: [
             {
-              label: "Seguidores",
+              label: t("title"), // Usar traducción para el título
               data,
               backgroundColor: colors,
               borderWidth: 1,
@@ -115,7 +117,7 @@ const SeguidoresChart: React.FC<SeguidoresChartProps> = ({
     plugins: {
       title: {
         display: true,
-        text: "Seguidores",
+        text: t("title"), // Usar traducción para el título del gráfico
         font: {
           size: 18,
           family: "Arial",
@@ -129,7 +131,7 @@ const SeguidoresChart: React.FC<SeguidoresChartProps> = ({
       tooltip: {
         callbacks: {
           label: function (context: any) {
-            return `${context.raw} seguidores`;
+            return `${context.raw} ${t("followers")}`; // Usar traducción para "seguidores"
           },
         },
       },
@@ -162,7 +164,8 @@ const SeguidoresChart: React.FC<SeguidoresChartProps> = ({
     >
       {loading ? (
         <div className="absolute inset-0 flex justify-center items-center bg-white/10">
-          <p className="text-white text-lg">Cargando...</p>
+          <p className="text-white text-lg">{t("loading")}</p>{" "}
+          {/* Usar traducción para "Cargando..." */}
         </div>
       ) : (
         <div className="absolute inset-0 py-6 px-4">

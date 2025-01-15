@@ -3,8 +3,10 @@ import { usePathname } from "next/navigation";
 import UserProfile from "@/components/(backoffice)/user-profile";
 import { getActiveUserName } from "@/app/actions/(backoffice)/auth.actions";
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function MainBar() {
+  const t = useTranslations("mainBar");
   const [userName, setUserName] = useState<string>("");
 
   const fetchUserName = async () => {
@@ -27,16 +29,16 @@ export default function MainBar() {
     switch (pathname) {
       case "/bo/layout/sub-table":
         return {
-          title: "Subscripciones",
+          title: t("subscriptions"),
         };
       case "/bo/layout/user-table":
         return {
-          title: "Usuarios",
+          title: t("users"),
         };
 
       default:
         return {
-          title: "Hola, " + userName,
+          title: t("greeting", { name: userName }),
         };
     }
   };

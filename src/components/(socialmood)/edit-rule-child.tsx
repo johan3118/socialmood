@@ -1,31 +1,22 @@
 import React, { useEffect } from "react";
-
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
 import { useState } from "react";
-
 import { Checkbox } from "@/components/ui/checkbox";
-
 import { CreateRuleSchema } from "../../types";
-
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
-
 import {
   getSubscription,
   getActiveUserId,
 } from "@/app/actions/(socialmood)/auth.actions";
-
 import router, { useRouter } from "next/router";
-
 import {
   Select,
   SelectContent,
@@ -33,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import {
   Form,
   FormControl,
@@ -42,7 +32,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -51,15 +40,16 @@ import {
   getRule,
   updateRule,
 } from "@/app/actions/(socialmood)/rules.actions";
-
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";
+import { useTranslations } from "next-intl";
 
 interface EditRuleChildProps {
   ruleID: number;
   parentId: number;
   onOpenChange: (newOpenValue: boolean) => void;
 }
+
 interface Perfil {
   red_social: string;
   username: string;
@@ -72,17 +62,15 @@ interface Reglas {
   alias: string;
   subcategorias: string[];
 }
+
 export default function EditRuleChild({
   ruleID,
   parentId,
   onOpenChange,
 }: EditRuleChildProps) {
   const [open, setOpen] = useState(false);
-
   const [redSocial, setRedSocial] = useState("");
-
   const [reglaPadre, setReglaPadre] = useState<Reglas[]>([]);
-
   const [SubscriptionID, setSubscriptionID] = useState<number>(0);
 
   const setSubscription = async () => {
@@ -100,6 +88,7 @@ export default function EditRuleChild({
   };
 
   const [isPending, setIsPending] = useState(false);
+  const t = useTranslations("editRuleChild");
 
   const form = useForm<z.infer<typeof CreateRuleSchema>>({
     resolver: zodResolver(CreateRuleSchema),
@@ -128,7 +117,7 @@ export default function EditRuleChild({
     } else if (res.success) {
       toast({
         variant: "default",
-        description: "Rule updated successfully",
+        description: t("ruleUpdated"),
       });
       onOpenChange(false);
     }
@@ -232,12 +221,12 @@ export default function EditRuleChild({
             <DialogTitle className="flex justify-between w-full mt-6">
               <div className="flex">
                 <img src="/magic-wand.svg" className="w-[49px] h-[49px]" />
-                <h1 className="ml-2 text-[40px]">Editar Regla Hijo</h1>
+                <h1 className="ml-2 text-[40px]">{t("title")}</h1>
               </div>
               <SocialButton
                 variant="default"
                 isPending={isPending}
-                defaultText="Guardar"
+                defaultText={t("update")}
                 customStyle="text-[20px]"
                 pendingText="Guardando..."
                 type="button"
@@ -261,7 +250,7 @@ export default function EditRuleChild({
                       <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Alias de la regla"
+                            placeholder={t("aliasPlaceholder")}
                             className="w-full px-3 py-2 
                             rounded-[10px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
@@ -285,7 +274,7 @@ export default function EditRuleChild({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Red Social
+                          {t("socialProfile")}
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -371,15 +360,15 @@ export default function EditRuleChild({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Instrucciones
+                          {t("instructions")}
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Redactar instrucciones..."
                             className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black "
+                            rounded-[12px] border-transparent
+                            focus:outline-none focus:ring-2 focus:ring-primary
+                            bg-[#EBEBEB] text-black "
                             {...field}
                           />
                         </FormControl>
@@ -395,7 +384,7 @@ export default function EditRuleChild({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="block text-sm font-medium">
-                          Tipo
+                          {t("type")}
                         </FormLabel>
                         <FormControl>
                           <Select
@@ -413,8 +402,8 @@ export default function EditRuleChild({
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="1">Padre</SelectItem>
-                              <SelectItem value="2">Hijo</SelectItem>
+                              <SelectItem value="1">{t("parent")}</SelectItem>
+                              <SelectItem value="2">{t("child")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>

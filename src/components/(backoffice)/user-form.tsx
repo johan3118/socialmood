@@ -23,8 +23,10 @@ import { CreateUserSchema } from "@/types";
 import { useForm } from "react-hook-form";
 import SocialButton from "./social-button";
 import { createUser } from "@/app/actions/(backoffice)/user.actions";
+import { useTranslations } from "next-intl";
 
 export function UserForm() {
+  const t = useTranslations("backofficeUserForm");
   const [isPending, setIsPending] = useState(false);
 
   const form = useForm<z.infer<typeof CreateUserSchema>>({
@@ -74,7 +76,7 @@ export function UserForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="block text-sm font-medium text-black">
-                  Nombre
+                  {t("firstName")}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -96,7 +98,7 @@ export function UserForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="block text-sm font-medium text-black">
-                  Apellido
+                  {t("lastName")}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -118,7 +120,7 @@ export function UserForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="block text-sm font-medium text-black">
-                  Dirección
+                  {t("address")}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -140,7 +142,7 @@ export function UserForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="block text-sm font-medium text-black">
-                  Tipo de Usuario
+                  {t("userType")}
                 </FormLabel>
                 <FormControl>
                   <Select
@@ -152,8 +154,10 @@ export function UserForm() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">Gestor de comunidad</SelectItem>
-                      <SelectItem value="2">Gestor de operaciones</SelectItem>
+                      <SelectItem value="1">{t("communityManager")}</SelectItem>
+                      <SelectItem value="2">
+                        {t("operationsManager")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -167,7 +171,7 @@ export function UserForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="block text-sm font-medium text-black">
-                  Correo electrónico
+                  {t("email")}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -189,7 +193,7 @@ export function UserForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="block text-sm font-medium text-black">
-                  Contraseña
+                  {t("password")}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -212,7 +216,7 @@ export function UserForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="block text-sm font-medium text-black">
-                  Confirmar contraseña
+                  {t("confirmPassword")}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -233,8 +237,8 @@ export function UserForm() {
             customStyle="w-full"
             isPending={isPending}
             variant="default"
-            defaultText="Registrar"
-            pendingText="Registrando..."
+            defaultText={t("register")}
+            pendingText={t("registering")}
             type="submit"
           />
         </form>

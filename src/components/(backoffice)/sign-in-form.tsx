@@ -19,8 +19,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import SocialButton from "./social-button";
+import { useTranslations } from "next-intl";
 
 export function SignInForm() {
+  const t = useTranslations("signInForm");
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof SignInSchema>>({
@@ -61,7 +63,7 @@ export function SignInForm() {
         height={70}
         alt={""}
       />
-      <h1 className="text-3xl font-bold text-black">Log In</h1>
+      <h1 className="text-3xl font-bold text-black">{t("login")}</h1>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-5 w-full px-20 py-5"
@@ -72,7 +74,7 @@ export function SignInForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-black">
-                Correo electrónico
+                {t("email")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -94,7 +96,7 @@ export function SignInForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-black">
-                Contraseña
+                {t("password")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -115,8 +117,8 @@ export function SignInForm() {
           <SocialButton
             isPending={isPending}
             variant="default"
-            defaultText="Log in"
-            pendingText="Loging in..."
+            defaultText={t("login")}
+            pendingText={t("loginPending")}
             customStyle="w-full"
           />
         </div>

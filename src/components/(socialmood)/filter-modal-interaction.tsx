@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import SocialButton from "./social-button";
 import { getSocialMediaNameSubscription } from "@/app/actions/(socialmood)/auth.actions";
+import { useTranslations } from "next-intl";
 
 export default function FilterModal({
   isOpen,
@@ -27,6 +28,8 @@ export default function FilterModal({
     ruleType: [],
     social_medias: [],
   });
+
+  const t = useTranslations("filterModalInteraction");
 
   if (!isOpen) return null;
 
@@ -74,11 +77,11 @@ export default function FilterModal({
         >
           <img src="/delete.svg" alt="Close" className="w-6 h-6" />
         </button>
-        <h2 className="text-2xl font-bold mb-4">Filtrar por</h2>
+        <h2 className="text-2xl font-bold mb-4">{t("title")}</h2>
 
         {/* Categoría */}
         <div className="mb-4">
-          <h3 className="block text-lg font-medium">Categoría:</h3>
+          <h3 className="block text-lg font-medium">{t("category")}</h3>
           <hr className="border-[#FFF] my-4" />
           <div className="flex space-x-4">
             {["Positivo", "Negativo", "Neutral"].map((category) => (
@@ -100,7 +103,7 @@ export default function FilterModal({
 
         {/* Subcategoría */}
         <div className="mb-4">
-          <h3 className="block text-lg font-medium">Subcategoría:</h3>
+          <h3 className="block text-lg font-medium">{t("subcategory")}</h3>
           <hr className="border-[#FFF] my-4" />
           <div className="flex space-x-4">
             {["Consulta", "Queja", "Elogio", "Recomendación"].map(
@@ -117,7 +120,6 @@ export default function FilterModal({
                     }
                     className="form-checkbox text-orange-500 rounded-full"
                   />
-
                   <span>{subcategory}</span>
                 </label>
               )
@@ -128,7 +130,7 @@ export default function FilterModal({
         {/* Social Medias */}
         <div className="mb-4">
           <h3 className="block text-lg font-medium">
-            Cuentas de redes sociales:
+            {t("socialMediaAccounts")}
           </h3>
           <hr className="border-[#FFF] my-4" />
           <div className="flex space-x-4">
@@ -155,7 +157,7 @@ export default function FilterModal({
             onClick={onSaveFilters}
             customStyle="w-32"
             variant="default"
-            defaultText="Aplicar filtros"
+            defaultText={t("applyFilters")}
           />
         </div>
       </div>

@@ -10,8 +10,10 @@ import IconContainer from "@/components/(socialmood)/check";
 import { getSubscriptionPlans } from "@/app/actions/(socialmood)/get-plans.actions";
 import SubscribeButton from "@/components/(socialmood)/subscribe-button"; // Client-side component
 import { getUserSubscription } from "@/app/actions/(socialmood)/get-plans.actions";
+import { useTranslations } from "next-intl";
 
 export default async function GetSubscription() {
+  const t = useTranslations("subscription");
   const plans = await getSubscriptionPlans();
   const { user } = await validateRequest();
   if (!user) {
@@ -26,9 +28,9 @@ export default async function GetSubscription() {
     name: plan.nombre,
     price: plan.costo,
     features: [
-      `${plan.cantidad_interacciones_mes} interacciones por mes`,
-      `Administra hasta ${plan.cantidad_cuentas_permitidas} redes sociales`,
-      `Cantidad máxima de ${plan.cantidad_usuarios_permitidos} usuarios`,
+      t("interactions_per_month", { count: plan.cantidad_interacciones_mes }),
+      t("manage_up_to", { count: plan.cantidad_cuentas_permitidas }),
+      t("max_users", { count: plan.cantidad_usuarios_permitidos }),
     ],
     description: plan.descripcion,
     variant: plan.nombre === "Plan Intermedio" ? "rose" : "blur",
@@ -39,7 +41,7 @@ export default async function GetSubscription() {
         ? pro
         : premium,
     isCurrentPlan: userSubscription?.planName === plan.nombre,
-    type: plan.id_tipo_facturacion == 1 ? "Mensual" : "Anual",
+    type: plan.id_tipo_facturacion == 1 ? t("monthly") : t("yearly"),
   }));
 
   return (
@@ -91,7 +93,9 @@ export default async function GetSubscription() {
           </section>
           <HorizontalLine width="w-[75%]" />
           <section className="flex flex-col items-center justify-center space-y-4 px-4 2xl:px-6">
-            <h1 className="text-lg font-medium text-white">Descripción</h1>
+            <h1 className="text-lg font-medium text-white">
+              {t("description_title")}
+            </h1>
             <p className="text-xs text-white font-medium text-justify">
               {plan.description}
             </p>

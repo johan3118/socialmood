@@ -11,6 +11,7 @@ import EditForm from "@/components/(socialmood)/edit-response";
 import Image from "next/image";
 import ApproveResponse from "@/components/(socialmood)/approve-response";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { useTranslations } from "next-intl";
 
 interface Perfil {
   red_social: string;
@@ -36,6 +37,7 @@ interface ListadoRespuestasTableProps {
 const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({
   filter,
 }) => {
+  const t = useTranslations("responsesTable");
   const [subscriptionID, setSubscriptionID] = useState<number>(0);
   const [respuestas, setRespuestas] = useState<Respuestas[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -109,7 +111,7 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({
       <div className="bg-gradient-to-b from-white/20 via-white/10 to-white/5 text-white border border-white/30 rounded-[32px] px-10 mx-12 py-8">
         <div className="container mx-auto p-6">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-[24px] text-white font-bold">Respuestas</h1>
+            <h1 className="text-[24px] text-white font-bold">{t("title")}</h1>
             <div className="flex gap-x-4">
               <button
                 type="button"
@@ -122,7 +124,7 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({
                 disabled={selectedResponses.length === 0}
                 onClick={handleSendResponses}
               >
-                Enviar
+                {t("send")}
                 <Image
                   width={20}
                   height={20}
@@ -139,8 +141,13 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({
               <button
                 className="btn w-8 h-8 bg-[#FFF] rounded-[12px] flex items-center justify-center"
                 onClick={updateData}
+                aria-label={t("refresh")}
               >
-                <img src="/refresh.svg" alt="Refresh" className="w-6 h-6" />
+                <img
+                  src="/refresh.svg"
+                  alt={t("refresh")}
+                  className="w-6 h-6"
+                />
               </button>
             </div>
           </div>
@@ -149,9 +156,9 @@ const ListadoRespuestasTable: React.FC<ListadoRespuestasTableProps> = ({
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="text-[16px] md:text-[18px]">
-                  <th className="py-2 px-3 text-left w-1/6">Perfil</th>
+                  <th className="py-2 px-3 text-left w-1/6">{t("profile")}</th>
                   <th className="py-2 px-3 text-left w-1/2">
-                    Respuesta automática
+                    {t("automaticResponse")}
                   </th>
                   <th className="py-2 px-3 text-left w-1/6 hidden sm:table-cell"></th>
                 </tr>

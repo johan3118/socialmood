@@ -7,6 +7,7 @@ import {
   deactivatePlan,
 } from "@/app/actions/(backoffice)/subscriptions.actions";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl"; // Importar useTranslations
 
 interface PlanSubscripcion {
   planId: string;
@@ -20,6 +21,7 @@ interface PlanSubscripcion {
 }
 
 const PlanesSubscripcionTable: React.FC = () => {
+  const t = useTranslations("subscriptionTable"); // Inicializar useTranslations
   const [planesSubscripcion, setPlanesSubscripcion] = useState<
     PlanSubscripcion[]
   >([]);
@@ -72,10 +74,12 @@ const PlanesSubscripcionTable: React.FC = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between mb-6">
-        <h2 className="text-xl font-bold">Listado de subscripciones</h2>
+        <h2 className="text-xl font-bold">{t("title")}</h2>{" "}
+        {/* Usar traducción para "Listado de subscripciones" */}
         <button
           className="btn w-8 h-8 bg-[#D24EA6] rounded-lg"
           onClick={handleCrearSubscripcion}
+          aria-label={t("createSubscription")} // Usar traducción para "Crear suscripción"
         >
           <span className="text-white text-2xl">+</span>
         </button>
@@ -84,13 +88,23 @@ const PlanesSubscripcionTable: React.FC = () => {
         <table className="min-w-full bg-white rounded-lg  border-t table-auto">
           <thead className="bg-[#422EA3] text-white">
             <tr>
-              <th className="py-3 px-4 text-left">Plan</th>
-              <th className="py-3 px-4 text-center">Límite de usuarios</th>
-              <th className="py-3 px-4 text-center">Redes sociales</th>
-              <th className="py-3 px-4 text-center">Interacciones por mes</th>
-              <th className="py-3 px-4 text-center">Estado</th>
-              <th className="py-3 px-4 text-center">Precio</th>
-              <th className="py-3 px-4 text-left">Acciones</th>
+              <th className="py-3 px-4 text-left">{t("title")}</th>
+              <th className="py-3 px-4 text-center">{t("userLimit")}</th>{" "}
+              {/* Usar traducción para "Límite de usuarios" */}
+              <th className="py-3 px-4 text-center">
+                {t("socialNetworks")}
+              </th>{" "}
+              {/* Usar traducción para "Redes sociales" */}
+              <th className="py-3 px-4 text-center">
+                {t("monthlyInteractions")}
+              </th>{" "}
+              {/* Usar traducción para "Interacciones por mes" */}
+              <th className="py-3 px-4 text-center">{t("status")}</th>{" "}
+              {/* Usar traducción para "Estado" */}
+              <th className="py-3 px-4 text-center">{t("price")}</th>{" "}
+              {/* Usar traducción para "Precio" */}
+              <th className="py-3 px-4 text-left">{t("actions")}</th>{" "}
+              {/* Usar traducción para "Acciones" */}
             </tr>
           </thead>
           <tbody>

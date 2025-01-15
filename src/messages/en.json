@@ -180,7 +180,10 @@
       "dashboard": {
         "title": "Hello, {userName}",
         "phrase": "Monitor moods across all your social networks."
-      }
+      },
+      "subscriptions": "Subscriptions",
+      "users": "Users",
+      "greeting": "Hello, {name}"
     },
     "languageSwitcher": {
       "switchTo": "Switch to Spanish"
@@ -261,5 +264,317 @@
       "signingIn": "Signing in...",
       "signInWithGoogle": "Sign in with Google"
     }
+  },
+  "subscription": {
+    "interactions_per_month": "{count} interactions per month",
+    "manage_up_to": "Manage up to {count} social networks",
+    "max_users": "Maximum of {count} users",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "description_title": "Description",
+    "basic_plan": "Basic Plan",
+    "intermediate_plan": "Intermediate Plan",
+    "premium_plan": "Premium Plan"
+  },
+  "approveResponse": {
+    "confirmation": "CONFIRMATION",
+    "sendConfirmation": "Are you sure you want to send the selected responses?",
+    "sendSuccess": "Responses sent successfully",
+    "sendError": "Error sending responses",
+    "cancel": "Cancel",
+    "send": "Send",
+    "sending": "Sending..."
+  },
+  "categoryChart": {
+    "title": "Sentiments",
+    "interactionCount": "Number of interactions",
+    "positive": "Positive",
+    "negative": "Negative",
+    "neutral": "Neutral"
+  },
+  "createRuleChild": {
+    "title": "Create Child Rule",
+    "aliasPlaceholder": "Rule Alias",
+    "socialMedia": "Social Media",
+    "subcategories": "Subcategories",
+    "instructions": "Instructions",
+    "type": "Type",
+    "parent": "Parent",
+    "child": "Child",
+    "save": "Save",
+    "saving": "Saving...",
+    "ruleCreated": "Rule created successfully"
+  },
+    "createRule": {
+    "title": "Create Rule",
+    "aliasPlaceholder": "Rule Alias",
+    "socialMedia": "Social Media",
+    "subcategories": "Subcategories",
+    "instructions": "Instructions",
+    "type": "Type",
+    "parent": "Parent",
+    "child": "Child",
+    "save": "Save",
+    "saving": "Saving...",
+    "ruleCreated": "Rule created successfully"
+  },
+  "deleteRuleChild": {
+    "confirmation": "CONFIRMATION",
+    "deleteConfirmation": "Are you sure you want to delete this rule?",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "ruleDeleted": "Rule deleted successfully"
+  },
+  "deleteRule": {
+    "confirmation": "CONFIRMATION",
+    "deleteConfirmation": "Are you sure you want to delete this rule?",
+    "deleteConfirmationWithChildren": "Are you sure you want to delete this rule? This rule has associated child rules.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "ruleDeleted": "Rule deleted successfully"
+  },
+  "editRuleChild": {
+    "title": "Edit Child Rule",
+    "date": "Date",
+    "socialProfile": "Social Media Profile",
+    "category": "Category",
+    "subcategory": "Subcategory",
+    "emitter": "Emitter",
+    "instructions": "Instructions",
+    "type": "Type",
+    "relatedRules": "Related Rules",
+    "update": "Update",
+    "ruleUpdated": "Rule updated successfully",
+    "aliasPlaceholder": "Rule Alias"
+  },
+  "editRule": {
+    "title": "Edit Rule",
+    "aliasPlaceholder": "Rule Alias",
+    "instructions": "Instructions",
+    "type": "Type",
+    "relatedRules": "Related Rules",
+    "save": "Save",
+    "saving": "Saving...",
+    "ruleUpdated": "Rule updated successfully",
+    "addChild": "Add Child +"
+  },
+  "emotionsChart": {
+    "title": "Emotions",
+    "loading": "Loading..."
+  },
+  "filterModal": {
+    "title": "Filter by",
+    "socialMediaAccounts": "Social Media Accounts:",
+    "category": "Category:",
+    "subcategory": "Subcategory:",
+    "ruleType": "Rule Type:",
+    "applyFilters": "Apply Filters"
+  },
+  "filterModalInteraction": {
+    "title": "Filter by",
+    "category": "Category:",
+    "subcategory": "Subcategory:",
+    "socialMediaAccounts": "Social Media Accounts:",
+    "applyFilters": "Apply Filters"
+  },
+  "followersChart": {
+    "title": "Followers",
+    "loading": "Loading...",
+    "followers": "followers"
+  },
+  "getSubscription": {
+    "noPlan": "No plan available for selection.",
+    "planImageAlt": "Plan image",
+    "checkout": "CHECKOUT",
+    "description": "No description available",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "interactionsPerMonth": "interactions per month",
+    "manageUpTo": "Manage up to",
+    "socialNetworks": "social networks",
+    "maxUsersAllowed": "Maximum number of",
+    "users": "users",
+    "planUnavailable": "Plan unavailable"
+  },
+  "interactionsTable": {
+    "title": "Captured Interactions",
+    "filters": "Filters",
+    "refresh": "Refresh",
+    "responded": "Responded",
+    "unanswered": "Unanswered",
+    "noInteractions": "No interactions available."
+  },
+  "rulesTable": {
+    "title": "Rules",
+    "addRule": "Add Rule",
+    "refresh": "Refresh",
+    "profile": "Profile",
+    "alias": "Alias",
+    "subcategories": "Subcategories",
+    "edit": "Edit",
+    "delete": "Delete",
+    "noRules": "No rules available."
+  },
+  "responsesTable": {
+    "title": "Responses",
+    "send": "Send",
+    "refresh": "Refresh",
+    "profile": "Profile",
+    "automaticResponse": "Automatic Response",
+    "edit": "Edit",
+    "noResponses": "No responses available."
+  },
+  "sidebar": {
+    "dashboard": "Reports and Analytics",
+    "interactions": "Interactions",
+    "responses": "Responses",
+    "rules": "Rules",
+    "logout": "Log Out"
+  },
+  "signUpForm": {
+    "title": "Sign Up",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "address": "Address",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "signUp": "Sign Up",
+    "signUpWithGoogle": "Sign up with Google",
+    "alreadyHaveAccount": "Already have an account?",
+    "logIn": "Log In",
+    "welcomeEmailSubject": "Welcome to SocialMood",
+    "welcomeEmailText": "Hi {name}, thank you for signing up for SocialMood."
+  },
+  "sentimentChart": {
+    "title": "Categories",
+    "totalInteractions": "Total Interactions",
+    "positive": "Positive",
+    "negative": "Negative",
+    "neutral": "Neutral"
+  },
+  "userCard": {
+    "role": "Community Manager"
+  },
+  "userForm": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "address": "Address",
+    "userType": "User Type",
+    "save": "Save"
+  },
+  "previewSubscription": {
+    "interactions": "interactions processed per hour",
+    "manageSocials": "Manage up to {count} social networks",
+    "maxUsers": "Maximum of {count} user{plural}",
+    "description": "Description"
+  },
+  "profileSettings": {
+    "title": "Profile Settings",
+    "back": "Back"
+  },
+  "sidebarMenu": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "subscriptions": "Subscriptions",
+    "logout": "Log Out"
+  },
+  "signInForm": {
+    "email": "Email",
+    "password": "Password",
+    "login": "Log In",
+    "loginPending": "Logging in..."
+  },
+  "subscriptionForm": {
+    "name": "Name",
+    "billingType": "Billing Type",
+    "price": "Price",
+    "interactions": "Number of interactions processed per hour",
+    "socialNetworks": "Associated social networks",
+    "users": "Associated users",
+    "description": "Description",
+    "save": "Save",
+    "saving": "Saving...",
+    "success": "Success",
+    "error": "Error"
+  },
+  "subscriptionTable": {
+    "title": "Subscription List",
+    "userLimit": "User Limit",
+    "socialNetworks": "Social Networks",
+    "monthlyInteractions": "Monthly Interactions",
+    "status": "Status",
+    "price": "Price",
+    "actions": "Actions",
+    "createSubscription": "Create Subscription"
+  },
+  "backofficeUser": {
+    "role": "Operations Manager"
+  },
+  "backofficeUserForm": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "address": "Address",
+    "userType": "User Type",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "communityManager": "Community Manager",
+    "operationsManager": "Operations Manager",
+    "register": "Register",
+    "registering": "Registering..."
+  },
+  "userSettingsCard": {
+    "profileData": "Profile Data",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "address": "Address",
+    "email": "Email",
+    "updateSuccess": "Profile updated successfully.",
+    "fillAllFields": "Please fill in all required fields."
+  },
+  "userTable": {
+    "title": "User List",
+    "id": "Id",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "address": "Address",
+    "userType": "User Type",
+    "email": "Email",
+    "actions": "Actions",
+    "loading": "Loading users...",
+    "error": "Could not load the user list. Please try again."
+  },
+  "createSubscription": {
+    "title": "Create Subscription Plan",
+    "description": "Enter the subscription plan details",
+    "back": "Back"
+  },
+  "createUser": {
+    "title": "Create User",
+    "description": "Enter the user details",
+    "back": "Back"
+  },
+  "editSubscription": {
+    "title": "Edit Subscription Plan",
+    "description": "Enter the details to edit the subscription plan",
+    "loading": "Loading...",
+    "errorNotFound": "Plan not found",
+    "errorFetching": "Error fetching plan data"
+  },
+  "editUser": {
+    "title": "Edit User",
+    "description": "Enter the details to edit the user",
+    "loading": "Loading...",
+    "errorNotFound": "User not found",
+    "errorFetching": "Error fetching user data",
+    "errorUpdating": "Error updating user",
+    "success": "User updated successfully"
+  },
+  "interactionsGraph": {
+    "title": "Number of Comments"
   }
 } 
