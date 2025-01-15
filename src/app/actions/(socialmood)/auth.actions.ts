@@ -12,6 +12,7 @@ import { google } from "@/lib/lucia/oauth";
 import { generateState, generateCodeVerifier } from "arctic";
 import { planesTable, subscripcionesTable, facturasTable } from "@/db/schema/socialMood";
 import { CodeIcon } from "lucide-react";
+import {sendEmail} from "@/app/actions/(socialmood)/email.actions"
 
 
 export const signUp = async (values: {
@@ -81,6 +82,14 @@ export const signUp = async (values: {
       sessionCookie.value,
       sessionCookie.attributes
     );
+
+    // Call the sendEmail action to send a welcome email
+    try {
+      await sendEmail(values.correo_electronico, values.nombre);
+    } catch (emailError) {
+      console.error('Error sending welcome email:', emailError);
+      // Optionally handle this error, e.g., log it or notify admin
+    }
 
     return {
       success: true,

@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { oauthAccountTable, usuariosTable } from "@/db/schema/socialMood";
 import { lucia } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
+import { sendEmail } from "@/app/actions/(socialmood)/email.actions";
 
 
 interface GoogleUser {
@@ -185,6 +186,15 @@ export const GET = async (req: NextRequest) => {
         sessionCookie.value,
         sessionCookie.attributes
     );
+
+    // Call the sendEmail action to send a welcome email
+    try {
+        await sendEmail(googleData.email, googleData.given_name);
+      } catch (emailError) {
+        console.error('Error sending welcome email:', emailError);
+        // Optionally handle this error, e.g., log it or notify admin
+      }
+  
 
     return NextResponse.redirect(new URL("/app", process.env.NEXT_PUBLIC_BASE_URL),
         { status: 302 }
