@@ -53,12 +53,12 @@ import {
   getRule,
   getChildRules,
   updateRule,
-} from "@/app/[locale]/actions/(socialmood)/rules.actions";
+} from "@/app/actions/(socialmood)/rules.actions";
 
 import {
   getSubscription,
   getActiveUserId,
-} from "@/app/[locale]/actions/(socialmood)/auth.actions";
+} from "@/app/actions/(socialmood)/auth.actions";
 
 interface EditRuleProps {
   ruleID: number;

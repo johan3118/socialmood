@@ -35,7 +35,7 @@ import router, { useRouter } from "next/router";
 import {
   getSubscription,
   getActiveUserId,
-} from "@/app/[locale]/actions/(socialmood)/auth.actions";
+} from "@/app/actions/(socialmood)/auth.actions";
 
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
@@ -44,7 +44,7 @@ import {
   getSocialMediaAccounts,
   getRule,
   createChildRule,
-} from "@/app/[locale]/actions/(socialmood)/rules.actions";
+} from "@/app/actions/(socialmood)/rules.actions";
 
 interface CreateRuleChildProps {
   onOpenChange: (newOpenValue: boolean) => void;

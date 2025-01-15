@@ -1,6 +1,6 @@
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
-import { signOut } from "@/app/[locale]/actions/(backoffice)/auth.actions";
+import { signOut } from "@/app/actions/(backoffice)/auth.actions";
 import { TargetIcon } from "@radix-ui/react-icons";
 import SocialButton from "@/components/(backoffice)/social-button";
 export default async function ProfilePage() {

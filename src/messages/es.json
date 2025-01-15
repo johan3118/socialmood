@@ -60,7 +60,17 @@
         "maxUsers": "Cantidad máxima de ${count} usuarios",
         "changePlan": "Cambiar Plan",
         "currentPayment": "Método de Pago Actual",
-        "yearly": "anual"
+        "yearly": "anual",
+        "dateNotAvailable": "Fecha no disponible",
+        "errorFetchingDate": "Error al obtener fecha",
+        "editPlan": "Editar plan",
+        "nextPayment": "Próximo pago:",
+        "on": "el",
+        "loading": "Cargando...",
+        "basicPlan": "Plan Básico $25/mensual",
+        "paymentMethod": "Método de pago",
+        "creditCard": "Tarjeta de crédito",
+        "editPaymentMethod": "Editar método de pago"
       },
       "social": {
         "title": "Cuentas de Redes Sociales",
@@ -148,6 +158,31 @@
       "nav": {
         "dashboard": "Panel de Control"
       }
+    },
+    "mainBar": {
+      "responses": {
+        "title": "Respuestas",
+        "phrase": "Revisa las respuestas automáticas de tus interacciones."
+      },
+      "rules": {
+        "title": "Reglas",
+        "phrase": "Configura las reglas para tus respuestas automáticas."
+      },
+      "interactions": {
+        "title": "Interacciones",
+        "phrase": "Supervisa las interacciones de tus redes sociales."
+      },
+      "reports": {
+        "title": "Informes y Analíticas",
+        "phrase": "Analiza los informes y las estadísticas."
+      },
+      "dashboard": {
+        "title": "Hola, {userName}",
+        "phrase": "Supervisa los moods de todas tus redes sociales."
+      }
+    },
+    "languageSwitcher": {
+      "switchTo": "Cambiar a Inglés"
     }
   },
   "backoffice": {
@@ -194,5 +229,36 @@
     "unauthorized": "Acceso no autorizado",
     "validation": "Error de validación",
     "network": "Error de red"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Iniciar Sesión",
+      "subtitle": "¡Bienvenido de nuevo! Por favor ingresa tus datos",
+      "email": {
+        "label": "Correo electrónico",
+        "placeholder": "Ingresa tu correo electrónico",
+        "error": {
+          "required": "El correo electrónico es requerido",
+          "invalid": "Correo electrónico no válido",
+          "minLength": "Debe tener como mínimo 10 caracteres",
+          "maxLength": "El máximo de caracteres es 100"
+        }
+      },
+      "password": {
+        "label": "Contraseña",
+        "placeholder": "Ingresa tu contraseña",
+        "error": {
+          "required": "La contraseña es requerida",
+          "minLength": "La contraseña debe tener como mínimo 8 caracteres",
+          "maxLength": "El máximo de caracteres es 20"
+        }
+      },
+      "submit": "Iniciar Sesión",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUp": "Regístrate",
+      "signInSuccess": "Sesión iniciada correctamente",
+      "signingIn": "Iniciando sesión...",
+      "signInWithGoogle": "Iniciar sesión con Google"
+    }
   }
 }

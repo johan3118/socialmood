@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import SocialButton from "./social-button";
-import { getSocialMediaNameSubscription } from "@/app/[locale]/actions/(socialmood)/auth.actions";
+import { getSocialMediaNameSubscription } from "@/app/actions/(socialmood)/auth.actions";
 
 export default function FilterModal({
   isOpen,

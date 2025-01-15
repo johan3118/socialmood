@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
-import { updateRespuesta } from "@/app/[locale]/actions/(socialmood)/get-interactions.actions";
+import { updateRespuesta } from "@/app/actions/(socialmood)/get-interactions.actions";
 import { useRouter } from "next/navigation";
 
 interface EditFormProps {

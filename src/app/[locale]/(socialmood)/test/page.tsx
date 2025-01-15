@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  loadFacebookSDK,
-  getFB,
-  checkLoginState,
-} from "@/app/[locale]/api/meta/meta";
+import { loadFacebookSDK, getFB, checkLoginState } from "@/app/api/meta/meta";
 
 const FacebookLogin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

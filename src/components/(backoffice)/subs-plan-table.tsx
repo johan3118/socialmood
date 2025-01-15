@@ -5,7 +5,7 @@ import {
   selectAllPlans,
   activatePlan,
   deactivatePlan,
-} from "@/app/[locale]/actions/(backoffice)/subscriptions.actions";
+} from "@/app/actions/(backoffice)/subscriptions.actions";
 import { useRouter } from "next/navigation";
 
 interface PlanSubscripcion {

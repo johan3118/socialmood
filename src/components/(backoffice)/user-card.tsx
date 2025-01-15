@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import { getActiveUserName } from "@/app/[locale]/actions/(backoffice)/auth.actions";
+import { getActiveUserName } from "@/app/actions/(backoffice)/auth.actions";
 import React, { useEffect, useState } from "react";
 
 interface UserCardProps {

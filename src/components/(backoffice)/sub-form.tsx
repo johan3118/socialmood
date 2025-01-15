@@ -20,11 +20,8 @@ import { SubscriptionFormSchema } from "@/types";
 import {
   insertPlan,
   updatePlanById,
-} from "@/app/[locale]/actions/(backoffice)/subscriptions.actions";
-import {
-  createSubscriptionPlan,
-  getAccessToken,
-} from "@/app/[locale]/services/paypal";
+} from "@/app/actions/(backoffice)/subscriptions.actions";
+import { createSubscriptionPlan, getAccessToken } from "@/app/services/paypal";
 
 interface FormData {
   nombre: string;

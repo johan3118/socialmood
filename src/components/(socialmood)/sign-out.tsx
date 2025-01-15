@@ -1,5 +1,5 @@
 "use client";
-import { signOut } from "@/app/[locale]/actions/(socialmood)/auth.actions";
+import { signOut } from "@/app/actions/(socialmood)/auth.actions";
 import { LogOut } from "lucide-react";
 
 const handleSignOut = async () => {

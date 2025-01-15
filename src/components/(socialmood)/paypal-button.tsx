@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation"; // Importar useRouter
-import { handleNewSubscription } from "@/app/[locale]/actions/(socialmood)/get-plans.actions";
+import { handleNewSubscription } from "@/app/actions/(socialmood)/get-plans.actions";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 interface PayPalButtonProps {

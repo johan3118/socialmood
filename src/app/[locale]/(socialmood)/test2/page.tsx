@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchManagedPages } from "@/app/[locale]/api/meta/fb-pages";
-import { fetchPagePosts } from "@/app/[locale]/api/meta/fb-post";
-import { fetchPostComments } from "@/app/[locale]/api/meta/fb-comments";
-import { replyToComment } from "@/app/[locale]/api/meta/fb-reply";
+import { fetchManagedPages } from "@/app/api/meta/fb-pages";
+import { fetchPagePosts } from "@/app/api/meta/fb-post";
+import { fetchPostComments } from "@/app/api/meta/fb-comments";
+import { replyToComment } from "@/app/api/meta/fb-reply";
 
 const FacebookFeed = () => {
   const [pages, setPages] = useState<any[]>([]);

@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import {
   getUserById,
   updateUserById,
-} from "@/app/[locale]/actions/(backoffice)/user.actions";
+} from "@/app/actions/(backoffice)/user.actions";
 import UserForm from "@/components/(backoffice)/edit-user-form";
 
 interface FormData {

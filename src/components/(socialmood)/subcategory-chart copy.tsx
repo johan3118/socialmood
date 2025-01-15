@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { getSentimentCounts } from "@/app/[locale]/actions/(socialmood)/get-sentimentcount.actions";
+import { getSentimentCounts } from "@/app/actions/(socialmood)/get-sentimentcount.actions";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

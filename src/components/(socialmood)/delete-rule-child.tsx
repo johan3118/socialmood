@@ -15,7 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import {
   deleteRule,
   ruleHasChildren,
-} from "@/app/[locale]/actions/(socialmood)/rules.actions";
+} from "@/app/actions/(socialmood)/rules.actions";
 
 interface DeleteRuleChildProps {
   ruleID: number;

@@ -1,32 +1,28 @@
 "use client";
-import { useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
+import { usePathname, useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+import { Button } from "@/components/ui/button";
 
 export default function LanguageSelector() {
+  const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
 
-  const handleLanguageChange = (newLocale: string) => {
-    // Store the selected language in localStorage
-    localStorage.setItem("preferred-locale", newLocale);
-    // Redirect to the new locale version
-    router.push(`/${newLocale}`);
+  const switchLocale = () => {
+    const newLocale = locale === "en" ? "es" : "en";
+    // Remove the current locale from the pathname
+    const newPathname = pathname.replace(`/${locale}`, "");
+    router.push(`/${newLocale}${newPathname}`);
   };
 
   return (
-    <Select onValueChange={handleLanguageChange} defaultValue="es">
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select Language" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="es">Español</SelectItem>
-        <SelectItem value="en">English</SelectItem>
-      </SelectContent>
-    </Select>
+    <Button
+      onClick={switchLocale}
+      variant="default"
+      className="text-white hover:text-gray-300"
+    >
+      {locale === "en" ? "ES" : "EN"}
+    </Button>
   );
 }

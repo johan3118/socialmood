@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import {
   getRespuestasFiltered,
   commentRepliedTrue,
-} from "@/app/[locale]/actions/(socialmood)/get-interactions.actions";
+} from "@/app/actions/(socialmood)/get-interactions.actions";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import EditForm from "@/components/(socialmood)/edit-response";

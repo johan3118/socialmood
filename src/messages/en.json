@@ -60,7 +60,18 @@
         "maxSocialAccounts": "Manage up to ${count} social networks",
         "maxUsers": "Maximum of ${count} users",
         "changePlan": "Change Plan",
-        "currentPayment": "Current Payment Method"
+        "currentPayment": "Current Payment Method",
+        "dateNotAvailable": "Date not available",
+        "errorFetchingDate": "Error fetching date",
+        "currentPlan": "Current Plan",
+        "editPlan": "Edit plan",
+        "nextPayment": "Next payment:",
+        "on": "on",
+        "loading": "Loading...",
+        "basicPlan": "Basic Plan $25/monthly",
+        "paymentMethod": "Payment method",
+        "creditCard": "Credit card",
+        "editPaymentMethod": "Edit payment method"
       },
       "social": {
         "title": "Social Media Accounts",
@@ -148,6 +159,31 @@
       "nav": {
         "dashboard": "Dashboard"
       }
+    },
+    "mainBar": {
+      "responses": {
+        "title": "Responses",
+        "phrase": "Review automatic responses for your interactions."
+      },
+      "rules": {
+        "title": "Rules",
+        "phrase": "Configure rules for your automatic responses."
+      },
+      "interactions": {
+        "title": "Interactions",
+        "phrase": "Monitor your social media interactions."
+      },
+      "reports": {
+        "title": "Reports and Analytics",
+        "phrase": "Analyze reports and statistics."
+      },
+      "dashboard": {
+        "title": "Hello, {userName}",
+        "phrase": "Monitor moods across all your social networks."
+      }
+    },
+    "languageSwitcher": {
+      "switchTo": "Switch to Spanish"
     }
   },
   "backoffice": {
@@ -194,5 +230,36 @@
     "unauthorized": "Unauthorized access",
     "validation": "Validation error",
     "network": "Network error"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "subtitle": "Welcome back! Please enter your details",
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email",
+        "error": {
+          "required": "Email is required",
+          "invalid": "Invalid email",
+          "minLength": "Must be at least 10 characters",
+          "maxLength": "Must not exceed 100 characters"
+        }
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter your password",
+        "error": {
+          "required": "Password is required",
+          "minLength": "Must be at least 8 characters",
+          "maxLength": "Must not exceed 20 characters"
+        }
+      },
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign Up",
+      "signInSuccess": "Signed in successfully",
+      "signingIn": "Signing in...",
+      "signInWithGoogle": "Sign in with Google"
+    }
   }
 } 

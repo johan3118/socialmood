@@ -1,11 +1,13 @@
 "use client";
 import { usePathname } from "next/navigation";
 import UserProfile from "@/components/(socialmood)/user-profile";
-import { getActiveUserName } from "@/app/[locale]/actions/(socialmood)/auth.actions";
+import { getActiveUserName } from "@/app/actions/(socialmood)/auth.actions";
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function MainBar() {
   const [userName, setUserName] = useState<string>("");
+  const t = useTranslations("socialmood.mainBar");
 
   const fetchUserName = async () => {
     const result = await getActiveUserName();
@@ -27,28 +29,28 @@ export default function MainBar() {
     switch (pathname) {
       case "/app/listado/respuestas":
         return {
-          title: "Respuestas",
-          phrase: "Revisa las respuestas automaticas de tus interacciones.",
+          title: t("responses.title"),
+          phrase: t("responses.phrase"),
         };
       case "/app/reglas":
         return {
-          title: "Reglas",
-          phrase: "Configura las reglas para tus respuestas automaticas.",
+          title: t("rules.title"),
+          phrase: t("rules.phrase"),
         };
       case "/app/listado-interacciones":
         return {
-          title: "Interacciones",
-          phrase: "Supervisa las interacciones de tus redes sociales.",
+          title: t("interactions.title"),
+          phrase: t("interactions.phrase"),
         };
       case "/reports":
         return {
-          title: "Informes y Analíticas",
-          phrase: "Analiza los informes y las estadísticas.",
+          title: t("reports.title"),
+          phrase: t("reports.phrase"),
         };
       default:
         return {
-          title: "Hola, " + userName,
-          phrase: "Supervisa los moods de todas tus redes sociales.",
+          title: t("dashboard.title", { userName }),
+          phrase: t("dashboard.phrase"),
         };
     }
   };

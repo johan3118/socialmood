@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { User } from "lucide-react";
-import { getActiveUserName } from "@/app/[locale]/actions/(socialmood)/auth.actions";
+import { getActiveUserName } from "@/app/actions/(socialmood)/auth.actions";
 
 interface UserCardProps {
   onShowSettings: () => void;

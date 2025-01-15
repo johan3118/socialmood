@@ -22,7 +22,7 @@ import {
 import { CreateUserSchema } from "@/types";
 import { useForm } from "react-hook-form";
 import SocialButton from "./social-button";
-import { createUser } from "@/app/[locale]/actions/(backoffice)/user.actions";
+import { createUser } from "@/app/actions/(backoffice)/user.actions";
 
 export function UserForm() {
   const [isPending, setIsPending] = useState(false);

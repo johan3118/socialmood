@@ -4,7 +4,7 @@ import Sidebar from "@/components/(socialmood)/sidebar";
 import MainBar from "@/components/(socialmood)/main-bar";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
-import { hasSubscription } from "@/app/[locale]/actions/(socialmood)/auth.actions";
+import { hasSubscription } from "@/app/actions/(socialmood)/auth.actions";
 import SignOut from "@/components/(socialmood)/sign-out";
 
 const rubik = Ubuntu({

@@ -12,21 +12,35 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignInSchema } from "../../types";
 import {
   createGoogleAuthotizationURL,
   signIn,
-} from "@/app/[locale]/actions/(socialmood)/auth.actions";
+} from "@/app/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import SocialButton from "./social-button";
+import { useTranslations } from "next-intl";
 
 export function SignInForm() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
+  const t = useTranslations("auth.signIn");
+
+  const SignInSchema = z.object({
+    correo_electronico: z
+      .string()
+      .email({ message: t("email.error.invalid") })
+      .min(10, { message: t("email.error.minLength") })
+      .max(100, { message: t("email.error.maxLength") }),
+    password: z
+      .string()
+      .min(8, { message: t("password.error.minLength") })
+      .max(20, { message: t("password.error.maxLength") }),
+  });
+
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -47,7 +61,7 @@ export function SignInForm() {
     } else if (res.success) {
       toast({
         variant: "default",
-        description: "Signed in successfully",
+        description: t("signInSuccess"),
       });
       setTimeout(() => {
         setIsPending(false);
@@ -67,7 +81,6 @@ export function SignInForm() {
     } else if (res.success) {
       window.location.href = res.data.toString();
     }
-
     setIsPending(false);
   };
 
@@ -78,9 +91,9 @@ export function SignInForm() {
         src={"/socialmood-logo.svg"}
         width={163}
         height={70}
-        alt={""}
+        alt={"SocialMood Logo"}
       />
-      <h1 className="text-3xl font-bold text-white">Log In</h1>
+      <h1 className="text-3xl font-bold text-white">{t("title")}</h1>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-5 w-full px-20 py-5"
@@ -91,29 +104,30 @@ export function SignInForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-white">
-                Correo electrónico
+                {t("email.label")}
               </FormLabel>
               <FormControl>
                 <Input
                   className="w-full px-3 py-2 
                             rounded-[15px] 
                             focus:outline-none focus:ring-2 focus:ring-primary 
-                            bg-white/40 text-white "
-                  autoComplete="correo_electronico"
+                            bg-white/40 text-white"
+                  autoComplete="email"
+                  placeholder={t("email.placeholder")}
                   {...field}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        />{" "}
+        />
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="block text-sm font-medium text-white">
-                Contraseña
+                {t("password.label")}
               </FormLabel>
               <FormControl>
                 <Input
@@ -123,6 +137,7 @@ export function SignInForm() {
                             bg-white/40 text-white"
                   autoComplete="current-password"
                   type="password"
+                  placeholder={t("password.placeholder")}
                   {...field}
                 />
               </FormControl>
@@ -135,8 +150,8 @@ export function SignInForm() {
             customStyle="w-full"
             isPending={isPending}
             variant="default"
-            defaultText="Log in"
-            pendingText="Loging in..."
+            defaultText={t("submit")}
+            pendingText={t("signingIn")}
             type="submit"
           />
         </div>
@@ -145,20 +160,20 @@ export function SignInForm() {
             customStyle="w-full"
             isPending={isPending}
             variant="google"
-            defaultText="Inicia sesión con Google"
-            pendingText="Signing in..."
+            defaultText={t("signInWithGoogle")}
+            pendingText={t("signingIn")}
             type="button"
             icon="gg"
             onClick={onGoogleSignInClicked}
           />
         </div>
         <p className="text-sm text-white text-center">
-          No tienes una cuenta?{" "}
+          {t("noAccount")}{" "}
           <Link
             href="/app/sign-up"
             className="font-medium text-white hover:underline"
           >
-            Regístrate
+            {t("signUp")}
           </Link>
         </p>
       </form>

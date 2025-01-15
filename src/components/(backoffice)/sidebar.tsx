@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { signOut } from "@/app/[locale]/actions/(backoffice)/auth.actions";
+import { signOut } from "@/app/actions/(backoffice)/auth.actions";
 
 const menuItems = [
   {

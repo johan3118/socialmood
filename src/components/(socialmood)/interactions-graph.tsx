@@ -1,94 +1,163 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { Line } from "react-chartjs-2";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
   Tooltip,
   Legend,
-  ResponsiveContainer,
-} from "recharts";
-import { getInteractionsPerDay } from "@/app/actions/(socialmood)/interactions.actions";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+} from "chart.js";
+import { getInteractionsByMonthAndUsername } from "@/app/actions/(socialmood)/get-interactions.actions"; // Ajusta la ruta al action
 
-interface InteractionData {
-  fecha: string;
-  cantidad: number;
-}
+// Definir el tipo de datos del gráfico
+type ChartData = {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    borderColor: string;
+    pointBackgroundColor: string;
+    tension: number;
+    borderWidth: number;
+    fill: boolean;
+  }[];
+};
+
+// Definir el tipo para los últimos 6 meses
+type Last6Month = {
+  label: string; // Mes y año en formato "Ene 2024"
+  month: number; // Número del mes (1-12)
+  year: number; // Año
+};
+
+// Registrar componentes de Chart.js
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend
+);
+
+const options = {
+  maintainAspectRatio: false,
+  responsive: true,
+  plugins: {
+    title: {
+      display: true,
+      text: "Cantidad de Comentarios",
+      font: {
+        size: 18,
+        family: "Arial",
+        weight: "bold" as const,
+      },
+      color: "#FFFFFF",
+    },
+    legend: {
+      display: true,
+      position: "top" as const,
+      labels: {
+        color: "#fff",
+        usePointStyle: true,
+      },
+      onClick: () => {}, // Disable legend click events
+    },
+    tooltip: {
+      enabled: true,
+      mode: "index" as const,
+      intersect: false,
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        color: "#fff",
+      },
+      grid: {
+        display: false,
+      },
+    },
+    y: {
+      ticks: {
+        color: "#fff",
+      },
+      grid: {
+        display: false,
+      },
+    },
+  },
+};
 
 interface GraficoInteraccionesProps {
-  social_medias?: string[];
+  filter: any;
 }
 
 const GraficoInteracciones: React.FC<GraficoInteraccionesProps> = ({
-  social_medias = [],
+  filter = {},
 }) => {
-  const t = useTranslations("socialmood.dashboard.charts");
-  const [data, setData] = useState<InteractionData[]>([]);
+  const [data, setData] = useState<ChartData>({
+    labels: [],
+    datasets: [],
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const interactionsData = await getInteractionsPerDay();
-        const formattedData = interactionsData.map((item) => ({
-          fecha: format(new Date(item.fecha), "dd/MM/yyyy", { locale: es }),
-          cantidad: item.cantidad,
+        // Obtener los últimos 6 meses con año
+        const now = new Date();
+        const last6Months: Last6Month[] = [];
+
+        for (let i = 5; i >= 0; i--) {
+          const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          last6Months.push({
+            label: `${date.toLocaleString("default", {
+              month: "short",
+            })} ${date.getFullYear()}`,
+            month: date.getMonth() + 1,
+            year: date.getFullYear(),
+          });
+        }
+
+        // Llamada al action
+        let response = await getInteractionsByMonthAndUsername();
+
+        if (filter?.social_medias) {
+          if (filter.social_medias.length > 0) {
+            response.datasets = response.datasets.filter((dataset) =>
+              filter.social_medias.includes(dataset.label)
+            );
+          }
+        }
+
+        // Formatear los datos obtenidos del action para incluir los últimos 6 meses
+        const formattedLabels = last6Months.map(({ label }) => label);
+        const datasets = response.datasets.map((dataset) => ({
+          ...dataset,
+          data: formattedLabels.map((label, index) =>
+            response.labels.includes(label) ? dataset.data[index] : 0
+          ),
         }));
-        setData(formattedData);
+
+        setData({ labels: formattedLabels, datasets });
       } catch (error) {
-        console.error("Error fetching interactions data:", error);
+        console.error("Error al cargar los datos del gráfico:", error);
+        setData({ labels: [], datasets: [] }); // Manejo de errores
       }
     };
 
     fetchData();
-  }, []);
-
-  if (data.length === 0) {
-    return <div className="text-center py-4">{t("noData")}</div>;
-  }
+  }, [filter]);
 
   return (
-    <div className="w-full h-[300px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="fecha"
-            tick={{ fill: "white" }}
-            tickLine={{ stroke: "white" }}
-          />
-          <YAxis tick={{ fill: "white" }} tickLine={{ stroke: "white" }} />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "#1a1a1a",
-              border: "1px solid #333",
-              borderRadius: "4px",
-            }}
-            labelStyle={{ color: "white" }}
-            itemStyle={{ color: "white" }}
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="cantidad"
-            name={t("interactionsTitle")}
-            stroke="#8884d8"
-            activeDot={{ r: 8 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div
+      className="w-full h-full bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg rounded-[32px] p-6"
+      style={{ width: "100%", height: "250px" }}
+    >
+      <Line data={data} options={options} />
     </div>
   );
 };

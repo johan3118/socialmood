@@ -7,9 +7,9 @@ import Image from "next/image";
 import BlurredContainer from "@/components/(socialmood)/blur-background";
 import HorizontalLine from "@/components/(socialmood)/horizontal-line";
 import IconContainer from "@/components/(socialmood)/check";
-import { getSubscriptionPlans } from "@/app/[locale]/actions/(socialmood)/get-plans.actions";
+import { getSubscriptionPlans } from "@/app/actions/(socialmood)/get-plans.actions";
 import SubscribeButton from "@/components/(socialmood)/subscribe-button"; // Client-side component
-import { getUserSubscription } from "@/app/[locale]/actions/(socialmood)/get-plans.actions";
+import { getUserSubscription } from "@/app/actions/(socialmood)/get-plans.actions";
 
 export default async function GetSubscription() {
   const plans = await getSubscriptionPlans();

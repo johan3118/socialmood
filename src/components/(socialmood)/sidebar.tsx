@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { signOut } from "@/app/[locale]/actions/(backoffice)/auth.actions";
-import { countUnansweredInteractions } from "@/app/[locale]/actions/(socialmood)/get-interactions.actions";
+import { signOut } from "@/app/actions/(socialmood)/auth.actions";
+import { countUnansweredInteractions } from "@/app/actions/(socialmood)/get-interactions.actions";
 
 interface MenuItem {
   id: string;
@@ -66,7 +66,7 @@ export default function Sidebar() {
     const fetchUnansweredCounts = async () => {
       const count = await countUnansweredInteractions();
       setUnansweredCounts((prevCounts) => {
-        const updatedCounts = { ...prevCounts, interactions: count }; // Ajusta las claves según los subitems
+        const updatedCounts: any = { ...prevCounts, interactions: count }; // Ajusta las claves según los subitems
 
         // Detect changes to trigger animation
         Object.keys(updatedCounts).forEach((key) => {

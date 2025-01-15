@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { useTranslations } from 'next-intl';
+
 export const SignUpSchema = z
   .object({
     nombre: z
@@ -40,7 +42,6 @@ export const SignUpSchema = z
     path: ["confirmPassword"],
   });
 
-
 export const SignInSchema = z.object({
   correo_electronico: z
     .string()
@@ -52,7 +53,6 @@ export const SignInSchema = z.object({
     .min(8, { message: "La contraseña debe tener como mínimo 8 caracteres" })
     .max(20, { message: "El máximo de caracteres es 20" }),
 });
-
 
 export const CreateRuleSchema = z.object({
   alias: z
@@ -70,7 +70,6 @@ export const CreateRuleSchema = z.object({
   subcategorias: z.
     array(z.string().min(1)).refine((value) => value.some((item) => item)),
 });
-
 
 export type VariantType =
   | "default"
@@ -167,6 +166,8 @@ export type Interacciones = {
   respuesta: string | null;
   usuario_cuenta_receptor: string;
   usuario_cuenta_emisor: string;
+  unique_code: string;
+  comment_id: string;
 };
 
 export const SubscriptionPlanSchema = z.object({

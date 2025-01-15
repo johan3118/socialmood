@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import {
   createRule,
   getSocialMediaAccounts,
-} from "@/app/[locale]/actions/(socialmood)/rules.actions";
+} from "@/app/actions/(socialmood)/rules.actions";
 
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
@@ -51,7 +51,7 @@ import { Input } from "@/components/ui/input";
 import {
   getSubscription,
   getActiveUserId,
-} from "@/app/[locale]/actions/(socialmood)/auth.actions";
+} from "@/app/actions/(socialmood)/auth.actions";
 
 import SocialButton from "./social-button";
 

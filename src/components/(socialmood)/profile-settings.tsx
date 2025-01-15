@@ -11,7 +11,8 @@ import Modal from "@/components/(socialmood)/modal";
 import { useState } from "react";
 import BlurredContainer from "./blur-background";
 import InstructionCard from "./instruction-card";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
 
 interface ProfileSettingsProps {
   onClose: () => void;
@@ -20,9 +21,18 @@ interface ProfileSettingsProps {
 export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
   const t = useTranslations("socialmood.profile");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const switchLocale = () => {
+    const newLocale = locale === "en" ? "es" : "en";
+    const newPathname = pathname.replace(`/${locale}`, "");
+    router.push(`/${newLocale}${newPathname}`);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 px-[25vh]">
@@ -55,6 +65,21 @@ export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
             <UserCurrentPlanCard />
             <SocialMediaCard />
           </div>
+        </div>
+
+        <div className="mt-4 p-4 border-t border-gray-700">
+          <h3 className="text-white text-lg mb-2">
+            {locale === "en" ? "Language Settings" : "Configuración de idioma"}
+          </h3>
+          <button
+            onClick={switchLocale}
+            className="flex items-center space-x-2 text-white hover:text-gray-300 transition-colors"
+          >
+            <span>{locale === "en" ? "🇪��" : "🇬🇧"}</span>
+            <span>
+              {locale === "en" ? "Cambiar a Español" : "Switch to English"}
+            </span>
+          </button>
         </div>
       </div>
     </div>

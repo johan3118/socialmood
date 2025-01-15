@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import UserProfile from "@/components/(backoffice)/user-profile";
-import { getActiveUserName } from "@/app/[locale]/actions/(backoffice)/auth.actions";
+import { getActiveUserName } from "@/app/actions/(backoffice)/auth.actions";
 import React, { useEffect, useState } from "react";
 
 export default function MainBar() {

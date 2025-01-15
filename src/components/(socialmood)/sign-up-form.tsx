@@ -16,14 +16,14 @@ import { SignUpSchema } from "@/types";
 import {
   createGoogleAuthotizationURL,
   signUp,
-} from "@/app/[locale]/actions/(socialmood)/auth.actions";
+} from "@/app/actions/(socialmood)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import SocialButton from "./social-button";
-import { sendEmail } from "@/app/[locale]/actions/(socialmood)/email.actions";
+import { sendEmail } from "@/app/actions/(socialmood)/email.actions";
 
 export function SignUpForm() {
   const [isPending, setIsPending] = useState(false);

@@ -2,7 +2,7 @@ import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import { TargetIcon } from "@radix-ui/react-icons";
 import SocialButton from "@/components/(socialmood)/social-button";
-import { hasSubscription } from "@/app/[locale]/actions/(socialmood)/get-plans.actions";
+import { hasSubscription } from "@/app/actions/(socialmood)/get-plans.actions";
 export default async function ProfilePage() {
   const { user } = await validateRequest();
 

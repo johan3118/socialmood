@@ -8,7 +8,7 @@ import { useRouter, useParams } from "next/navigation";
 import {
   getPlanById,
   updatePlanById,
-} from "@/app/[locale]/actions/(backoffice)/subscriptions.actions";
+} from "@/app/actions/(backoffice)/subscriptions.actions";
 
 interface FormData {
   nombre: string;

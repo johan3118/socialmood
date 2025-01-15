@@ -1,4 +1,4 @@
-import { fetchFacebookFollowers } from "@/app/[locale]/api/meta/fb-followers";
+import { fetchFacebookFollowers } from "@/app/api/meta/fb-followers";
 import db from "@/db";
 import { getActiveUserId, getSubscription, getSocialMediaSubscription, getSocialMediaToken } from "./auth.actions";
 

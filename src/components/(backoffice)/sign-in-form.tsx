@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignInSchema } from "../../types";
-import { signIn } from "@/app/[locale]/actions/(backoffice)/auth.actions";
+import { signIn } from "@/app/actions/(backoffice)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

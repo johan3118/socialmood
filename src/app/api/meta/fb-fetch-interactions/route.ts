@@ -6,7 +6,7 @@ import { Interacciones } from "@/types";
 import {
   obtenerCuentasRedesSociales,
   obtenerSoloReglasDeCuentas,
-} from "@/app/[locale]/actions/(socialmood)/get-plans.actions";
+} from "@/app/actions/(socialmood)/get-plans.actions";
 import { generateChatGPTResponse } from "@/lib/openai/generate-response-interactions";
 
 export const dynamic = "force-dynamic";

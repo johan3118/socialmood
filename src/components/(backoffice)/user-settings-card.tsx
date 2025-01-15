@@ -8,7 +8,7 @@ import {
   getActiveUserEmail,
   getActiveUserAddress,
   updateUserProfile,
-} from "@/app/[locale]/actions/(backoffice)/auth.actions";
+} from "@/app/actions/(backoffice)/auth.actions";
 
 function UserSettingsCard() {
   const [firstName, setFirstName] = useState<string>("");

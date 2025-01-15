@@ -22,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   getSubscription,
   getActiveUserId,
-} from "@/app/[locale]/actions/(socialmood)/auth.actions";
+} from "@/app/actions/(socialmood)/auth.actions";
 
 import router, { useRouter } from "next/router";
 
@@ -50,7 +50,7 @@ import {
   getSocialMediaAccounts,
   getRule,
   updateRule,
-} from "@/app/[locale]/actions/(socialmood)/rules.actions";
+} from "@/app/actions/(socialmood)/rules.actions";
 
 import SocialButton from "./social-button";
 import { Label } from "../ui/label";

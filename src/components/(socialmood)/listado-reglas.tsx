@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getRules } from "@/app/[locale]/actions/(socialmood)/rules.actions";
+import { getRules } from "@/app/actions/(socialmood)/rules.actions";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils"; // Importación de la función 'cn'
 import CreateRule from "@/components/(socialmood)/create-rule";
@@ -10,7 +10,7 @@ import DeleteRule from "@/components/(socialmood)/delete-rule";
 import {
   getSubscription,
   getActiveUserId,
-} from "@/app/[locale]/actions/(socialmood)/auth.actions";
+} from "@/app/actions/(socialmood)/auth.actions";
 
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 

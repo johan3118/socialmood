@@ -1,8 +1,8 @@
 'use server'
 import clientPromise from "@/utils/startMongo"
 import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
-import { replyToComment } from "@/app/[locale]/api/meta/fb-reply";
-import { getSocialMediaToken } from "@/app/[locale]/actions/(socialmood)/auth.actions";
+import { replyToComment } from "@/app/api/meta/fb-reply";
+import { getSocialMediaToken } from "@/app/actions/(socialmood)/auth.actions";
 import { getAccountColor } from "./social.actions";
 
 

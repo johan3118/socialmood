@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import {
   getPlansByName,
   getPlanById,
-} from "@/app/[locale]/actions/(socialmood)/get-plans.actions";
+} from "@/app/actions/(socialmood)/get-plans.actions";
 import GetSubscriptionClient from "@/components/(socialmood)/get-subs-client";
 
 export default async function GetSubscription({

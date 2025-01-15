@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { selectAllUsers } from "@/app/[locale]/actions/(backoffice)/user.actions";
+import { selectAllUsers } from "@/app/actions/(backoffice)/user.actions";
 import { useRouter } from "next/navigation";
 
 interface Usuarios {
