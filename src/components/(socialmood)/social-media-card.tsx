@@ -28,105 +28,134 @@ const socialIconMap: { [key: string]: string } = {
   Twitter: "/twitter.svg",
 };
 
-export default function SocialMediaCard() {
-  const t = useTranslations("socialmood.profile.social");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const SocialMediaCard: React.FC = () => {
+  const t = useTranslations("socialMediaCard");
+  const [isModalOpen, setModalOpen] = useState(false);
   const [perfiles, setPerfiles] = useState<Perfil[]>([]);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(
-    null
-  );
+  const [loading, setLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
 
   const fetchPerfiles = useCallback(async () => {
-    const accounts = await getLinkedAccounts();
+    setLoading(true);
+    const accounts: Perfil[] = await getLinkedAccounts();
     setPerfiles(accounts);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
     fetchPerfiles();
   }, [fetchPerfiles]);
 
-  const handleDeleteAccount = async (accountId: string) => {
-    setSelectedAccountId(accountId);
-    setIsDeleteModalOpen(true);
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
   };
 
-  const confirmDelete = async () => {
-    if (selectedAccountId) {
-      await deleteLinkedAccount(selectedAccountId);
-      await fetchPerfiles();
-      setIsDeleteModalOpen(false);
+  const handleSocialAccountDelete = (username: string) => {
+    setSelectedUsername(username);
+    setOpenDialog(true);
+  };
+
+  const confirmUnlinkAccount = async () => {
+    if (selectedUsername) {
+      try {
+        await deleteLinkedAccount(selectedUsername);
+        alert(t("deleteSuccess"));
+        console.log("Cuenta desvinculada y eliminada correctamente.");
+        fetchPerfiles(); // Actualiza la lista después de la eliminación
+      } catch (error) {
+        console.error("Error al desvincular y eliminar la cuenta:", error);
+        throw error; // Propaga el error para que `handleApprove` lo maneje
+      } finally {
+        setOpenDialog(false); // Cierra el diálogo después de la operación
+      }
     }
   };
 
   return (
-    <BlurredContainer>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold">{t("title")}</h2>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className={cn(
-            buttonVariants({ variant: "outline" }),
-            "text-xs px-3 py-1 h-auto"
-          )}
-        >
-          {t("addAccount")}
-        </button>
-      </div>
-
-      {perfiles.length === 0 ? (
-        <p className="text-sm text-gray-400">{t("noAccounts")}</p>
-      ) : (
-        <div className="space-y-3">
-          {perfiles.map((perfil, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between p-3 bg-gray-800 rounded-lg"
-            >
-              <div className="flex items-center space-x-3">
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: perfil.color }}
-                >
-                  {socialIconMap[perfil.red_social] && (
-                    <img
-                      src={socialIconMap[perfil.red_social]}
-                      alt={perfil.red_social}
-                      className="w-4 h-4"
-                    />
-                  )}
-                </div>
-                <div>
-                  <p className="text-sm font-medium">{perfil.username}</p>
-                  <EstadoLabel estado={perfil.estado} />
-                </div>
-              </div>
-              <button
-                onClick={() => handleDeleteAccount(perfil.username)}
-                className="text-gray-400 hover:text-white"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
+    <>
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <AddSocialForm
-            onClose={() => setIsModalOpen(false)}
-            onFormSubmit={fetchPerfiles}
-          />
+        <Modal onClose={toggleModal}>
+          <AddSocialForm onClose={toggleModal} onFormSubmit={fetchPerfiles} />
         </Modal>
       )}
+      <BlurredContainer customStyle="h-[30vh]">
+        <div className="flex items-center justify-between w-full mb-3">
+          <h2 className="text-2xl font-bold">{t("title")}</h2>
+          <div className="options flex items-center">
+            <button
+              className="w-6 h-6 bg-[#D24EA6] text-2xl rounded-xl flex items-center justify-center"
+              onClick={toggleModal}
+            >
+              +
+            </button>
+          </div>
+        </div>
 
-      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-        <ApproveSocialDelete
-          onConfirm={confirmDelete}
-          onCancel={() => setIsDeleteModalOpen(false)}
-        />
-      </Dialog>
-    </BlurredContainer>
+        {loading ? (
+          <p>{t("loading")}</p>
+        ) : (
+          <table className="w-full">
+            <thead className="text-left">
+              <tr>
+                <th className="pb-2">{t("accounts")}</th>
+                <th className="pb-2 px-5">{t("status")}</th>
+                <th> </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {perfiles.map((perfil, index) => (
+                <tr key={index}>
+                  <td className="pb-2">
+                    <span
+                      className={cn(
+                        buttonVariants({
+                          variant:
+                            perfil.red_social === "Instagram"
+                              ? "blue"
+                              : perfil.red_social === "Facebook"
+                              ? "orange"
+                              : "default",
+                          size: "smBold",
+                        }),
+                        "w-full flex justify-start items-center py-2 pr-30"
+                      )}
+                    >
+                      <img
+                        src={socialIconMap[perfil.red_social] || "/default.svg"}
+                        alt={`${perfil.red_social} Icon`}
+                        className="flex justify-left mr-2"
+                      />
+                      {perfil.username}
+                    </span>
+                  </td>
+
+                  <td className="px-5 pb-2">
+                    <EstadoLabel estado={perfil.estado} />
+                  </td>
+                  <td className="pb-2">
+                    <X
+                      onClick={() => handleSocialAccountDelete(perfil.username)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </BlurredContainer>
+
+      {openDialog && (
+        <Dialog open={openDialog}>
+          <ApproveSocialDelete
+            onOpenChange={setOpenDialog}
+            onConfirm={confirmUnlinkAccount}
+          />
+        </Dialog>
+      )}
+    </>
   );
-}
+};
+
+export default SocialMediaCard;

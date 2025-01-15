@@ -533,6 +533,9 @@
     "lastName": "Last Name",
     "address": "Address",
     "email": "Email",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
     "updateSuccess": "Profile updated successfully.",
     "fillAllFields": "Please fill in all required fields."
   },
@@ -576,5 +579,14 @@
   },
   "interactionsGraph": {
     "title": "Number of Comments"
+  },
+  "socialMediaCard": {
+    "title": "Social Media",
+    "loading": "Loading profiles...",
+    "accounts": "Accounts",
+    "status": "Status",
+    "addAccount": "Add Account",
+    "confirmDelete": "Are you sure you want to unlink this account?",
+    "deleteSuccess": "Account unlinked and deleted successfully."
   }
 } 

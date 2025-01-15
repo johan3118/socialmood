@@ -532,6 +532,9 @@
     "lastName": "Apellido",
     "address": "Dirección",
     "email": "Correo electrónico",
+    "edit": "Editar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
     "updateSuccess": "Perfil actualizado exitosamente.",
     "fillAllFields": "Por favor, llena todos los campos obligatorios."
   },
@@ -575,5 +578,14 @@
   },
   "interactionsGraph": {
     "title": "Cantidad de Comentarios"
+  },
+  "socialMediaCard": {
+    "title": "Redes Sociales",
+    "loading": "Cargando perfiles...",
+    "accounts": "Cuentas",
+    "status": "Estado",
+    "addAccount": "Agregar Cuenta",
+    "confirmDelete": "¿Estás seguro de que deseas desvincular esta cuenta?",
+    "deleteSuccess": "Cuenta desvinculada y eliminada correctamente."
   }
 }
