@@ -20,7 +20,7 @@ interface UserFormProps {
 
 const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handleSubmit }) => {
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-5 w-full max-h-[80vh] overflow-y-auto">
       <div>
         <Label htmlFor="nombre">Nombre</Label>
         <Input
@@ -46,6 +46,7 @@ const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handle
         <Input
           id="correo"
           name="correo"
+          disabled
           value={formData.correo}
           onChange={handleInputChange}
           className="w-full px-3 py-2 rounded-[12px] bg-gray-100"
@@ -72,7 +73,7 @@ const UserForm: React.FC<UserFormProps> = ({ formData, handleInputChange, handle
         />
       </div>
 
-      <Button type="submit">Guardar</Button>
+      <Button customStyle="w-full" type="submit">Guardar</Button>
     </form>
   );
 };

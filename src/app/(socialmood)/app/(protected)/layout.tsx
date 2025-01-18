@@ -6,6 +6,7 @@ import MainBar from "@/components/(socialmood)/main-bar"
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import { hasSubscription } from "@/app/actions/(socialmood)/auth.actions";
+import { getUserById } from "@/app/actions/(socialmood)/user.actions";
 
 
 const rubik = Ubuntu({
@@ -29,6 +30,12 @@ export default async function AppLayout({
 
     if (!user) {
         return redirect("/app/sign-in");
+    }
+    else{
+        const userdata = await getUserById(user?.id);
+        if (userdata?.tipo_usuario == "admin") {
+            return redirect("/bo");
+        }
     }
 
     const activeSub = await hasSubscription(user.id)

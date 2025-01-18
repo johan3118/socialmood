@@ -10,6 +10,7 @@ import IconContainer from "@/components/(socialmood)/check";
 import { getSubscriptionPlans } from "@/app/actions/(socialmood)/get-plans.actions";
 import SubscribeButton from "@/components/(socialmood)/subscribe-button"; // Client-side component
 import { getUserSubscription } from "@/app/actions/(socialmood)/get-plans.actions";
+import { getUserById } from "@/app/actions/(socialmood)/user.actions";
 
 
 export default async function GetSubscription() {
@@ -17,6 +18,12 @@ export default async function GetSubscription() {
   const { user } = await validateRequest();
   if (!user) {
     return redirect("/");
+  }
+  else{
+    const userdata = await getUserById(user?.id);
+    if (userdata?.tipo_usuario == "admin") {
+      return redirect("/bo");
+    }
   }
 
   const userSubscription = await getUserSubscription(user.id);

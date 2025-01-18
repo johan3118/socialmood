@@ -1,10 +1,10 @@
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import {
-  getPlansByName,
-  getPlanById,
+  getPlanById
 } from "@/app/actions/(socialmood)/get-plans.actions";
 import GetSubscriptionClient from "@/components/(socialmood)/get-subs-client";
+import { getUserById } from "@/app/actions/(socialmood)/user.actions";
 
 export default async function GetSubscription({
   searchParams,
@@ -15,6 +15,12 @@ export default async function GetSubscription({
 
   if (!user) {
     return redirect("/");
+  }
+  else {
+    const userdata = await getUserById(user?.id);
+    if (userdata?.tipo_usuario == "admin") {
+      return redirect("/bo");
+    }
   }
 
   const planId = parseInt(searchParams.id || "0", 10);
@@ -27,11 +33,11 @@ export default async function GetSubscription({
   return (
     <div className="bg-[#2C2436]">
       <GetSubscriptionClient
-      userid={user.id}
-      plan={plan}
-    />
+        userid={user.id}
+        plan={plan}
+      />
 
     </div>
-    
+
   );
 }

@@ -2,12 +2,20 @@ import { SignInForm } from "@/components/(backoffice)/sign-in-form";
 import { validateRequest } from "@/lib/lucia/lucia";
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import { getUserById } from "@/app/actions/(backoffice)/user.actions";
 
 export default async function SignInPage() {
   const { user } = await validateRequest();
 
   if (user) {
-    return redirect("/bo/layout/sub-table");
+    const userdata = await getUserById(user?.id);
+    if (userdata?.tipo_usuario == "admin") {
+      return redirect("/bo/layout/sub-table");
+    }
+    else{
+      return redirect("/app");
+    }
+
   }
 
   return (
