@@ -94,7 +94,7 @@ const UserTable: React.FC = () => {
               ].map((header) => (
                 <th
                   key={header.key}
-                  className="py-3 px-4 text-center cursor-pointer"
+                  className="py-3 px-4 text-left cursor-pointer"
                   onClick={() => handleSort(header.key as keyof Usuarios)}
                 >
                   {header.label}
@@ -107,12 +107,12 @@ const UserTable: React.FC = () => {
           <tbody>
             {sortedUsuarios.map((usuario) => (
               <tr key={usuario.userId}>
-                <td className="py-3 px-4 text-center">{usuario.userId}</td>
-                <td className="py-3 px-4 text-center">{usuario.nombre}</td>
-                <td className="py-3 px-4 text-center">{usuario.apellido}</td>
-                <td className="py-3 px-4 text-center">{usuario.direccion}</td>
-                <td className="py-3 px-4 text-center">{usuario.tipo_usuario}</td>
-                <td className="py-3 px-4 text-center">{usuario.correo}</td>
+                <td className="py-3 px-4 text-left">{usuario.userId}</td>
+                <td className="py-3 px-4 text-left">{usuario.nombre}</td>
+                <td className="py-3 px-4 text-left">{usuario.apellido}</td>
+                <td className="py-3 px-4 text-left">{usuario.direccion}</td>
+                <td className="py-3 px-4 text-left">{usuario.tipo_usuario}</td>
+                <td className="py-3 px-4 text-left">{usuario.correo}</td>
                 <td className="py-3 px-4 text-center">
                   <button
                     className="text-gray-500 hover:text-gray-800"

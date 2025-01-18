@@ -51,29 +51,14 @@ export function SignUpForm() {
         description: res.error,
       });
     } else if (res.success) {
-      // Enviar correo usando la acción
-      const emailResult = await sendEmail({
-        to: values.correo_electronico,
-        subject: "Bienvenido a SocialMood",
-        text: `Hola ${values.nombre}, gracias por registrarte en SocialMood.`,
+      toast({
+        variant: "default",
+        description: "Account created successfully. Email sent.",
       });
-  
-      if (emailResult.success) {
-        toast({
-          variant: "default",
-          description: "Account created successfully. Email sent.",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          description: "Account created but failed to send email.",
-        });
-      }
-  
       setTimeout(() => {
         setIsPending(false);
         router.push("/app/profile");
-      }, 5000);
+      }, 3000);
     }
   }
 
