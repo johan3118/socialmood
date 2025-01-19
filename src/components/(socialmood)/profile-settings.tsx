@@ -27,7 +27,7 @@ export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
 
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 px-[25vh]">
+    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 px-[5vh]">
       <div className="bg-[#2C2436] text-white p-10 rounded-3xl w-full overflow-y-auto">
         <header className="flex items-center mb-6 pr-4">
           <button onClick={onClose} className="mr-4" aria-label="Volver">

@@ -40,9 +40,6 @@ function UserCurrentPlanCard() {
 
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-2xl font-bold">Plan Actual</h2>
-              <button aria-label="Editar plan">
-                <Edit className="w-5 h-5" />
-              </button>
             </div>
 
             <p className="text-xs mb-2">Próximo pago: {nextPaymentDate ? `$25 el ${nextPaymentDate}` : "Cargando..."}</p>
@@ -52,14 +49,11 @@ function UserCurrentPlanCard() {
             <div className="flex items-center">
               <Image src="/paypal-logo.svg" width={15} height={25} alt="credit card"/>
               <span className='text-sm ml-2'>PayPal</span>
-              <button aria-label="Editar método de pago">
-                <Edit className="w-4 h-5 ml-3" />
-              </button>
             </div>
 
           </div>
 
-          <Image src="/credit-card.svg" width={200} height={100} alt="credit card"/>
+          <Image src="/credit-card.svg" width={125} height={75} alt="credit card"/>
 
         </div>
     </BlurredContainer>

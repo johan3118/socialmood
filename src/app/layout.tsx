@@ -3,6 +3,8 @@ import { Ubuntu, Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Head from 'next/head';
+import MobileMessage from "@/components/ui/mobile";
+
 
 const rubik = Ubuntu({
   style: "normal",
@@ -27,13 +29,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={rubik.className}>
       <Head>
-      <link rel="icon" href="/icon.ico" />
-    </Head>
+        <link rel="icon" href="/icon.ico" />
+      </Head>
       <body>
-        <main className="antialiased min-h-screen flex items-center justify-center">
-          {children}
-        </main>
-        <Toaster />
+        <MobileMessage>
+          <main className="antialiased min-h-screen flex items-center justify-center overflow-auto">
+            {children}
+          </main>
+          <Toaster />
+        </MobileMessage>
       </body>
     </html>
   );

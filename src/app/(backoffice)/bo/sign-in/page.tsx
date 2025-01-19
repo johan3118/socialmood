@@ -28,12 +28,12 @@ export default async function SignInPage() {
       >
         <SignInForm />
       </div>
-      <Image className="absolute top-[40%] left-[20%] z-20" src={"/alien.svg"} width={200} height={200} alt={""} />
-      <Image className="absolute bottom-10 left-[20%] z-0" src={"/robot.svg"} height={200} width={200} alt={""} />
-      <Image className="absolute top-20 right-[20%] z-0" src={"/grinning-face.svg"} height={200} width={200} alt={""} />
-      <Image className="absolute top-10 left-[22%] z-0" src={"/robot.svg"} height={200} width={200} alt={""} />
-      <Image className="absolute bottom-20 right-[22%] z-0" src={"/alien.svg"} height={75} width={75} alt={""} />
-      <Image className="absolute top-[40%] right-[20%] z-0" src={"/sparkles.svg"} height={200} width={200} alt={""} />
+      <Image className="absolute top-[40%] left-[10%] z-20" src={"/alien.svg"} width={200} height={200} alt={""} />
+      <Image className="absolute bottom-10 left-[10%] z-0" src={"/robot.svg"} height={200} width={200} alt={""} />
+      <Image className="absolute top-20 right-[10%] z-0" src={"/grinning-face.svg"} height={200} width={200} alt={""} />
+      <Image className="absolute top-10 left-[12%] z-0" src={"/robot.svg"} height={200} width={200} alt={""} />
+      <Image className="absolute bottom-20 right-[12%] z-0" src={"/alien.svg"} height={75} width={75} alt={""} />
+      <Image className="absolute top-[40%] right-[10%] z-0" src={"/sparkles.svg"} height={200} width={200} alt={""} />
     </div>
   );
 }
