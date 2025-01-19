@@ -9,6 +9,8 @@ import {
   getActiveUserAddress,
   updateUserProfile,
 } from "@/app/actions/(backoffice)/auth.actions";
+import { toast } from "@/components/ui/use-toast";
+
 
 function UserSettingsCard() {
   const [firstName, setFirstName] = useState<string>("");
@@ -50,7 +52,10 @@ function UserSettingsCard() {
   // Update user data
   const handleSaveChanges = async () => {
     if (!firstName || !lastName || !userEmail || !userAddress) {
-      alert("Por favor, llena todos los campos obligatorios.");
+      toast({
+        variant: "destructive",
+        description: "Por favor, llena todos los campos obligatorios.",
+      });
       return;
     }
 
@@ -61,12 +66,19 @@ function UserSettingsCard() {
         address: userAddress,
       });
       if (response.success) {
-        alert("Perfil actualizado exitosamente.");
+        toast({
+          variant: "default",
+          description: "Perfil actualizado exitosamente.",
+        });
         setIsEditing(false);
       } else {
         console.error(response.error);
       }
     } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "Error al guardar los cambios",
+      });
       console.error("Error al guardar los cambios:", error);
     }
   };
@@ -123,12 +135,9 @@ function UserSettingsCard() {
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className={`bg-white font-bold text-black rounded-lg py-2 w-full ${
-                  isEditing
-                    ? "bg-white/30 font-medium border border-gray-300"
-                    : "border-none"
-                }`}
-                readOnly={!isEditing}
+                className={`bg-white text-black rounded-lg py-2 w-full ${isEditing ? "border-none" : "bg-white/30 border border-gray-300 text-white"
+                  }`}
+                disabled={!isEditing}
               />
             </div>
             <div className="flex-1">
@@ -137,12 +146,9 @@ function UserSettingsCard() {
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className={`bg-white font-bold text-black rounded-lg py-2 w-full ${
-                  isEditing
-                    ? "bg-white/30 font-medium border border-gray-300"
-                    : "border-none"
-                }`}
-                readOnly={!isEditing}
+                className={`bg-white text-black rounded-lg py-2 w-full ${isEditing ? "border-none" : "bg-white/30 border border-gray-300 text-white"
+                  }`}
+                disabled={!isEditing}
               />
             </div>
           </div>
@@ -152,10 +158,9 @@ function UserSettingsCard() {
               type="text"
               value={userAddress}
               onChange={(e) => setUserAddress(e.target.value)}
-              className={`bg-white font-bold text-black text-sm rounded-md px-4 py-2 w-full ${
-                isEditing ? "bg-white/30 font-medium border border-gray-300" : "border-none"
-              }`}
-              readOnly={!isEditing}
+              className={`bg-white text-black rounded-lg py-2 w-full ${isEditing ? "border-none" : "bg-white/30 border border-gray-300 text-white"
+                }`}
+              disabled={!isEditing}
             />
           </div>
           <div>
@@ -163,12 +168,8 @@ function UserSettingsCard() {
             <input
               type="email"
               value={userEmail}
-              readOnly={true}
-              className={`bg-white font-bold text-black rounded-md px-4 py-2 w-full ${
-                isEditing
-                  ? "border border-gray-300 cursor-not-allowed"
-                  : "border-none"
-              }`}
+              disabled={true}
+              className={`bg-white rounded-lg py-2 w-full bg-white/30 border border-gray-300 text-white`}
             />
           </div>
         </div>
