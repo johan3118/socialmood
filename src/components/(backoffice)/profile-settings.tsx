@@ -20,7 +20,7 @@ export default function ProfileSettings({ onClose }: ProfileSettingsProps) {
           <h1 className="text-3xl font-bold">Ajustes de Perfil</h1>
         </header>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
+        <div className="flex justify-center items-center">
           {/* User Card */}
           <UserSettingsCard/>
           {/* User Card */}

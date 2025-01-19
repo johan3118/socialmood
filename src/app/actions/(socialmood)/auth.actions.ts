@@ -414,3 +414,49 @@ export async function updateUserProfile(data: {
   }
 }
 
+export async function updatePassword(data: {
+  password: string;
+}) {
+  // Validar la sesión activa y obtener el usuario autenticado
+  const { user } = await validateRequest();
+
+  // Obtener el ID del usuario // en el backoffice filtrar por email
+  const userId = user?.id;
+
+  // Verificar si el ID del usuario está definido
+  if (userId === undefined) {
+    return {
+      error: "User ID is undefined",
+    };
+  }
+
+  // Obtener los datos del usuario
+  const { password } = data;
+
+  // Verificar si los datos del usuario están definidos
+  if (!password) {
+    return {
+      error: "Missing user data",
+    };
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // Actualizar los datos del usuario
+    await db
+      .update(usuariosTable)
+      .set({
+        llave_acceso: hashedPassword
+      })
+      .where(eq(usuariosTable.id, userId));
+
+    // Retornar una respuesta exitosa
+    return {
+      success: true,
+    };
+  } catch (error: any) {
+    return {
+      error: error?.message || "Ocurrio un error al actualizar la contraseña",
+    };
+  }
+}
