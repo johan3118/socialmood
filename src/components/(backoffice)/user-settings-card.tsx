@@ -11,7 +11,6 @@ import {
 } from "@/app/actions/(backoffice)/auth.actions";
 import { toast } from "@/components/ui/use-toast";
 
-
 function UserSettingsCard() {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -135,8 +134,11 @@ function UserSettingsCard() {
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className={`bg-white text-black rounded-lg py-2 w-full ${isEditing ? "border-none" : "bg-white/30 border border-gray-300 text-white"
-                  }`}
+                className={`bg-white text-black rounded-lg py-2 w-full ${
+                  isEditing
+                    ? "border-none"
+                    : "bg-white/30 border border-gray-300 text-white"
+                }`}
                 disabled={!isEditing}
               />
             </div>
@@ -146,8 +148,11 @@ function UserSettingsCard() {
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className={`bg-white text-black rounded-lg py-2 w-full ${isEditing ? "border-none" : "bg-white/30 border border-gray-300 text-white"
-                  }`}
+                className={`bg-white text-black rounded-lg py-2 w-full ${
+                  isEditing
+                    ? "border-none"
+                    : "bg-white/30 border border-gray-300 text-white"
+                }`}
                 disabled={!isEditing}
               />
             </div>
@@ -158,8 +163,11 @@ function UserSettingsCard() {
               type="text"
               value={userAddress}
               onChange={(e) => setUserAddress(e.target.value)}
-              className={`bg-white text-black rounded-lg py-2 w-full ${isEditing ? "border-none" : "bg-white/30 border border-gray-300 text-white"
-                }`}
+              className={`bg-white text-black rounded-lg py-2 w-full ${
+                isEditing
+                  ? "border-none"
+                  : "bg-white/30 border border-gray-300 text-white"
+              }`}
               disabled={!isEditing}
             />
           </div>
