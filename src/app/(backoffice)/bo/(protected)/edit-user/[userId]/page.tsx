@@ -6,6 +6,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { getUserById, updateUserById } from '@/app/actions/(backoffice)/user.actions';
 import UserForm from '@/components/(backoffice)/edit-user-form';
 import Image from "next/image";
+import { toast } from "@/components/ui/use-toast";
+
 
 
 interface FormData {
@@ -89,11 +91,18 @@ export default function EditUserPage() {
     setError(null);
     try {
       await updateUserById(userId, formData);
-      alert('Usuario actualizado correctamente');
+      toast({
+        variant: "default",
+        description: "Usuario actualizado correctamente",
+      });
       router.push('/bo/layout/user-table'); // Redirige a la lista de usuarios tras actualizar
     } catch (err) {
       setError('Error al actualizar el usuario');
       console.error(err);
+      toast({
+        variant: "destructive",
+        description: "Error al actualizar el usuario",
+      });
     } finally {
       setIsLoading(false);
     }

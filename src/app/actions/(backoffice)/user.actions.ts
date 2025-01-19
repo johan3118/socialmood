@@ -118,3 +118,32 @@ export const updateUserById = async (userId: number, updateData: any) => {
     throw new Error("Error al actualizar usuario.");
   }
 };
+
+export const changeUserPasswordById = async (userId: number, updateData: any) => {
+  const filteredData = Object.fromEntries(
+    Object.entries(updateData).filter(([_, value]) => value !== undefined)
+  );
+
+  if (Object.keys(filteredData).length === 0) {
+    throw new Error("No hay campos para actualizar.");
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(updateData.password, 10);
+
+    const result = await db
+      .update(usuariosTable)
+      .set({llave_acceso: hashedPassword})
+      .where(eq(usuariosTable.id, userId));
+
+    if (result.rowsAffected === 0) {
+      throw new Error(`No se encontró usuario con ID ${userId}.`);
+    }
+
+    console.log(`Contraseña actualizada correctamente.`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error al actualizar la contraseña:", error);
+    return { error: "Error al actualizar la contraseña." };
+  }
+};

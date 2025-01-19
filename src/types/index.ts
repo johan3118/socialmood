@@ -230,3 +230,28 @@ export const SubscriptionFormSchema = z.object({
     .min(10, { message: "La descripción debe tener al menos 10 caracteres" })
     .max(500, { message: "La descripción no puede exceder los 500 caracteres" }),
 });
+
+
+export const ChangePasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: "La contraseña debe tener como mínimo 8 caracteres" })
+      .max(20, { message: "El máximo de caracteres es 20" })
+      .regex(/[A-Z]/, { message: "Debe contener al menos una letra mayúscula" })
+      .regex(/[a-z]/, { message: "Debe contener al menos una letra minúscula" })
+      .regex(/\d/, { message: "Debe contener al menos un número" })
+      .regex(/[^a-zA-Z0-9]/, { message: "Debe contener al menos un carácter especial" }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "La contraseña debe tener como mínimo 8 caracteres" })
+      .max(20, { message: "El máximo de caracteres es 20" })
+      .regex(/[A-Z]/, { message: "Debe contener al menos una letra mayúscula" })
+      .regex(/[a-z]/, { message: "Debe contener al menos una letra minúscula" })
+      .regex(/\d/, { message: "Debe contener al menos un número" })
+      .regex(/[^a-zA-Z0-9]/, { message: "Debe contener al menos un carácter especial" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas con coinciden",
+    path: ["confirmPassword"],
+  });

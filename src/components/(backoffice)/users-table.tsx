@@ -43,6 +43,10 @@ const UserTable: React.FC = () => {
     router.push(`/bo/edit-user/${userId}`);
   };
 
+  const handleChangePassword = (userId: string) => {
+    router.push(`/bo/change-password/${userId}`);
+  };
+
   const handleSort = (key: keyof Usuarios) => {
     setSortConfig((prevSortConfig) => {
       if (prevSortConfig?.key === key && prevSortConfig.direction === "asc") {
@@ -119,6 +123,12 @@ const UserTable: React.FC = () => {
                     onClick={() => handleEditUser(usuario.userId)}
                   >
                     ✏️
+                  </button>
+                  <button
+                    className="text-gray-500 hover:text-gray-800"
+                    onClick={() => handleChangePassword(usuario.userId)}
+                  >
+                    🔒
                   </button>
                 </td>
               </tr>
