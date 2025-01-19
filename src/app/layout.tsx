@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: "SocialMood App",
   description: "",
   icons: {
-    icon: '/favicon.ico',
+    icon: '/icon.ico',
   },
 };
 
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={rubik.className}>
       <Head>
-      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/icon.ico" />
     </Head>
       <body>
         <main className="antialiased min-h-screen flex items-center justify-center">
