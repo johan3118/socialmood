@@ -1,11 +1,13 @@
-"use client"
+"use client";
 import React, { useState } from "react";
-import ListadoReglasTable from '@/components/(socialmood)/listado-reglas'
-import FilterModal from '@/components/(socialmood)/filter-modal'
-import SocialButton from '@/components/(socialmood)/social-button'
-import SearchBar from '@/components/(socialmood)/searchbar'
+import ListadoReglasServer from "@/components/(socialmood)/listado-reglas-server";
+import FilterModal from "@/components/(socialmood)/filter-modal";
+import SocialButton from "@/components/(socialmood)/social-button";
+import SearchBar from "@/components/(socialmood)/searchbar";
+import { useTranslations } from "next-intl";
 
 function PantallaGestionReglasPage() {
+  const t = useTranslations("reglas");
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Controla la visibilidad del modal
 
@@ -13,31 +15,30 @@ function PantallaGestionReglasPage() {
   const closeFilterModal = () => setIsFilterModalOpen(false);
 
   const [selectedFilters, setSelectedFilters] = useState<{
-    category: string[],
-    subcategory: string[],
-    network: string[],
-    ruleType: string[],
-    alias: string[]
+    category: string[];
+    subcategory: string[];
+    network: string[];
+    ruleType: string[];
+    alias: string[];
   }>({
     category: [],
     subcategory: [],
     network: [],
     ruleType: [],
-    alias: []
+    alias: [],
   });
 
   const onSaveFilters = (filter: any) => {
     setSelectedFilters(filter);
     console.log(filter);
-  }
+  };
 
   const setAlias = (text: string) => {
     setSelectedFilters({ ...selectedFilters, alias: [text] });
     console.log(selectedFilters);
-  }
+  };
 
   return (
-
     <div>
       <div className="space-y-4">
         <div className="flex space-x-4 mx-12">
@@ -46,22 +47,22 @@ function PantallaGestionReglasPage() {
           <SocialButton
             customStyle="w-32"
             variant="default"
-            defaultText="Filtros"
+            defaultText={t("filters")}
             type="button" // Cambiado a 'button' para evitar enviar un formulario
             onClick={openFilterModal}
           />
-
         </div>
 
-        <ListadoReglasTable
-          filter={selectedFilters}
-        />
+        <ListadoReglasServer filter={selectedFilters} />
       </div>
 
-      <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} />
-
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={closeFilterModal}
+        onSave={onSaveFilters}
+      />
     </div>
-  )
+  );
 }
 
-export default PantallaGestionReglasPage
+export default PantallaGestionReglasPage;

@@ -2,8 +2,6 @@
 import db from "@/db";
 import { reglasTable, categoriasTable, tiposReglaTable, subcategoriasTable, subcategoriasReglasTable, cuentasRedesSocialesTable, redesSocialesTable } from "@/db/schema/socialMood";
 import { eq, and, or, inArray, isNull, not, like } from "drizzle-orm";
-import { StyledString } from "next/dist/build/swc";
-import { PropagateToWorkersField } from "next/dist/server/lib/router-utils/types";
 import { CreateRuleSchema } from "@/types";
 import { getActiveUserId, getSubscription, getSocialMediaSubscription } from "./auth.actions";
 

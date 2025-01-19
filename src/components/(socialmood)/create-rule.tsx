@@ -1,33 +1,30 @@
-import React from "react";
+// src/components/(socialmood)/create-rule.tsx
+"use client";
 
+import React, { useState } from "react";
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogClose,
 } from "@/components/ui/dialog";
-
-import router, { useRouter } from "next/router";
-
-import { useEffect } from "react";
-
-import {
-  createRule,
-  getSocialMediaAccounts,
-} from "@/app/actions/(socialmood)/rules.actions";
-
-import { useState } from "react";
-import { toast } from "@/components/ui/use-toast";
-
-import { CreateRuleSchema } from "../../types";
-
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Textarea } from "@/components/ui/textarea";
+import { CreateRuleSchema } from "../../types";
+import { useTranslations } from "next-intl";
+import { toast } from "@/components/ui/use-toast";
 
+import SocialButton from "./social-button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormControl,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -35,54 +32,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
-import {
-  getSubscription,
-  getActiveUserId,
-} from "@/app/actions/(socialmood)/auth.actions";
-
-import SocialButton from "./social-button";
-import { useTranslations } from "next-intl";
-
-interface CreateRuleProps {
-  onOpenChange: (newOpenValue: boolean) => void;
+interface SocialMediaOption {
+  id: string;
+  label: string;
 }
 
-const items = [
-  {
-    id: "1",
-    label: "Recomendación",
-  },
-  {
-    id: "2",
-    label: "Consulta",
-  },
-  {
-    id: "3",
-    label: "Queja",
-  },
-  {
-    id: "4",
-    label: "Elogio",
-  },
-] as const;
+interface CreateRuleProps {
+  /** Función para abrir/cerrar el diálogo o contenedor padre */
+  onOpenChange: (open: boolean) => void;
 
-export default function CreateRule({ onOpenChange }: CreateRuleProps) {
-  const [isPending, setIsPending] = useState(false);
+  /** Lista de redes sociales que el usuario puede elegir */
+  socialMedias: SocialMediaOption[];
+
+  /** Server Action para crear la regla */
+  handleCreateRule: (data: any) => Promise<any>;
+}
+
+export default function CreateRule({
+  onOpenChange,
+  socialMedias,
+  handleCreateRule,
+}: CreateRuleProps) {
   const t = useTranslations("createRule");
+  const [isPending, setIsPending] = useState(false);
 
+  // Configuración de React Hook Form con Zod
   const form = useForm<z.infer<typeof CreateRuleSchema>>({
     resolver: zodResolver(CreateRuleSchema),
     defaultValues: {
@@ -94,67 +71,50 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
     },
   });
 
+  /** Manejo de envío del formulario */
   async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
     setIsPending(true);
-    const res = await createRule(values);
-    if (res.error) {
+
+    try {
+      // Llamada a la Server Action pasada como prop
+      const res = await handleCreateRule(values);
+
+      if (res.error) {
+        toast({
+          variant: "destructive",
+          description: res.error,
+        });
+      } else if (res.success) {
+        toast({
+          variant: "default",
+          description: t("ruleCreated"),
+        });
+        form.reset();
+        onOpenChange(false); // Cerrar el diálogo o contenedor
+      }
+    } catch (error: any) {
       toast({
         variant: "destructive",
-        description: res.error,
+        description: error.message || "Error inesperado.",
       });
-      setIsPending(false);
-    } else if (res.success) {
-      toast({
-        variant: "default",
-        description: t("ruleCreated"),
-      });
-      form.reset();
-      onOpenChange(false);
     }
+
     setIsPending(false);
   }
 
-  async function onClose() {
+  /** Cerrar el componente/diálogo */
+  function onClose() {
     form.reset();
     onOpenChange(false);
   }
 
-  const [SubscriptionID, setSubscriptionID] = useState<number>(0);
-
-  const setSubscription = async () => {
-    const userID = await getActiveUserId();
-    console.log("UserID ", userID);
-    if (userID) {
-      const subscription = await getSubscription(parseInt(userID));
-      if (subscription) {
-        setSubscriptionID(subscription);
-        console.log("Subscription ", subscription);
-      } else {
-        await router.push("/app/get-sub");
-      }
-    } else {
-      await router.push("/app/sign-in");
-    }
-  };
-
-  const [socialMedias, setSocialMedias] = useState<
-    { id: string; label: string }[]
-  >([]);
-
-  async function fetchSocialMediaAccounts() {
-    const accounts = await getSocialMediaAccounts(SubscriptionID);
-    setSocialMedias(
-      accounts.map((account) => ({
-        id: account.id.toString(),
-        label: account.usuario_cuenta,
-      }))
-    );
-  }
-
-  useEffect(() => {
-    setSubscription();
-    fetchSocialMediaAccounts();
-  }, [SubscriptionID]);
+  /** Ejemplo de items para subcategorías (puedes ajustarlo a tus traducciones) */
+  const items = [
+    { id: "1", label: t("recomendacion") },
+    { id: "2", label: t("consulta") },
+    { id: "3", label: t("queja") },
+    { id: "4", label: "Elogio" },
+  ] as const;
 
   return (
     <DialogContent className="flex items-start md:w-[90%]">
@@ -173,14 +133,16 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                 variant="default"
                 isPending={isPending}
                 defaultText={t("save")}
-                customStyle="text-[20px]"
                 pendingText={t("saving")}
+                customStyle="text-[20px]"
                 type="submit"
               />
             </DialogTitle>
           </DialogHeader>
+
           <DialogDescription className="w-full">
             <div className="flex flex-col w-full">
+              {/* ALIAS */}
               <div className="flex w-full space-x-2">
                 <div className="bg-orange-500 text-[20px] text-white rounded-full w-10 h-8 flex items-center justify-center">
                   01
@@ -195,9 +157,9 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                           <Input
                             placeholder={t("aliasPlaceholder")}
                             className="w-full px-3 py-2 
-                            rounded-[10px] 
-                            focus:outline-none focus:ring-2 focus:ring-primary 
-                            bg-white text-[#2C2436] "
+                              rounded-[10px] 
+                              focus:outline-none focus:ring-2 focus:ring-primary 
+                              bg-white text-[#2C2436]"
                             autoComplete="alias"
                             {...field}
                           />
@@ -208,8 +170,11 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                   />
                 </div>
               </div>
+
               <hr className="my-3" />
+
               <div className="flex w-full space-x-28">
+                {/* SELECCIÓN DE RED SOCIAL */}
                 <div className="w-1/2 space-y-3">
                   <FormField
                     control={form.control}
@@ -227,11 +192,11 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                           >
                             <SelectTrigger
                               className="w-full px-3 py-2 
-                            rounded-[10px] 
-                            focus:outline-none focus:ring-2 focus:ring-primary 
-                            bg-white text-[#2C2436] "
+                                rounded-[10px] 
+                                focus:outline-none focus:ring-2 focus:ring-primary 
+                                bg-white text-[#2C2436]"
                             >
-                              <SelectValue />
+                              <SelectValue placeholder={t("selectAccount")} />
                             </SelectTrigger>
                             <SelectContent>
                               {socialMedias.map((socialMedia) => (
@@ -248,7 +213,9 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />{" "}
+                  />
+
+                  {/* SUBCATEGORÍAS (CheckBox) */}
                   <FormField
                     control={form.control}
                     name="subcategorias"
@@ -263,6 +230,7 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                             control={form.control}
                             name="subcategorias"
                             render={({ field }) => {
+                              const checked = field.value?.includes(item.id);
                               return (
                                 <FormItem
                                   key={item.id}
@@ -270,18 +238,20 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                                 >
                                   <FormControl>
                                     <Checkbox
-                                      checked={field.value?.includes(item.id)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([
-                                              ...field.value,
-                                              item.id,
-                                            ])
-                                          : field.onChange(
-                                              field.value?.filter(
-                                                (value) => value !== item.id
-                                              )
-                                            );
+                                      checked={checked}
+                                      onCheckedChange={(isChecked) => {
+                                        if (isChecked) {
+                                          field.onChange([
+                                            ...field.value,
+                                            item.id,
+                                          ]);
+                                        } else {
+                                          field.onChange(
+                                            field.value.filter(
+                                              (val: string) => val !== item.id
+                                            )
+                                          );
+                                        }
                                       }}
                                     />
                                   </FormControl>
@@ -297,6 +267,8 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                     )}
                   />
                 </div>
+
+                {/* TIPO (Ejemplo, deshabilitado) */}
                 <div className="w-1/2">
                   <FormField
                     control={form.control}
@@ -315,9 +287,9 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                             <SelectTrigger
                               disabled
                               className="w-full px-3 py-2 
-                            rounded-[10px] 
-                            focus:outline-none focus:ring-2 focus:ring-primary 
-                            bg-white text-[#2C2436] "
+                                rounded-[10px] 
+                                focus:outline-none focus:ring-2 focus:ring-primary 
+                                bg-white text-[#2C2436]"
                             >
                               <SelectValue />
                             </SelectTrigger>
@@ -330,9 +302,11 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />{" "}
+                  />
                 </div>
               </div>
+
+              {/* INSTRUCCIONES */}
               <div className="flex w-full">
                 <div className="w-full mt-5">
                   <FormField
@@ -347,9 +321,9 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
                           <Textarea
                             placeholder="Redactar instrucciones..."
                             className="w-full px-3 py-2 
-                    rounded-[12px] border-transparent
-                    focus:outline-none focus:ring-2 focus:ring-primary
-                    bg-[#EBEBEB] text-black "
+                              rounded-[12px] border-transparent
+                              focus:outline-none focus:ring-2 focus:ring-primary
+                              bg-[#EBEBEB] text-black"
                             {...field}
                           />
                         </FormControl>
@@ -363,9 +337,15 @@ export default function CreateRule({ onOpenChange }: CreateRuleProps) {
           </DialogDescription>
         </form>
       </Form>
+
+      {/* Botón para cerrar */}
       <button
         onClick={onClose}
-        className="absolute right-6 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground text-white"
+        className="absolute right-6 top-6 rounded-sm opacity-70 
+          ring-offset-background transition-opacity hover:opacity-100
+          focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
+          disabled:pointer-events-none data-[state=open]:bg-accent
+          data-[state=open]:text-muted-foreground text-white"
       >
         <img src="/delete.svg" alt="Close" className="w-6 h-6" />
       </button>

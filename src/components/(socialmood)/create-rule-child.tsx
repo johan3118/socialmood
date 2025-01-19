@@ -56,6 +56,8 @@ export default function CreateRuleChild({
   onOpenChange,
   parentID,
 }: CreateRuleChildProps) {
+  const t = useTranslations("createRuleChild");
+
   const [isPending, setIsPending] = useState(false);
 
   const [socialMedias, setSocialMedias] = useState<
@@ -69,19 +71,19 @@ export default function CreateRuleChild({
   const [Subcategorias, SetSubcategorias] = useState([
     {
       id: "1",
-      label: "Recomendación",
+      label: t("recomendacion"),
     },
     {
       id: "2",
-      label: "Consulta",
+      label: t("consulta"),
     },
     {
       id: "3",
-      label: "Queja",
+      label: t("queja"),
     },
     {
       id: "4",
-      label: "Elogio",
+      label: t("elogio"),
     },
   ]);
 
@@ -95,8 +97,6 @@ export default function CreateRuleChild({
       subcategorias: [],
     },
   });
-
-  const t = useTranslations("createRuleChild");
 
   async function onSubmit(values: z.infer<typeof CreateRuleSchema>) {
     form.trigger();
@@ -380,7 +380,7 @@ export default function CreateRuleChild({
                         </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Redactar instrucciones..."
+                            placeholder={t("instructionsPlaceholder")}
                             className="w-full px-3 py-2 
                     rounded-[12px] border-transparent
                     focus:outline-none focus:ring-2 focus:ring-primary

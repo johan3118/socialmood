@@ -294,16 +294,21 @@
   },
   "createRuleChild": {
     "title": "Create Child Rule",
-    "aliasPlaceholder": "Rule Alias",
-    "socialMedia": "Social Media",
-    "subcategories": "Subcategories",
-    "instructions": "Instructions",
-    "type": "Type",
-    "parent": "Parent",
-    "child": "Child",
     "save": "Save",
     "saving": "Saving...",
-    "ruleCreated": "Rule created successfully"
+    "aliasPlaceholder": "Enter alias",
+    "socialMedia": "Social Media",
+    "subcategories": "Subcategories",
+    "type": "Type",
+    "instructions": "Instructions",
+    "instructionsPlaceholder": "Write instructions...",
+    "parent": "Parent",
+    "child": "Child",
+    "ruleCreated": "Rule created successfully",
+    "elogio": "Praise",
+    "recomendacion": "Recommendation",
+    "consulta": "Inquiry",
+    "queja": "Complaint"
   },
     "createRule": {
     "title": "Create Rule",
@@ -316,7 +321,11 @@
     "child": "Child",
     "save": "Save",
     "saving": "Saving...",
-    "ruleCreated": "Rule created successfully"
+    "ruleCreated": "Rule created successfully",
+    "elogio": "Praise",
+    "recomendacion": "Recommendation",
+    "consulta": "Inquiry",
+    "queja": "Complaint"
   },
   "deleteRuleChild": {
     "confirmation": "CONFIRMATION",
@@ -358,7 +367,12 @@
     "save": "Save",
     "saving": "Saving...",
     "ruleUpdated": "Rule updated successfully",
-    "addChild": "Add Child +"
+    "addChild": "Add Child +",
+    "elogio": "Praise",
+    "recomendacion": "Recommendation",
+    "consulta": "Inquiry",
+    "queja": "Complaint"
+    
   },
   "emotionsChart": {
     "title": "Emotions",
@@ -588,5 +602,35 @@
     "addAccount": "Add Account",
     "confirmDelete": "Are you sure you want to unlink this account?",
     "deleteSuccess": "Account unlinked and deleted successfully."
+  },
+  "editResponse": {
+    "title": "Edit Response",
+    "date": "Date",
+    "socialProfile": "Social Profile",
+    "category": "Category",
+    "subcategory": "Subcategory",
+    "emitter": "Emitter",
+    "autoResponse": "Automatic Response",
+    "update": "Update"
+  },
+  "reglas": {
+    "filters": "Filters"
+  },
+  "respuestas": {
+    "filters": "Filters"
+  },
+  "editChildRule": {
+    "title": "Edit Rule",
+    "update": "Update",
+    "aliasPlaceholder": "Enter alias",
+    "socialProfile": "Social Profile",
+    "subcategories": "Subcategories",
+    "type": "Type",
+    "instructions": "Instructions",
+    "ruleUpdated": "Rule updated successfully",
+    "elogio": "Praise",
+    "recomendacion": "Recommendation",
+    "consulta": "Inquiry",
+    "queja": "Complaint"
   }
 } 

@@ -89,7 +89,7 @@ export default function EditRuleChild({
 
   const [isPending, setIsPending] = useState(false);
   const t = useTranslations("editRuleChild");
-
+  const r = useTranslations("editChildRule");
   const form = useForm<z.infer<typeof CreateRuleSchema>>({
     resolver: zodResolver(CreateRuleSchema),
     defaultValues: {
@@ -131,19 +131,19 @@ export default function EditRuleChild({
   const [Subcategorias, SetSubcategorias] = useState([
     {
       id: "1",
-      label: "Recomendación",
+      label: r("recomendacion"),
     },
     {
       id: "2",
-      label: "Consulta",
+      label: r("consulta"),
     },
     {
       id: "3",
-      label: "Queja",
+      label: r("queja"),
     },
     {
       id: "4",
-      label: "Elogio",
+      label: r("elogio"),
     },
   ]);
 

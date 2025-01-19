@@ -1,11 +1,13 @@
-"use client"
+"use client";
 import React, { useState } from "react";
-import ListadoRespuestasTable from '@/components/(socialmood)/listado-respuestas'
-import FilterModal from '@/components/(socialmood)/filter-modal-interaction'
-import SocialButton from '@/components/(socialmood)/social-button'
-import SearchBar from '@/components/(socialmood)/searchbar'
+import ListadoRespuestasTable from "@/components/(socialmood)/listado-respuestas";
+import FilterModal from "@/components/(socialmood)/filter-modal-interaction";
+import SocialButton from "@/components/(socialmood)/social-button";
+import SearchBar from "@/components/(socialmood)/searchbar";
+import { useTranslations } from "next-intl";
 
 function PantallaGestionRespuestasPage() {
+  const t = useTranslations("respuestas");
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false); // Controla la visibilidad del modal
 
@@ -13,31 +15,30 @@ function PantallaGestionRespuestasPage() {
   const closeFilterModal = () => setIsFilterModalOpen(false);
 
   const [selectedFilters, setSelectedFilters] = useState<{
-    category: string[],
-    subcategory: string[],
-    ruleType: string[],
-    alias: string[],
-    social_medias: string[]
+    category: string[];
+    subcategory: string[];
+    ruleType: string[];
+    alias: string[];
+    social_medias: string[];
   }>({
     category: [],
     subcategory: [],
     ruleType: [],
     alias: [],
-    social_medias: []
+    social_medias: [],
   });
 
   const onSaveFilters = (filter: any) => {
     setSelectedFilters(filter);
     console.log(filter);
-  }
+  };
 
   const setAlias = (text: string) => {
     setSelectedFilters({ ...selectedFilters, alias: [text] });
     console.log(selectedFilters);
-  }
+  };
 
   return (
-
     <div>
       <div className="space-y-4">
         <div className="flex space-x-4 mx-12">
@@ -46,26 +47,23 @@ function PantallaGestionRespuestasPage() {
           <SocialButton
             customStyle="w-32"
             variant="default"
-            defaultText="Filtros"
+            defaultText={t("filters")}
             type="button" // Cambiado a 'button' para evitar enviar un formulario
             onClick={openFilterModal}
           />
         </div>
 
-        <ListadoRespuestasTable
-          filter={selectedFilters}
-        />
-
+        <ListadoRespuestasTable filter={selectedFilters} />
       </div>
-      {
-        isFilterModalOpen ?
-          <FilterModal isOpen={isFilterModalOpen} onClose={closeFilterModal} onSave={onSaveFilters} /> :
-          null
-      }
+      {isFilterModalOpen ? (
+        <FilterModal
+          isOpen={isFilterModalOpen}
+          onClose={closeFilterModal}
+          onSave={onSaveFilters}
+        />
+      ) : null}
     </div>
-
-
-  )
+  );
 }
 
-export default PantallaGestionRespuestasPage
+export default PantallaGestionRespuestasPage;

@@ -97,30 +97,30 @@ export default function EditRule({ ruleID, onOpenChange }: EditRuleProps) {
     setRuleID(ruleID);
     setOpen(true);
   };
+  const t = useTranslations("editRule");
 
   const [redSocial, setRedSocial] = useState("");
 
   const items = [
     {
       id: "1",
-      label: "Recomendación",
+      label: t("recomendacion"),
     },
     {
       id: "2",
-      label: "Consulta",
+      label: t("consulta"),
     },
     {
       id: "3",
-      label: "Queja",
+      label: t("queja"),
     },
     {
       id: "4",
-      label: "Elogio",
+      label: t("elogio"),
     },
   ] as const;
 
   const [isPending, setIsPending] = useState(false);
-  const t = useTranslations("editRule");
 
   const form = useForm<z.infer<typeof CreateRuleSchema>>({
     resolver: zodResolver(CreateRuleSchema),

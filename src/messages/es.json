@@ -292,30 +292,39 @@
     "neutral": "Neutral"
   },
   "createRuleChild": {
-    "title": "Crear Regla Hijo",
-    "aliasPlaceholder": "Alias de la regla",
-    "socialMedia": "Red Social",
-    "subcategories": "Subcategorías",
-    "instructions": "Instrucciones",
-    "type": "Tipo",
-    "parent": "Padre",
-    "child": "Hijo",
+    "title": "Crear Regla Hija",
     "save": "Guardar",
     "saving": "Guardando...",
-    "ruleCreated": "Regla creada con éxito"
+    "aliasPlaceholder": "Ingrese un alias",
+    "socialMedia": "Red Social",
+    "subcategories": "Subcategorías",
+    "type": "Tipo",
+    "instructions": "Instrucciones",
+    "instructionsPlaceholder": "Redactar instrucciones...",
+    "parent": "Padre",
+    "child": "Hijo",
+    "ruleCreated": "Regla creada con éxito",
+    "elogio": "Elogio",
+    "recomendacion": "Recomendación",
+    "consulta": "Consulta",
+    "queja": "Queja"
   },
    "createRule": {
     "title": "Crear Regla",
-    "aliasPlaceholder": "Alias de la regla",
+    "aliasPlaceholder": "Ingrese un alias",
     "socialMedia": "Red Social",
     "subcategories": "Subcategorías",
-    "instructions": "Instrucciones",
     "type": "Tipo",
+    "instructions": "Instrucciones",
     "parent": "Padre",
     "child": "Hijo",
     "save": "Guardar",
     "saving": "Guardando...",
-    "ruleCreated": "Regla creada con éxito"
+    "ruleCreated": "Regla creada con éxito",
+    "elogio": "Elogio",
+    "recomendacion": "Recomendación",
+    "consulta": "Consulta",
+    "queja": "Queja"
   },
   "deleteRuleChild": {
     "confirmation": "CONFIRMACIÓN",
@@ -357,7 +366,11 @@
     "save": "Guardar",
     "saving": "Guardando...",
     "ruleUpdated": "Regla actualizada con éxito",
-    "addChild": "Añadir Hijo +"
+    "addChild": "Añadir Hijo +",
+    "elogio": "Elogio",
+    "recomendacion": "Recomendación",
+    "consulta": "Consulta",
+    "queja": "Queja"
   },
   "emotionsChart": {
     "title": "Emociones",
@@ -587,5 +600,35 @@
     "addAccount": "Agregar Cuenta",
     "confirmDelete": "¿Estás seguro de que deseas desvincular esta cuenta?",
     "deleteSuccess": "Cuenta desvinculada y eliminada correctamente."
+  },
+  "editResponse": {
+    "title": "Editar Respuesta",
+    "date": "Fecha",
+    "socialProfile": "Perfil de Red Social",
+    "category": "Categoría",
+    "subcategory": "Subcategoría",
+    "emitter": "Emisor",
+    "autoResponse": "Respuesta Automática",
+    "update": "Actualizar"
+  },
+  "reglas": {
+    "filters": "Filtros"
+  },
+  "respuestas": {
+    "filters": "Filtros"
+  },
+  "editChildRule": {
+    "title": "Editar Regla",
+    "update": "Actualizar",
+    "aliasPlaceholder": "Ingrese un alias",
+    "socialProfile": "Perfil de Red Social",
+    "subcategories": "Subcategorías",
+    "type": "Tipo",
+    "instructions": "Instrucciones",
+    "ruleUpdated": "Regla actualizada con éxito",
+    "elogio": "Elogio",
+    "recomendacion": "Recomendación",
+    "consulta": "Consulta",
+    "queja": "Queja"
   }
 }
